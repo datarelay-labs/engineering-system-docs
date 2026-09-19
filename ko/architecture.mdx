@@ -1,0 +1,67 @@
+---
+title: "시스템 아키텍처"
+description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena와 테스트·릴리즈 근거의 역할을 구분합니다."
+---
+
+# 시스템 아키텍처
+
+핵심은 각 도구에 역할을 분리하는 것입니다.
+
+## 역할 분담
+
+| 구성요소 | 주 역할 | 진실로 사용하지 않는 것 |
+|---|---|---|
+| ChatGPT | 요구사항, 아키텍처, 설계, 문서, 리뷰, 다음 작업 결정 | 현재 Git 상태 |
+| Cursor | 코드 구현과 로컬 검증 | 장기 제품 의사결정 |
+| GitHub | Code, history, PR, CI, Spec, Work Packet, Release Evidence | 사람용 설명 |
+| Desktop Commander | 승인된 개발 서버 직접 감사 | 장기 프로젝트 기록 |
+| Athena | 결정 이유와 cross-project history 검색 | Runtime truth, release evidence |
+| Engineering System | 공통 engineering/AI 표준 | 제품별 기능 정의 |
+| Engineering System Docs | 사람이 읽는 설명서 | Canonical 규칙 |
+
+## 시스템 계층
+
+~~~mermaid
+flowchart TB
+    H["Human Layer<br/>engineering.datarelay.run"]
+    K["Knowledge Layer<br/>Athena"]
+    C["Coordination Layer<br/>AI Work Packet"]
+    N["Normative Layer<br/>GitHub Code · Spec · Test · CI"]
+    X["Execution Layer<br/>Cursor · Dev Server · Runtime"]
+
+    H --> N
+    K --> N
+    C --> N
+    X --> N
+    N --> X
+~~~
+
+사람이 읽는 홈페이지나 Athena는 이해와 검색을 돕습니다. 하지만 실제 제품 상태나 릴리즈 판정은 GitHub와 실행된 evidence가 우선합니다.
+
+## 충돌 시 우선순위
+
+~~~mermaid
+flowchart TD
+    A["1. 실제 Code / Config / Schema / Runtime / Git"] --> B["2. Canonical Product Spec"]
+    B --> C["3. Repository Engineering Metadata"]
+    C --> D["4. 실행된 Test / CI Evidence"]
+    D --> E["5. AI Work Packet"]
+    E --> F["6. Athena / Derived Docs"]
+    F --> G["7. Conversation History"]
+~~~
+
+이 순서를 정해두면 오래된 채팅이나 로드맵이 현재 제품 상태를 덮어쓰는 일을 막을 수 있습니다.
+
+## 두 repository의 역할
+
+**datarelay-labs/engineering-system**
+
+Canonical / machine-consumed repository입니다. 표준, adapter, template, validation, /resume, session continuity rule이 여기에 있습니다.
+
+**datarelay-labs/engineering-system-docs**
+
+사람이 읽는 handbook입니다. 왜 이런 구조가 되었는지, 실제로 어떻게 사용하는지, 어떤 문제가 개선되었는지를 설명합니다.
+
+<Warning>
+  두 문서가 충돌하면 항상 canonical engineering-system repository를 따릅니다.
+</Warning>
