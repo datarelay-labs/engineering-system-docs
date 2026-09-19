@@ -1,0 +1,88 @@
+---
+title: "Daily Workflow"
+description: "The practical ChatGPT → Cursor → verification loop used for day-to-day development."
+---
+
+# Daily workflow
+
+The default workflow is intentionally simple.
+
+<Steps>
+  <Step title="Think in ChatGPT">
+    Discuss the problem, requirements, architecture, edge cases, UX, documentation, test strategy, and scope before implementation begins.
+  </Step>
+
+  <Step title="Create or update the AI Work Packet">
+    When the work is ready for implementation, ChatGPT updates the repository-scoped [AI Work] Issue instead of generating another giant Cursor prompt.
+  </Step>
+
+  <Step title="Run /resume in Cursor">
+    Cursor resolves the current repo, branch, HEAD, and active Work Packet, then executes only the current Next Action.
+  </Step>
+
+  <Step title="Implement and validate">
+    Cursor changes the repository and runs the cheapest affected deterministic tests first. Expensive qualification is deferred until it is actually required.
+  </Step>
+
+  <Step title="Return to ChatGPT">
+    After Cursor updates the Work Packet, the user can simply say "Cursor 끝났어. 계속". ChatGPT reloads durable state and continues.
+  </Step>
+
+  <Step title="Audit directly when needed">
+    If GitHub evidence is not enough, ChatGPT can inspect the authorized development server through Desktop Commander Remote MCP.
+  </Step>
+</Steps>
+
+## The user-facing commands
+
+~~~text
+ChatGPT:
+"Cursor에 넘겨줘"
+
+Cursor:
+/resume
+
+ChatGPT:
+"Cursor 끝났어. 계속"
+
+New ChatGPT conversation:
+"DRLink 계속"
+~~~
+
+The hidden complexity stays in GitHub instead of being copied by the user.
+
+## Why ChatGPT first
+
+The design intentionally spends more time in cheap, interactive planning before starting an implementation agent.
+
+In this workflow, ChatGPT is used for:
+
+- brainstorming and product decisions
+- architecture and design
+- specification and documentation
+- test strategy
+- review and debugging hypotheses
+- deciding the smallest next implementation action
+
+Cursor is then given a bounded task with current repository context.
+
+This separation is partly technical and partly economic: open-ended exploration inside a coding agent can consume a large amount of context before the implementation target is stable.
+
+## Validation rhythm
+
+~~~text
+ordinary change
+  -> affected tests
+  -> cheap deterministic checks
+  -> PR / merge
+
+release candidate
+  -> fast preflight
+  -> full deterministic qualification
+  -> lifecycle/platform
+  -> performance/resilience
+  -> operational E2E
+  -> exact-HEAD release evidence
+~~~
+
+A known deterministic blocker stops expensive downstream validation until it is fixed.
