@@ -50,8 +50,8 @@ Work Packet은 일기가 아니라 current-state record입니다.
 PACKET_VERSION=1
 TARGET_REPO=owner/repository
 WORKSTREAM=stable-slug
-STATUS=ACTIVE
-BRANCH=branch-name
+STATUS=ACTIVE|PAUSED|BLOCKED|COMPLETE
+BRANCH=branch-name|N/A
 LAST_VERIFIED_HEAD=sha
 
 Goal
@@ -62,6 +62,19 @@ Canonical References
 Latest Evidence
 Blockers
 ~~~
+
+## Work Packet Lifecycle
+
+~~~text
+ACTIVE   -> Open Issue
+PAUSED   -> Open Issue
+BLOCKED  -> Open Issue
+COMPLETE -> Close Issue
+~~~
+
+새로운 독립 workstream일 때만 새 Issue를 만듭니다. 대화창이 새로 열렸다는 이유로 Work Packet을 새로 만들지 않습니다.
+
+여러 프로젝트의 handoff를 한 중앙 repository에 섞어두지 않습니다. 각 product repository가 자신의 Work Packet namespace입니다.
 
 ## Fail-closed Resume
 
@@ -85,7 +98,7 @@ GitHub Issue를 갱신하면 source HEAD를 바꾸지 않고도 current coordina
 
 ## ChatGPT 대화 Handoff
 
-대화창이 길어져도 별도 Handoff Issue를 만들지 않습니다.
+대화창이 길어져도 별도 Handoff Issue나 giant continuation prompt를 만들지 않습니다.
 
 현재 Work Packet만 최신화하고 새 대화에서 다음처럼 시작하면 됩니다.
 
