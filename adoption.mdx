@@ -1,0 +1,96 @@
+---
+title: "Adoption Guide"
+description: "A minimal path for adding the Engineering System to a new or existing repository."
+---
+
+# Adoption guide
+
+Adoption should reduce context, not add another layer of duplicate rules.
+
+## New repository
+
+Start with the canonical templates from:
+
+[github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
+
+The normal repository entrypoints are:
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
+.engineering/tests.yaml
+.engineering/release.yaml
+.cursor/rules/engineering-system.mdc
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+~~~
+
+Pin the Engineering System version used by the repository.
+
+## Existing repository with many AI rules
+
+Do not blindly add another always-on rule.
+
+First classify the existing rules:
+
+~~~text
+KEEP
+KEEP_STRICTER
+DUPLICATE
+CONFLICT
+OBSOLETE
+UNKNOWN
+~~~
+
+Keep product-specific invariants and stricter valid rules.
+
+Move generic duplicated engineering guidance back toward the canonical Engineering System so Cursor context becomes smaller rather than larger.
+
+## Install the Cursor user /resume command
+
+On the machine running Cursor:
+
+~~~bash
+mkdir -p ~/.cursor/commands
+curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/main/.cursor/commands/resume.md \
+  -o ~/.cursor/commands/resume.md
+~~~
+
+Then /resume can be used in any adopted repository.
+
+## Add ChatGPT routing, not the whole standard
+
+ChatGPT Custom Instructions should stay short.
+
+They only need to say:
+
+- use the canonical Engineering System
+- resolve the repository first
+- use Work Packets for Cursor handoff and chat continuity
+- read only minimal relevant context
+- never claim unexecuted or different-HEAD evidence as PASS
+
+Do not copy every Engineering System standard into Custom Instructions.
+
+## Optional: connect Desktop Commander
+
+For direct development-host audit, connect Desktop Commander Remote MCP and restrict it to the intended development paths.
+
+This is optional. GitHub remains the durable baseline even when remote audit is available.
+
+## Adoption success test
+
+A simple smoke test is enough:
+
+~~~text
+ChatGPT:
+"Cursor에 넘겨줘"
+
+Cursor:
+/resume
+
+ChatGPT:
+"Cursor 끝났어. 계속"
+~~~
+
+If the same workstream resumes without copying a large prompt, the continuity path is working.

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Data Relay Engineering System",
+  "description": "A practical Solo AI Engineering System built around ChatGPT, Cursor, GitHub, remote code audit, and repository-scoped session continuity.",
+  "colors": {
+    "primary": "#2563EB"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Canonical Standard",
+        "href": "https://github.com/datarelay-labs/engineering-system"
+      },
+      {
+        "type": "github",
+        "href": "https://github.com/datarelay-labs/engineering-system-docs"
+      }
+    ]
+  },
+  "search": {
+    "prompt": "Search the Engineering System..."
+  },
+  "seo": {
+    "indexing": "navigable",
+    "metatags": {
+      "canonical": "https://engineering.datarelay.run"
+    }
+  },
+  "appearance": {
+    "default": "system",
+    "strict": false
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Start Here",
+        "pages": ["index", "architecture", "workflow"]
+      },
+      {
+        "group": "System",
+        "pages": ["tools", "knowledge", "session-continuity", "remote-audit"]
+      },
+      {
+        "group": "Adoption & Lessons",
+        "pages": ["adoption", "evolution"]
+      }
+    ]
+  }
+}

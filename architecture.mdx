@@ -1,0 +1,64 @@
+---
+title: "Architecture"
+description: "How ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tests, and release evidence fit together."
+---
+
+# System architecture
+
+The system deliberately gives each tool one primary job instead of asking one AI tool to do everything.
+
+## Responsibility map
+
+| Component | Primary responsibility | Not the source of truth for |
+|---|---|---|
+| ChatGPT | Requirements, architecture, design, documentation, review, next-action planning | Current Git state |
+| Cursor | Repository implementation and local validation | Long-term product decisions |
+| GitHub | Code, history, PRs, CI, specs, Work Packets, release evidence | Human-friendly narrative |
+| Desktop Commander Remote MCP | Direct audit of authorized development hosts | Durable project history |
+| Athena | Searchable decision/history layer | Runtime truth or release evidence |
+| Engineering System | Common engineering and AI workflow standard | Product-specific behavior |
+| Engineering System Docs | Human-readable handbook | Normative engineering rules |
+
+## Authority order
+
+When information conflicts, use this order:
+
+1. actual code, config, schema, runtime, and immutable Git state
+2. canonical product/specification artifacts
+3. repository engineering metadata
+4. executed deterministic test and CI evidence
+5. AI Work Packet current coordination state
+6. Athena / derived documentation
+7. conversation history
+
+This order prevents a stale chat, roadmap, or wiki page from silently overriding the current product.
+
+## Two repositories, two purposes
+
+**datarelay-labs/engineering-system**
+
+Canonical and machine-consumed. It contains standards, adapters, templates, validation logic, /resume, and session-continuity rules.
+
+**datarelay-labs/engineering-system-docs**
+
+Human-readable. It explains why the system exists, how the pieces fit together, how to adopt it, and what problems were solved.
+
+<Warning>
+  If this site disagrees with the canonical Engineering System repository, the canonical repository wins.
+</Warning>
+
+## Project-local adoption
+
+An adopted product repository typically carries only the small entrypoint needed by agents and CI:
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
+.engineering/tests.yaml
+.engineering/release.yaml
+.cursor/rules/engineering-system.mdc
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+~~~
+
+The repository should not copy every Engineering System standard into itself. It should pin and reference the canonical system.

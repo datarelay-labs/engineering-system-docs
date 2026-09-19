@@ -1,0 +1,100 @@
+---
+title: "Session Continuity"
+description: "How GitHub AI Work Packets and Cursor /resume replace giant handoffs and repeated prompt copy/paste."
+---
+
+# Session continuity
+
+The system treats chat history as temporary workspace.
+
+Active engineering state is kept in a small GitHub Issue called an **AI Work Packet**.
+
+## Why this was needed
+
+Before Work Packets, the workflow looked like this:
+
+~~~text
+ChatGPT conversation
+  -> giant Cursor prompt
+  -> Cursor result copied back
+  -> giant ChatGPT handoff
+  -> new conversation
+  -> repeat
+~~~
+
+This consumed tokens and required manual copy/paste by the user.
+
+Now:
+
+~~~text
+ChatGPT
+  -> GitHub Work Packet
+  -> Cursor /resume
+  -> same Work Packet updated
+  -> ChatGPT continues from GitHub
+~~~
+
+## One packet per workstream
+
+A repository can have several independent active workstreams.
+
+Examples:
+
+~~~text
+[AI Work] v2.4.0 Release Closure
+[AI Work] Website Refresh
+[AI Work] Connector Expansion
+~~~
+
+A Work Packet is not a project diary. It is a current-state record.
+
+## Required identity
+
+~~~text
+PACKET_VERSION=1
+TARGET_REPO=owner/repository
+WORKSTREAM=stable-slug
+STATUS=ACTIVE
+BRANCH=branch-name
+LAST_VERIFIED_HEAD=sha
+~~~
+
+Its main sections are:
+
+~~~text
+Goal
+Current State
+Next Action
+Constraints
+Canonical References
+Latest Evidence
+Blockers
+~~~
+
+## Fail-closed resume
+
+Cursor and ChatGPT do not guess when the current workstream is ambiguous.
+
+The resolver first determines the repository, then requires the matching active packet. If there are zero or multiple valid matches, it stops and asks for the minimum clarification needed.
+
+LAST_VERIFIED_HEAD is advisory only. Current Git state must always be rechecked.
+
+## Why GitHub Issue instead of HANDOFF.md
+
+Updating a committed handoff file changes the product source HEAD.
+
+For release candidates that require exact-HEAD qualification, that can invalidate evidence.
+
+Updating an Issue preserves the qualified source revision.
+
+## Conversation handoff
+
+When a chat becomes too long, no special Handoff Issue is created.
+
+The active Work Packet is updated, and the next conversation can begin with a short request such as:
+
+~~~text
+DRLink 계속
+~~~
+
+The new conversation reloads the active Work Packet and current GitHub state instead of replaying the old chat.
