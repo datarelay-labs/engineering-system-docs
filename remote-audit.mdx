@@ -1,0 +1,75 @@
+---
+title: "Remote Code Audit"
+description: "Using Desktop Commander Remote MCP so ChatGPT can inspect an authorized development Linux server directly."
+---
+
+# Remote code audit
+
+GitHub review is often enough, but not always.
+
+A development branch can differ from the remote branch, local artifacts may be dirty, tests may still be running, or runtime state may matter.
+
+Instead of asking the user to repeatedly copy terminal output, ChatGPT can use [Desktop Commander Remote MCP](https://mcp.desktopcommander.app) to inspect an authorized development host directly.
+
+## Typical audit loop
+
+~~~mermaid
+flowchart LR
+    C[ChatGPT] --> D[Desktop Commander]
+    D --> H[Development Linux Host]
+    H --> R[Repository / Worktree]
+    H --> P[Processes / Tests]
+    C --> G[GitHub]
+    G --> C
+    R --> C
+    P --> C
+~~~
+
+This allows a review to compare:
+
+- local branch and HEAD
+- dirty worktree state
+- actual changed files
+- running test processes
+- test output
+- generated artifacts
+- GitHub remote branch, PR, and CI state
+
+## Why this matters
+
+Without direct host access, ChatGPT may be forced to reason from:
+
+- pasted shell output
+- only the GitHub remote state
+- a coding agent's summary
+
+Those are useful, but they can miss local reality.
+
+Direct inspection is especially useful before a release, after a long Cursor run, or when local and remote HEADs differ.
+
+## Security boundary
+
+Remote access should be constrained deliberately.
+
+Useful controls include:
+
+- narrow allowed directories
+- blocked commands
+- development hosts rather than production by default
+- read-first inspection for audits
+- explicit approval before destructive operations
+- no secrets copied into Work Packets or documentation
+
+Desktop Commander improves observability; it does not replace GitHub as the durable source of truth.
+
+## Recommended role
+
+Use ChatGPT + Desktop Commander as an **independent verifier** after Cursor implementation.
+
+That preserves a useful separation:
+
+~~~text
+Cursor -> implementation
+ChatGPT + Desktop Commander -> independent audit
+GitHub/tests/CI -> durable evidence
+~~~
