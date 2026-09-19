@@ -11,28 +11,25 @@ Active engineering state is kept in a small GitHub Issue called an **AI Work Pac
 
 ## Why this was needed
 
-Before Work Packets, the workflow looked like this:
+~~~mermaid
+flowchart LR
+    subgraph BEFORE["Before"]
+      A1["Long ChatGPT conversation"] --> A2["Giant Cursor prompt"]
+      A2 --> A3["Copy Cursor result"]
+      A3 --> A4["Giant ChatGPT handoff"]
+      A4 --> A5["New conversation"]
+    end
 
-~~~text
-ChatGPT conversation
-  -> giant Cursor prompt
-  -> Cursor result copied back
-  -> giant ChatGPT handoff
-  -> new conversation
-  -> repeat
+    subgraph AFTER["Now"]
+      B1["ChatGPT"] --> B2["GitHub AI Work Packet"]
+      B2 --> B3["Cursor /resume"]
+      B3 --> B2
+      B2 --> B4["ChatGPT continues"]
+    end
 ~~~
 
-This consumed tokens and required manual copy/paste by the user.
+The earlier loop consumed tokens and required repeated manual copy/paste. The current loop keeps resumable state in the repository-scoped Work Packet.
 
-Now:
-
-~~~text
-ChatGPT
-  -> GitHub Work Packet
-  -> Cursor /resume
-  -> same Work Packet updated
-  -> ChatGPT continues from GitHub
-~~~
 
 ## One packet per workstream
 
@@ -72,6 +69,16 @@ Blockers
 ~~~
 
 ## Fail-closed resume
+
+~~~mermaid
+flowchart TD
+    A["Resolve Repository"] --> B["Resolve Branch"]
+    B --> C["Search open [AI Work] Issues"]
+    C --> D{"Exactly one ACTIVE match?"}
+    D -- "Yes" --> E["Re-verify HEAD / Dirty / PR / CI"]
+    E --> F["Execute Next Action"]
+    D -- "Zero or multiple" --> G["STOP / Ask minimum clarification"]
+~~~
 
 Cursor and ChatGPT do not guess when the current workstream is ambiguous.
 

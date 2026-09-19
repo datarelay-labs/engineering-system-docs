@@ -1,0 +1,96 @@
+---
+title: "Session Continuity"
+description: "GitHub AI Work Packet과 Cursor /resume으로 긴 Handoff와 반복적인 prompt 복붙을 없애는 방법"
+---
+
+# Session Continuity
+
+대화 history는 임시 작업 공간으로 취급합니다.
+
+현재 workstream의 durable state는 같은 repository의 GitHub Issue인 **AI Work Packet**에 둡니다.
+
+## Before → After
+
+~~~mermaid
+flowchart LR
+    subgraph BEFORE["이전"]
+      A1["ChatGPT 긴 대화"] --> A2["긴 Cursor Prompt"]
+      A2 --> A3["Cursor 결과 복사"]
+      A3 --> A4["긴 Handoff Prompt"]
+      A4 --> A5["새 ChatGPT"]
+    end
+
+    subgraph AFTER["현재"]
+      B1["ChatGPT"] --> B2["GitHub AI Work Packet"]
+      B2 --> B3["Cursor /resume"]
+      B3 --> B2
+      B2 --> B4["ChatGPT 계속"]
+    end
+~~~
+
+이전 방식은 토큰을 쓰고 사용자가 계속 복사·붙여넣기를 해야 했습니다.
+
+현재 방식은 같은 Work Packet을 ChatGPT와 Cursor가 함께 사용합니다.
+
+## Work Packet 단위
+
+한 repository에 하나가 아니라 **workstream 하나당 하나**입니다.
+
+~~~text
+[AI Work] v2.4.0 Release Closure
+[AI Work] Website Refresh
+[AI Work] Connector Expansion
+~~~
+
+Work Packet은 일기가 아니라 current-state record입니다.
+
+## 기본 구조
+
+~~~text
+PACKET_VERSION=1
+TARGET_REPO=owner/repository
+WORKSTREAM=stable-slug
+STATUS=ACTIVE
+BRANCH=branch-name
+LAST_VERIFIED_HEAD=sha
+
+Goal
+Current State
+Next Action
+Constraints
+Canonical References
+Latest Evidence
+Blockers
+~~~
+
+## Fail-closed Resume
+
+~~~mermaid
+flowchart TD
+    A["현재 Repository 확인"] --> B["현재 Branch 확인"]
+    B --> C["Open [AI Work] Issue 검색"]
+    C --> D{"정확히 1개 ACTIVE match?"}
+    D -- "Yes" --> E["실제 HEAD / Dirty / PR / CI 재검증"]
+    E --> F["Next Action 수행"]
+    D -- "0개 또는 2개 이상" --> G["STOP / 최소 확인 요청"]
+~~~
+
+LAST_VERIFIED_HEAD는 참고값일 뿐 현재 truth로 사용하지 않습니다.
+
+## 왜 HANDOFF.md가 아닌가
+
+release candidate가 exact-HEAD qualification을 요구할 때 committed HANDOFF 파일을 수정하면 product HEAD 자체가 바뀝니다.
+
+GitHub Issue를 갱신하면 source HEAD를 바꾸지 않고도 current coordination state를 유지할 수 있습니다.
+
+## ChatGPT 대화 Handoff
+
+대화창이 길어져도 별도 Handoff Issue를 만들지 않습니다.
+
+현재 Work Packet만 최신화하고 새 대화에서 다음처럼 시작하면 됩니다.
+
+~~~text
+DRLink 계속
+~~~
+
+새 ChatGPT는 active Work Packet과 실제 GitHub 상태를 다시 확인한 뒤 Next Action부터 이어갑니다.

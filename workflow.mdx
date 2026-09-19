@@ -7,6 +7,17 @@ description: "The practical ChatGPT → Cursor → verification loop used for da
 
 The default workflow is intentionally simple.
 
+~~~mermaid
+flowchart LR
+    A["ChatGPT<br/>brainstorm & design"] --> B["AI Work Packet<br/>Next Action"]
+    B --> C["Cursor<br/>implementation"]
+    C --> D["Affected Tests"]
+    D --> E["GitHub<br/>Commit · PR · CI"]
+    E --> F["ChatGPT<br/>review result"]
+    F --> A
+    F -. when needed .-> G["Desktop Commander<br/>direct server audit"]
+~~~
+
 <Steps>
   <Step title="Think in ChatGPT">
     Discuss the problem, requirements, architecture, edge cases, UX, documentation, test strategy, and scope before implementation begins.

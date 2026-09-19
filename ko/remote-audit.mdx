@@ -1,0 +1,68 @@
+---
+title: "개발 서버 직접 감사"
+description: "Desktop Commander Remote MCP로 ChatGPT가 승인된 개발 Linux 서버를 직접 확인하는 방법"
+---
+
+# 개발 서버 직접 감사
+
+GitHub만 보면 충분한 경우가 많지만 항상 그렇지는 않습니다.
+
+Local branch가 remote보다 앞서 있을 수 있고, worktree에 dirty artifact가 남아 있을 수 있으며, test process가 아직 실행 중일 수도 있습니다.
+
+이럴 때 사용자가 shell output을 계속 복사하지 않아도 ChatGPT가 [Desktop Commander Remote MCP](https://mcp.desktopcommander.app)를 통해 승인된 개발 서버를 직접 확인할 수 있습니다.
+
+## 감사 구조
+
+~~~mermaid
+flowchart LR
+    C["ChatGPT"] --> D["Desktop Commander"]
+    D --> H["Development Linux Host"]
+    H --> R["Repository / Worktree"]
+    H --> P["Processes / Tests"]
+    H --> A["Generated Artifacts"]
+    G["GitHub"] --> C
+    R --> C
+    P --> C
+    A --> C
+~~~
+
+확인할 수 있는 대표 항목은 다음과 같습니다.
+
+- local branch와 HEAD
+- dirty worktree
+- 실제 changed files
+- 실행 중 test/process
+- test output
+- generated artifact
+- GitHub remote branch, PR, CI와의 차이
+
+## 왜 필요한가
+
+GitHub remote만 보면 local unpushed commit이나 dirty state는 보이지 않을 수 있습니다.
+
+Cursor가 요약한 결과도 유용하지만 실제 server state와 다를 가능성을 완전히 제거하지는 못합니다.
+
+특히 release 직전, 긴 Cursor 작업 직후, local/remote HEAD가 다른 경우에 직접 감사가 유용합니다.
+
+## 보안 경계
+
+Desktop Commander는 편의를 위해 모든 권한을 열어두는 방식으로 사용하지 않습니다.
+
+- allowed directory를 좁게 설정
+- 위험 command 차단
+- 기본은 development host
+- audit는 read-first
+- destructive operation은 명시적 승인 후 수행
+- secret은 Work Packet이나 문서에 저장하지 않음
+
+## 역할 분리
+
+~~~mermaid
+flowchart LR
+    A["Cursor"] --> B["구현"]
+    B --> C["GitHub / Tests / CI"]
+    D["ChatGPT + Desktop Commander"] --> E["독립 감사"]
+    E --> C
+~~~
+
+Cursor는 구현자, ChatGPT + Desktop Commander는 독립 reviewer, GitHub/tests/CI는 durable evidence 역할을 합니다.

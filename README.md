@@ -21,6 +21,6 @@ The canonical repository defines the rules consumed by AI agents, repositories, 
 - `adoption.mdx` — minimal setup for new/existing repositories
 - `evolution.mdx` — problems, trade-offs, and lessons learned
 
-The site is configured for Mintlify through `docs.json`.
+The site is configured for Mintlify through `docs.json` and provides English/Korean navigation with matching system diagrams.
 
 This repository is intentionally derived documentation. If this handbook conflicts with the canonical Engineering System repository, the canonical repository wins.

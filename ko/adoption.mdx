@@ -1,0 +1,93 @@
+---
+title: "도입 가이드"
+description: "새 프로젝트나 기존 Rules가 많은 프로젝트에 Engineering System을 최소한으로 적용하는 방법"
+---
+
+# 도입 가이드
+
+도입의 목표는 rule을 더 쌓는 것이 아니라 **중복 context를 줄이는 것**입니다.
+
+## 새 Repository
+
+Canonical template은 다음 repository에서 가져옵니다.
+
+[github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
+
+일반적인 project entrypoint는 다음과 같습니다.
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
+.engineering/tests.yaml
+.engineering/release.yaml
+.cursor/rules/engineering-system.mdc
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+~~~
+
+Repository가 사용하는 Engineering System version을 pin합니다.
+
+## 기존 Rules가 많은 Repository
+
+새 always-on rule을 그냥 추가하지 않습니다.
+
+먼저 기존 rule을 다음처럼 분류합니다.
+
+~~~text
+KEEP
+KEEP_STRICTER
+DUPLICATE
+CONFLICT
+OBSOLETE
+UNKNOWN
+~~~
+
+제품 고유 architecture, routing, registry, security, persistence invariant는 유지합니다.
+
+일반적인 engineering guidance가 중복되어 있다면 canonical Engineering System으로 수렴시켜 Cursor context를 줄입니다.
+
+## Cursor User /resume 설치
+
+Cursor를 실행하는 Mac에서:
+
+~~~bash
+mkdir -p ~/.cursor/commands
+curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/main/.cursor/commands/resume.md \
+  -o ~/.cursor/commands/resume.md
+~~~
+
+그 다음 repository에서:
+
+~~~text
+/resume
+~~~
+
+을 사용합니다.
+
+## ChatGPT Custom Instructions는 짧게
+
+Custom Instructions에는 전체 표준을 복사하지 않습니다.
+
+다음 routing만 남깁니다.
+
+- canonical Engineering System 사용
+- repository 먼저 식별
+- Cursor handoff와 chat continuity에 Work Packet 사용
+- task-relevant context만 읽기
+- 실행하지 않은 test나 다른 HEAD evidence를 PASS로 사용하지 않기
+
+## 선택 사항: Desktop Commander
+
+ChatGPT가 개발 서버를 직접 감사해야 한다면 Desktop Commander Remote MCP를 연결하고 allowed directory를 필요한 범위로 제한합니다.
+
+## Smoke Test
+
+~~~mermaid
+flowchart LR
+    A["ChatGPT<br/>Cursor에 넘겨줘"] --> B["AI Work Packet"]
+    B --> C["Cursor<br/>/resume"]
+    C --> B
+    B --> D["ChatGPT<br/>Cursor 끝났어. 계속"]
+~~~
+
+긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상 동작하는 것입니다.
