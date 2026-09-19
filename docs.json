@@ -47,6 +47,7 @@
             "group": "Start Here",
             "pages": [
               "index",
+              "quickstart",
               "architecture",
               "workflow"
             ]
@@ -77,6 +78,7 @@
             "group": "시작하기",
             "pages": [
               "ko/index",
+              "ko/quickstart",
               "ko/architecture",
               "ko/workflow"
             ]
