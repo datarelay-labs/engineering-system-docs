@@ -1,0 +1,81 @@
+---
+title: "일상 작업 흐름"
+description: "ChatGPT에서 설계하고 Cursor에서 구현한 뒤 다시 검토하는 실제 작업 흐름"
+---
+
+# 일상 작업 흐름
+
+기본 흐름은 단순합니다.
+
+~~~mermaid
+flowchart LR
+    A["ChatGPT<br/>브레인스토밍·설계"] --> B["AI Work Packet<br/>Next Action"]
+    B --> C["Cursor<br/>구현"]
+    C --> D["Affected Test<br/>빠른 검증"]
+    D --> E["GitHub<br/>Commit·PR·CI"]
+    E --> F["ChatGPT<br/>결과 리뷰"]
+    F --> A
+    F -. 필요 시 .-> G["Desktop Commander<br/>개발 서버 직접 감사"]
+~~~
+
+<Steps>
+  <Step title="ChatGPT에서 먼저 생각한다">
+    문제, 요구사항, 아키텍처, UX, 문서, 테스트 전략과 범위를 구현 전에 충분히 정리합니다.
+  </Step>
+
+  <Step title="AI Work Packet을 만든다">
+    구현이 필요한 시점에 긴 Cursor prompt 대신 repository-scoped [AI Work] Issue의 Current State와 Next Action을 갱신합니다.
+  </Step>
+
+  <Step title="Cursor에서 실행한다">
+    Cursor는 repository, branch, HEAD와 Work Packet을 확인한 뒤 현재 Next Action만 수행합니다.
+  </Step>
+
+  <Step title="가장 싼 검증부터 한다">
+    affected deterministic test부터 실행하고, release boundary가 아니면 불필요한 Full Suite를 피합니다.
+  </Step>
+
+  <Step title="ChatGPT로 돌아온다">
+    사용자는 "Cursor 끝났어. 계속"이라고 말하면 됩니다. ChatGPT는 Work Packet과 실제 GitHub 상태를 다시 확인합니다.
+  </Step>
+</Steps>
+
+## 사용자가 기억할 명령
+
+~~~text
+ChatGPT:
+"Cursor에 넘겨줘"
+
+Cursor:
+/resume
+
+ChatGPT:
+"Cursor 끝났어. 계속"
+
+새 ChatGPT:
+"DRLink 계속"
+~~~
+
+## 왜 ChatGPT를 먼저 쓰는가
+
+아이디어가 아직 흔들리는 단계에서 coding agent를 오래 돌리면 구현 전에 context와 비용이 커질 수 있습니다.
+
+그래서 요구사항·설계·문서·테스트 전략은 가벼운 대화로 먼저 수렴시키고, 실제 repository 수정이 필요한 시점에만 Cursor에게 bounded task를 넘깁니다.
+
+## 검증 흐름
+
+~~~mermaid
+flowchart TD
+    C["일반 변경"] --> A["Affected Tests"]
+    A --> P["Cheap PR Guardrails"]
+    P --> M["Merge"]
+
+    R["Release Candidate"] --> F["Fast Preflight"]
+    F --> Q["Full Deterministic Qualification"]
+    Q --> L["Lifecycle / Platform"]
+    L --> E["Performance / Resilience"]
+    E --> O["Operational E2E"]
+    O --> H["Exact-HEAD Release"]
+~~~
+
+Known deterministic blocker가 있으면 expensive downstream qualification을 시작하지 않습니다.
