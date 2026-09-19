@@ -1,0 +1,70 @@
+---
+title: "Engineering System"
+description: "A lightweight Solo AI Engineering System for turning conversation into reliable software without carrying giant prompts between tools."
+---
+
+# Data Relay Engineering System
+
+**ChatGPT for thinking. Cursor for implementation. GitHub for truth. Direct server access for verification.**
+
+This system grew from a simple problem: AI-assisted development was productive, but the surrounding workflow became expensive and hard to remember.
+
+Large handoff prompts, stale roadmaps, repeated Cursor instructions, missing design history, full-suite tests at the wrong time, and manual copy/paste between tools all created friction.
+
+The current system separates each responsibility and keeps only the minimum context needed for the next action.
+
+<CardGroup cols={2}>
+  <Card title="Canonical Engineering Standard" icon="book" href="https://github.com/datarelay-labs/engineering-system">
+    Machine-consumed standards, templates, adapters, validation rules, and release governance.
+  </Card>
+
+  <Card title="Daily Workflow" icon="arrows-rotate" href="/workflow">
+    Brainstorm in ChatGPT, hand implementation to Cursor, verify results, and continue without giant prompts.
+  </Card>
+
+  <Card title="Session Continuity" icon="link" href="/session-continuity">
+    Repository-scoped GitHub Work Packets replace manual ChatGPT and Cursor handoffs.
+  </Card>
+
+  <Card title="Remote Code Audit" icon="terminal" href="/remote-audit">
+    ChatGPT can inspect an authorized development server directly through Desktop Commander Remote MCP.
+  </Card>
+</CardGroup>
+
+## The core idea
+
+~~~mermaid
+flowchart LR
+    U[Owner] <--> C[ChatGPT]
+    C --> W[GitHub AI Work Packet]
+    W --> R[Cursor /resume]
+    R --> G[Code / Tests / Git]
+    G --> CI[CI & Release Evidence]
+    CI --> C
+    C <--> D[Desktop Commander - Development Server]
+    G --> A[Athena - Derived Knowledge]
+~~~
+
+<Note>
+  GitHub remains the source of truth. Athena, this handbook, and AI Work Packets are supporting layers with different roles.
+</Note>
+
+## Why this split works
+
+ChatGPT is used heavily before implementation: requirements, brainstorming, architecture, design, documentation, review strategy, and the exact next action.
+
+Cursor is used when code must actually change. This keeps exploratory conversation separate from implementation work and makes the implementation step more bounded and economical.
+
+GitHub holds the durable state: code, tests, specs, commits, PRs, CI evidence, release evidence, and repository-scoped AI Work Packets.
+
+Desktop Commander closes another gap: when GitHub alone is not enough, ChatGPT can inspect the authorized development Linux host directly instead of reasoning only from pasted terminal output.
+
+## What this system is not
+
+It is not an enterprise process framework, a central project-management database, or a replacement for Git.
+
+It is a small set of rules that makes a solo AI-assisted workflow repeatable, auditable, and cheap enough to use every day.
+
+<Tip>
+  If you remember only one rule: **conversation is temporary; durable engineering state belongs outside the conversation.**
+</Tip>
