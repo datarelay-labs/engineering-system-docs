@@ -86,3 +86,15 @@ release candidate
 ~~~
 
 A known deterministic blocker stops expensive downstream validation until it is fixed.
+
+## Desk and mobile operation
+
+The same engineering loop is used in two physical modes:
+
+- At a desk, implementation normally runs through the Cursor desktop application on the Mac.
+- While moving, the development Linux server becomes the stable execution environment. Cursor CLI can continue inside `tmux`, and the user can reconnect from a phone over SSH.
+- Cursor sends a Telegram completion notification so the user does not need to watch a long-running terminal session.
+- After notification, the result can be brought back to ChatGPT for review and the next decision.
+- When copied output is not enough, ChatGPT can inspect the authorized development server directly through Desktop Commander.
+
+See [Mobile & Remote Workflow](/mobile-remote-workflow) for the full operating pattern.

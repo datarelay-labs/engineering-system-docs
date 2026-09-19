@@ -38,15 +38,28 @@
     "groups": [
       {
         "group": "Start Here",
-        "pages": ["index", "architecture", "workflow"]
+        "pages": [
+          "index",
+          "architecture",
+          "workflow"
+        ]
       },
       {
         "group": "System",
-        "pages": ["tools", "knowledge", "session-continuity", "remote-audit"]
+        "pages": [
+          "tools",
+          "knowledge",
+          "session-continuity",
+          "remote-audit",
+          "mobile-remote-workflow"
+        ]
       },
       {
         "group": "Adoption & Lessons",
-        "pages": ["adoption", "evolution"]
+        "pages": [
+          "adoption",
+          "evolution"
+        ]
       }
     ]
   }

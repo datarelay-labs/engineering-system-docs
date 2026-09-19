@@ -29,6 +29,27 @@ The key command is:
 
 The goal is to avoid repeatedly pasting long implementation prompts.
 
+Cursor is used in two forms:
+
+- **Cursor desktop on macOS** for long desk sessions.
+- **Cursor CLI on the development Linux server** for mobile or remote sessions, typically kept alive inside `tmux`.
+
+The implementation role is the same in both cases: work against the repository, validate the change, and leave durable state outside the terminal session.
+
+## tmux + phone SSH
+
+For mobile work, `tmux` keeps the coding session alive when SSH disconnects or the phone changes networks.
+
+A phone SSH client is then only a view/control surface. The development Linux server remains the persistent execution environment.
+
+## Telegram
+
+Cursor is configured to send a Telegram message when a task completes.
+
+Telegram is used only as a **completion signal** so the user can leave long-running implementation or test work unattended and return when action is required.
+
+It is not used as engineering state, evidence, or a source of truth.
+
 ## GitHub
 
 The durable engineering backbone.
