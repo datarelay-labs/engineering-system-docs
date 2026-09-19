@@ -9,6 +9,10 @@
   "navbar": {
     "links": [
       {
+        "label": "한국어",
+        "href": "/ko"
+      },
+      {
         "label": "Canonical Standard",
         "href": "https://github.com/datarelay-labs/engineering-system"
       },
@@ -35,30 +39,65 @@
     "timestamp": true
   },
   "navigation": {
-    "groups": [
+    "languages": [
       {
-        "group": "Start Here",
-        "pages": [
-          "index",
-          "architecture",
-          "workflow"
+        "language": "en",
+        "groups": [
+          {
+            "group": "Start Here",
+            "pages": [
+              "index",
+              "architecture",
+              "workflow"
+            ]
+          },
+          {
+            "group": "System",
+            "pages": [
+              "tools",
+              "knowledge",
+              "session-continuity",
+              "remote-audit",
+              "mobile-remote-workflow"
+            ]
+          },
+          {
+            "group": "Adoption & Lessons",
+            "pages": [
+              "adoption",
+              "evolution"
+            ]
+          }
         ]
       },
       {
-        "group": "System",
-        "pages": [
-          "tools",
-          "knowledge",
-          "session-continuity",
-          "remote-audit",
-          "mobile-remote-workflow"
-        ]
-      },
-      {
-        "group": "Adoption & Lessons",
-        "pages": [
-          "adoption",
-          "evolution"
+        "language": "ko",
+        "groups": [
+          {
+            "group": "시작하기",
+            "pages": [
+              "ko/index",
+              "ko/architecture",
+              "ko/workflow"
+            ]
+          },
+          {
+            "group": "시스템",
+            "pages": [
+              "ko/tools",
+              "ko/knowledge",
+              "ko/session-continuity",
+              "ko/remote-audit",
+              "ko/mobile-remote-workflow"
+            ]
+          },
+          {
+            "group": "도입 및 개선 과정",
+            "pages": [
+              "ko/adoption",
+              "ko/evolution"
+            ]
+          }
         ]
       }
     ]
