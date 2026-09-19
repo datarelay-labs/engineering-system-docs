@@ -1,0 +1,114 @@
+---
+title: "Mobile & Remote Workflow"
+description: "How the same ChatGPT + Cursor workflow continues when working away from the Mac, using tmux, phone SSH, and Telegram completion notifications."
+---
+
+# Mobile and remote workflow
+
+The engineering workflow is designed to survive changes in location and device.
+
+At a desk, the primary implementation environment is the Cursor desktop application on macOS.
+
+When moving between locations, implementation can continue on the development Linux server through Cursor CLI inside a persistent tmux session. A phone SSH client can reconnect to the same server and inspect the running session without requiring the MacBook to stay open.
+
+## Two operating modes
+
+| Situation | Primary interface | Development environment |
+|---|---|---|
+| Long desk session | Cursor desktop on Mac | Remote or local project worktree |
+| Mobile / moving | Phone SSH + tmux | Cursor CLI on development Linux server |
+
+The development server becomes the stable execution environment while the user interface can change.
+
+## Mobile loop
+
+~~~text
+ChatGPT
+  -> implementation task is defined
+
+Development Linux server
+  -> Cursor CLI runs inside tmux
+  -> task continues even when the SSH client disconnects
+
+Telegram
+  -> Cursor sends "work finished" notification
+
+Phone
+  -> user sees notification
+  -> SSH reconnects when needed
+  -> result can be copied to ChatGPT
+
+ChatGPT
+  -> reviews result
+  -> reasons about next action
+  -> can independently audit the server through Desktop Commander
+~~~
+
+## Why tmux matters
+
+Mobile SSH sessions are temporary. The engineering task should not be.
+
+tmux keeps the implementation process alive across:
+
+- network changes
+- phone lock/unlock
+- SSH disconnects
+- movement between Wi-Fi and mobile networks
+- switching between laptop and phone
+
+This separates the lifetime of the coding task from the lifetime of the terminal connection.
+
+## Telegram as the completion signal
+
+Long-running implementation and test work should not require watching a terminal.
+
+Cursor is configured to send a Telegram message when its task finishes.
+
+That changes the workflow from:
+
+~~~text
+watch terminal
+  -> wait
+  -> check repeatedly
+~~~
+
+to:
+
+~~~text
+start task
+  -> leave terminal
+  -> receive Telegram completion message
+  -> return only when action is required
+~~~
+
+Telegram is a notification channel only. It is not a source of truth and should not carry secrets or canonical engineering state.
+
+## Current manual seam
+
+The remaining mobile workflow still contains a small manual bridge:
+
+~~~text
+Cursor CLI finishes
+  -> Telegram notifies user
+  -> user copies the result
+  -> result is pasted into ChatGPT
+  -> ChatGPT reviews and plans the next action
+~~~
+
+The broader Engineering System is intentionally moving state away from these copied summaries and toward repository-scoped durable state such as GitHub Work Packets.
+
+Even while some mobile steps remain manual, the authority order does not change: repository state, tests, CI, and actual runtime evidence remain more important than copied terminal summaries.
+
+## Independent verification
+
+When a result needs deeper review, ChatGPT does not need to rely only on the pasted Cursor summary.
+
+With Desktop Commander Remote MCP connected to the authorized development server, ChatGPT can inspect:
+
+- repository HEAD and branch
+- dirty worktree state
+- changed files
+- running processes
+- test output and artifacts
+
+This makes the mobile workflow practical without turning the phone into the primary debugging interface.
