@@ -1,0 +1,80 @@
+---
+title: "Tool Stack"
+description: "What each tool is used for and why the workflow combines them instead of relying on one agent."
+---
+
+# Tool stack
+
+The system is built around a small number of tools with deliberately different roles.
+
+## ChatGPT
+
+Primary planning and review environment.
+
+Use it for requirements, architecture, design, documentation, test planning, code review, release reasoning, and deciding what Cursor should do next.
+
+The normal mode is conversational Chat. Long-running Work mode is reserved for cases where it is explicitly useful rather than being the default for every engineering discussion.
+
+## Cursor
+
+Primary implementation agent.
+
+Cursor receives repository context, edits code, runs affected tests, and updates the active Work Packet.
+
+The key command is:
+
+~~~text
+/resume
+~~~
+
+The goal is to avoid repeatedly pasting long implementation prompts.
+
+## GitHub
+
+The durable engineering backbone.
+
+GitHub stores:
+
+- code and Git history
+- product specifications and ADRs
+- tests and regression coverage
+- pull requests and review
+- CI evidence
+- exact-HEAD release evidence
+- repository-scoped AI Work Packets
+
+This is where the workflow eventually returned after experiments with more document-centric project management.
+
+## Desktop Commander Remote MCP
+
+[Desktop Commander Remote MCP](https://mcp.desktopcommander.app) gives ChatGPT access to an authorized remote machine through controlled filesystem and terminal operations.
+
+In this workflow it is used mainly for development-server audit:
+
+~~~text
+ChatGPT
+  -> Desktop Commander
+  -> development Linux host
+  -> inspect repo / files / processes / tests
+  -> compare runtime state with GitHub and Cursor claims
+~~~
+
+This is valuable when a GitHub-only review cannot prove what is actually present or running on the development host.
+
+Access should be constrained to authorized directories and commands. Read-first inspection is preferred for audit work.
+
+## Athena
+
+Athena is the planned searchable knowledge layer for decisions, rationale, and cross-project history.
+
+It is intentionally **derived knowledge**, not the canonical source of truth.
+
+GitHub still wins for current code, specifications, tests, and release evidence.
+
+## Why not one tool for everything?
+
+Earlier workflows tried to let one coding agent handle brainstorming, implementation, debugging, and all context at once.
+
+That was convenient, but open-ended conversations could consume a large amount of tokens before the implementation target was stable. When the prompt was not tightly bounded, cost could rise while output quality still varied.
+
+The current split keeps high-level thinking lightweight and uses the implementation agent only after the work is well defined.
