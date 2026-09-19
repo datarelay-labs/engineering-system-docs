@@ -1,0 +1,115 @@
+---
+title: "빠른 시작"
+description: "일반 Repository에 ChatGPT + Cursor + GitHub Engineering System을 최소 구성으로 적용하는 가장 짧은 방법"
+---
+
+# 빠른 시작
+
+처음부터 모든 선택 도구를 설치할 필요는 없습니다.
+
+먼저 durable state가 생기는 가장 작은 loop부터 구성합니다.
+
+~~~mermaid
+flowchart LR
+    A["ChatGPT<br/>설계"] --> B["GitHub AI Work Packet"]
+    B --> C["Cursor<br/>구현"]
+    C --> D["Affected Tests"]
+    D --> E["GitHub<br/>Commit / PR / CI"]
+    E --> A
+~~~
+
+## 1. Repository 기본 Entry Point 추가
+
+기본 Engineering System adoption에 필요한 것은 다음입니다.
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
+.engineering/tests.yaml
+.engineering/release.yaml
+~~~
+
+Canonical template은 다음 repository에서 가져옵니다.
+
+[github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
+
+Repository가 사용하는 Engineering System version을 pin해서 미래 버전을 암묵적으로 따라가지 않도록 합니다.
+
+## 2. Session Continuity를 사용할 때만 추가
+
+ChatGPT ↔ Cursor resume workflow를 사용한다면 다음을 추가합니다.
+
+~~~text
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+~~~
+
+필요하면 repository Cursor rule도 canonical Engineering System을 참조하도록 둡니다.
+
+## 3. ChatGPT Custom Instructions는 짧게
+
+Custom Instructions에 Engineering System 전체를 복사하지 않습니다.
+
+Global instruction은 routing만 담당하면 됩니다.
+
+- target repository 먼저 식별
+- canonical Engineering System 사용
+- 현재 작업에 필요한 context만 로드
+- handoff/resume은 repository Work Packet 사용
+- 실행 전에 실제 Git/GitHub 상태 재검증
+- 실행하지 않았거나 다른 HEAD의 evidence를 PASS로 사용하지 않기
+
+## 4. 첫 Workflow 실행
+
+~~~text
+ChatGPT:
+"Cursor에 넘겨줘"
+
+Cursor:
+/resume
+
+ChatGPT:
+"Cursor 끝났어. 계속"
+~~~
+
+긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상입니다.
+
+## 5. 실제 문제가 생길 때 선택 도구 추가
+
+<CardGroup cols={2}>
+  <Card title="Desktop Commander" icon="terminal" href="/ko/remote-audit">
+    GitHub만으로 local runtime/worktree 상태를 증명하기 어려울 때 개발 서버 직접 감사를 추가합니다.
+  </Card>
+
+  <Card title="Athena" icon="book" href="/ko/knowledge">
+    여러 프로젝트에서 결정 이유와 히스토리를 검색해야 할 때 knowledge layer를 추가합니다.
+  </Card>
+
+  <Card title="tmux + 휴대폰 SSH" icon="mobile" href="/ko/mobile-remote-workflow">
+    이동 중에도 작업을 계속해야 할 때 persistent remote execution path를 추가합니다.
+  </Card>
+
+  <Card title="Telegram" icon="bell">
+    긴 구현이나 테스트를 지켜보지 않고 완료 시점만 알기 위해 알림을 추가합니다.
+  </Card>
+</CardGroup>
+
+## 구현 전에 확인할 것
+
+Owner와 AI는 최소한 다음을 알아야 합니다.
+
+~~~text
+Change Type
+Affected Domain
+Public Contract
+Persisted State
+Security Boundary
+Operational Impact
+Required Tests
+~~~
+
+그 다음 가장 작은 올바른 변경을 하고, 오류를 가장 빨리 증명할 수 있는 deterministic check부터 실행합니다.
+
+<Note>
+  Product scope, 최종 의사결정, release 승인, human UX 판단은 Owner에게 남습니다. AI는 engineering process를 지원하며 scope를 임의로 넓히지 않습니다.
+</Note>
