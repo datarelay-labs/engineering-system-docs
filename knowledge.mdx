@@ -39,6 +39,41 @@ It can preserve rationale, decisions, cross-project explanations, and historical
 
 It helps humans remember how the system works but does not override the canonical engineering repository.
 
+## What belongs where
+
+| Information | Durable home |
+|---|---|
+| Current runtime behavior | Code / config / schema |
+| Intended product behavior | Product Master / canonical spec |
+| Expensive-to-reverse architecture or security decision | ADR |
+| Executable behavior proof | Tests / CI |
+| Current active workstream state | AI Work Packet |
+| Operational procedure | Runbook |
+| Incident learning | RCA + regression/runbook/spec update |
+| Searchable rationale and cross-project history | Athena |
+| Human explanation of this system | This handbook |
+| Brainstorming before acceptance | Conversation only until promoted |
+
+This prevents the same rule from being copied into several competing sources of truth.
+
+## Field finding → durable knowledge
+
+~~~mermaid
+flowchart LR
+    A["Manual / Production Finding"] --> B{"What did we learn?"}
+    B --> C["Regression Test"]
+    B --> D["Runbook / RCA"]
+    B --> E["ADR"]
+    B --> F["Product Spec Clarification"]
+    C --> G["GitHub"]
+    D --> G
+    E --> G
+    F --> G
+    G --> H["Athena can index/explain it"]
+~~~
+
+A meaningful finding should leave behind a durable invariant, procedure, decision, or requirement—not only a chat summary.
+
 ## Why minimal context matters
 
 The goal is not to make AI read everything.
