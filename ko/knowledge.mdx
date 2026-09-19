@@ -21,11 +21,13 @@ description: "왜 Project Charter, WBS, Roadmap만으로 부족했고 GitHub 중
 
 ~~~mermaid
 flowchart TB
-    G["GitHub<br/>Code · Spec · Test · ADR · CI"] --> T["Current Truth"]
-    W["AI Work Packet<br/>현재 작업 상태"] --> T
-    A["Athena<br/>결정·히스토리 검색"] --> G
-    H["Engineering Handbook<br/>사람이 읽는 설명"] --> G
-    C["Conversation<br/>임시 작업 공간"] -. 필요한 내용만 승격 .-> G
+    G["GitHub<br/>Code · Spec · Test · ADR · CI"] --> T["Normative Engineering Truth"]
+    W["AI Work Packet"] --> C["Current Coordination State"]
+    A["Athena"] --> K["Derived Searchable Knowledge"]
+    H["Engineering Handbook"] --> E["Human Explanation"]
+    A -. canonical reference .-> G
+    H -. canonical reference .-> G
+    V["Conversation"] -. 확정된 지식만 승격 .-> G
 ~~~
 
 **GitHub는 normative source**
