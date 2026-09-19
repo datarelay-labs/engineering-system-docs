@@ -69,6 +69,16 @@ Once source-of-truth and validation were clearer, the next large cost became con
 
 Engineering System 1.3.x introduced repository-scoped AI Work Packets and the Cursor /resume command to remove this repeated manual transfer.
 
+## Resume had to work before full adoption
+
+A real release branch exposed an important edge case: the active product workstream could have a valid Work Packet while Engineering System adoption was intentionally isolated in a different PR.
+
+Treating missing local `AGENTS.md` or `.engineering/*` files as a hard resume failure would have mixed governance adoption into release work.
+
+The resume flow was therefore hardened so an adoption-pending repository can record `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`, continue under the canonical default, and leave adoption files untouched unless the active workstream explicitly authorizes them.
+
+The lesson: **continuity tooling must observe repository state without changing product scope merely to make itself work.**
+
 ## Mobility became an operational requirement
 
 The workflow also had to work away from a desk.
