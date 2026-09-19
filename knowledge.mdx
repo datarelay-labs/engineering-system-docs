@@ -23,6 +23,17 @@ As the product changed, those documents drifted from reality.
 
 Durable information is split by purpose.
 
+~~~mermaid
+flowchart TB
+    G["GitHub<br/>Code · Spec · Test · ADR · CI"] --> T["Normative Engineering Truth"]
+    W["AI Work Packet"] --> C["Current Coordination State"]
+    A["Athena"] --> K["Derived Searchable Knowledge"]
+    H["Engineering Handbook"] --> E["Human Explanation"]
+    A -. references .-> G
+    H -. references .-> G
+    V["Conversation"] -. accepted knowledge is promoted .-> G
+~~~
+
 **GitHub is normative**
 
 Code, tests, specs, ADRs, release evidence, and repository engineering metadata live with the repository.
