@@ -11,6 +11,7 @@ The canonical repository defines the rules consumed by AI agents, repositories, 
 ## Documentation map
 
 - `index.mdx` — overview and system map
+- `quickstart.mdx` / `ko/quickstart.mdx` — minimal adoption path
 - `architecture.mdx` — responsibilities and authority model
 - `workflow.mdx` — ChatGPT → Work Packet → Cursor → verification loop
 - `tools.mdx` — ChatGPT, Cursor, GitHub, Desktop Commander, Athena
