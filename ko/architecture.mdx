@@ -11,8 +11,10 @@ description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena와 테스트·�
 
 | 구성요소 | 주 역할 | 진실로 사용하지 않는 것 |
 |---|---|---|
-| ChatGPT | 요구사항, 아키텍처, 설계, 문서, 리뷰, 다음 작업 결정 | 현재 Git 상태 |
-| Cursor | 코드 구현과 로컬 검증 | 장기 제품 의사결정 |
+| Owner | 제품 요구사항, scope, 최종 결정, release 승인, human UX 판단 | 명시적으로 결정하지 않은 구현 세부사항 |
+| ChatGPT | 요구사항 분석, 아키텍처, 설계, 문서, 리뷰, 다음 작업 결정 | 현재 Git 상태 |
+| Cursor | 코드 구현, affected test, local evidence | 장기 제품 의사결정 |
+| Automation / CI | deterministic validation, security/performance gate, artifact verification | 제품 의도 |
 | GitHub | Code, history, PR, CI, Spec, Work Packet, Release Evidence | 사람용 설명 |
 | Desktop Commander | 승인된 개발 서버 직접 감사 | 장기 프로젝트 기록 |
 | Athena | 결정 이유와 cross-project history 검색 | Runtime truth, release evidence |
@@ -65,3 +67,19 @@ Canonical / machine-consumed repository입니다. 표준, adapter, template, val
 <Warning>
   두 문서가 충돌하면 항상 canonical engineering-system repository를 따릅니다.
 </Warning>
+
+
+## Project-local Adoption
+
+기본 Engineering System adoption에 필요한 repository entrypoint는 다음 네 가지입니다.
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
+.engineering/tests.yaml
+.engineering/release.yaml
+~~~
+
+`.cursor/commands/resume.md`와 AI Work Packet Issue template은 Session Continuity workflow를 사용하는 경우에 추가합니다.
+
+Repository 안에 Engineering System 전체를 복사하지 않고 canonical version을 pin하고 참조합니다.
