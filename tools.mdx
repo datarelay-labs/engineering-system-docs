@@ -7,6 +7,18 @@ description: "What each tool is used for and why the workflow combines them inst
 
 The system is built around a small number of tools with deliberately different roles.
 
+~~~mermaid
+flowchart LR
+    O["Owner"] <--> C["ChatGPT<br/>Think · Design · Review"]
+    C --> U["Cursor<br/>Implement"]
+    U --> G["GitHub / Tests / CI<br/>Durable Evidence"]
+    G --> C
+    C -. verify local reality .-> D["Desktop Commander<br/>Dev Server Audit"]
+    U -. completion signal .-> T["Telegram"]
+~~~
+
+The split is intentional: exploratory thinking stays lightweight, implementation starts after scope is bounded, and evidence is stored outside either AI conversation.
+
 ## ChatGPT
 
 Primary planning and review environment.
