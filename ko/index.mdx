@@ -12,6 +12,10 @@ description: "ChatGPT, Cursor, GitHub, 원격 감사와 세션 연속성을 결�
 긴 Cursor 프롬프트, 대화창 Handoff, 오래된 로드맵, 사라지는 설계 이유, 불필요한 Full Suite, 이동 중 터미널 확인 같은 문제를 하나씩 제거하면서 현재 구조가 만들어졌습니다.
 
 <CardGroup cols={2}>
+  <Card title="빠른 시작" icon="bolt" href="/ko/quickstart">
+    가장 작은 workflow부터 적용하고 실제 문제가 생길 때만 선택 기능을 추가합니다.
+  </Card>
+
   <Card title="Canonical Engineering Standard" icon="book" href="https://github.com/datarelay-labs/engineering-system">
     AI Agent, repository, CI와 release workflow가 실제로 따르는 canonical 표준입니다.
   </Card>
@@ -26,6 +30,10 @@ description: "ChatGPT, Cursor, GitHub, 원격 감사와 세션 연속성을 결�
 
   <Card title="개발 서버 직접 감사" icon="terminal" href="/ko/remote-audit">
     Desktop Commander를 통해 ChatGPT가 승인된 개발 Linux 서버를 직접 확인합니다.
+  </Card>
+
+  <Card title="지식과 Source of Truth" icon="database" href="/ko/knowledge">
+    GitHub, Work Packet, Athena, Handbook, Conversation에 무엇을 둬야 하는지 구분합니다.
   </Card>
 </CardGroup>
 
@@ -46,6 +54,14 @@ flowchart LR
 <Note>
   Canonical source of truth는 GitHub입니다. Athena, 이 홈페이지, Telegram, AI Work Packet은 각각 검색·설명·알림·현재 작업 조정을 위한 보조 계층입니다.
 </Note>
+
+## 시스템을 작게 유지하는 다섯 가지 규칙
+
+1. GitHub가 normative이고 Handbook과 Athena는 derived layer입니다.
+2. ChatGPT는 설계·리뷰, Cursor는 bounded implementation을 담당합니다.
+3. 현재 작업에 필요한 context만 읽습니다.
+4. Expensive broad qualification 전에 affected deterministic check부터 실행합니다.
+5. Session state는 giant handoff prompt가 아니라 repository-scoped Work Packet에 둡니다.
 
 ## 핵심 원칙
 
