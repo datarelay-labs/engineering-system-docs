@@ -13,19 +13,26 @@ Canonical template은 다음 repository에서 가져옵니다.
 
 [github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
 
-일반적인 project entrypoint는 다음과 같습니다.
+기본 adoption에 필요한 것은 다음 네 가지입니다.
 
 ~~~text
 AGENTS.md
 .engineering/project.yaml
 .engineering/tests.yaml
 .engineering/release.yaml
+~~~
+
+Repository가 사용하는 Engineering System version을 pin합니다.
+
+Cursor와 Session Continuity를 사용하는 경우에만 tool adapter와 continuity 파일을 추가합니다.
+
+~~~text
 .cursor/rules/engineering-system.mdc
 .cursor/commands/resume.md
 .github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
 
-Repository가 사용하는 Engineering System version을 pin합니다.
+Base engineering governance와 AI session continuity는 연결되어 있지만 동일한 기능은 아닙니다.
 
 ## 기존 Rules가 많은 Repository
 
@@ -45,6 +52,18 @@ UNKNOWN
 제품 고유 architecture, routing, registry, security, persistence invariant는 유지합니다.
 
 일반적인 engineering guidance가 중복되어 있다면 canonical Engineering System으로 수렴시켜 Cursor context를 줄입니다.
+
+## Adoption이 아직 끝나지 않은 Repository
+
+Work Packet은 존재하지만 Engineering System adoption이 별도 PR에서 진행 중일 수 있습니다.
+
+Resume 시 `AGENTS.md` 또는 `.engineering/*`가 없다면:
+
+- `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`으로 기록
+- Work Packet이 유효하면 canonical Engineering System default 아래에서 계속 진행
+- 현재 workstream이 adoption 자체를 승인하지 않았다면 adoption 파일을 임의로 생성·merge·수정하지 않음
+
+이렇게 하면 release/feature 작업과 governance adoption이 섞이지 않습니다.
 
 ## Cursor User /resume 설치
 
