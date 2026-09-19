@@ -22,26 +22,17 @@ The development server becomes the stable execution environment while the user i
 
 ## Mobile loop
 
-~~~text
-ChatGPT
-  -> implementation task is defined
-
-Development Linux server
-  -> Cursor CLI runs inside tmux
-  -> task continues even when the SSH client disconnects
-
-Telegram
-  -> Cursor sends "work finished" notification
-
-Phone
-  -> user sees notification
-  -> SSH reconnects when needed
-  -> result can be copied to ChatGPT
-
-ChatGPT
-  -> reviews result
-  -> reasons about next action
-  -> can independently audit the server through Desktop Commander
+~~~mermaid
+flowchart LR
+    C["ChatGPT<br/>define next task"] --> L["Development Linux Server"]
+    L --> X["tmux + Cursor CLI"]
+    X --> T["Telegram<br/>completion signal"]
+    T --> P["Phone"]
+    P --> S["SSH reconnect to tmux"]
+    S --> R["Review result"]
+    R --> C
+    C -. when needed .-> D["Desktop Commander<br/>independent audit"]
+    D --> L
 ~~~
 
 ## Why tmux matters
@@ -64,21 +55,14 @@ Long-running implementation and test work should not require watching a terminal
 
 Cursor is configured to send a Telegram message when its task finishes.
 
-That changes the workflow from:
+The completion signal changes the operating pattern:
 
-~~~text
-watch terminal
-  -> wait
-  -> check repeatedly
-~~~
-
-to:
-
-~~~text
-start task
-  -> leave terminal
-  -> receive Telegram completion message
-  -> return only when action is required
+~~~mermaid
+flowchart LR
+    A["Start Task"] --> B["Leave Terminal"]
+    B --> C["Long-running Work / Tests"]
+    C --> D["Telegram Completion Message"]
+    D --> E["Return only when action is needed"]
 ~~~
 
 Telegram is a notification channel only. It is not a source of truth and should not carry secrets or canonical engineering state.
