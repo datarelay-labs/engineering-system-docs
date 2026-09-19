@@ -1,0 +1,63 @@
+---
+title: "사용 도구"
+description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tmux, Telegram의 역할"
+---
+
+# 사용 도구
+
+이 시스템은 하나의 AI 도구에 모든 일을 맡기지 않고 역할을 나눕니다.
+
+## ChatGPT
+
+요구사항, 브레인스토밍, 아키텍처, 설계, 문서, 테스트 전략, 코드 리뷰, 릴리즈 판단과 다음 작업 결정을 담당합니다.
+
+평소에는 가벼운 Chat 모드를 기본으로 사용하고, 장시간 autonomous work가 실제로 필요한 경우에만 Work 모드를 사용합니다.
+
+## Cursor
+
+실제 구현 agent입니다.
+
+Cursor는 repository를 수정하고 affected test를 실행하며 active Work Packet을 갱신합니다.
+
+책상에서는 macOS의 Cursor Desktop을 사용하고, 이동 중에는 개발 Linux 서버에서 Cursor CLI를 tmux 안에 실행합니다.
+
+## tmux + 휴대폰 SSH
+
+tmux는 SSH가 끊겨도 작업 프로세스를 유지합니다.
+
+휴대폰은 단지 접속 화면이고, 실제 실행 환경은 계속 개발 Linux 서버에 남아 있습니다.
+
+## Telegram
+
+Cursor 작업이 끝나면 Telegram으로 완료 메시지를 보내도록 구성했습니다.
+
+Telegram의 역할은 **알림**뿐입니다. Engineering state, evidence, source of truth로 사용하지 않습니다.
+
+## GitHub
+
+가장 중요한 durable engineering backbone입니다.
+
+GitHub에는 Code, Git history, Product Spec, ADR, Test, Regression, PR, Review, CI, Exact-HEAD release evidence, AI Work Packet을 둡니다.
+
+## Desktop Commander Remote MCP
+
+[Desktop Commander Remote MCP](https://mcp.desktopcommander.app)를 ChatGPT와 연결하면 승인된 개발 Linux 서버의 filesystem과 terminal을 직접 확인할 수 있습니다.
+
+~~~mermaid
+flowchart LR
+    C["ChatGPT"] --> D["Desktop Commander"]
+    D --> H["개발 Linux 서버"]
+    H --> R["Repository / Worktree"]
+    H --> P["Process / Test / Artifact"]
+    G["GitHub"] --> C
+    R --> C
+    P --> C
+~~~
+
+GitHub 상태만으로는 알 수 없는 local HEAD, dirty worktree, running tests, 생성 artifact를 확인할 때 특히 유용합니다.
+
+## Athena
+
+Athena는 결정 이유, 설계 변경, cross-project history를 검색하기 위한 derived knowledge layer로 사용합니다.
+
+현재 Code, Spec, Test, Release Evidence의 authority는 계속 GitHub에 있습니다.
