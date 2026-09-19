@@ -14,6 +14,10 @@ Large handoff prompts, stale roadmaps, repeated Cursor instructions, missing des
 The current system separates each responsibility and keeps only the minimum context needed for the next action.
 
 <CardGroup cols={2}>
+  <Card title="Quick Start" icon="bolt" href="/quickstart">
+    Adopt the smallest useful loop first, then add optional layers only when they solve a real problem.
+  </Card>
+
   <Card title="Canonical Engineering Standard" icon="book" href="https://github.com/datarelay-labs/engineering-system">
     Machine-consumed standards, templates, adapters, validation rules, and release governance.
   </Card>
@@ -28,6 +32,10 @@ The current system separates each responsibility and keeps only the minimum cont
 
   <Card title="Remote Code Audit" icon="terminal" href="/remote-audit">
     ChatGPT can inspect an authorized development server directly through Desktop Commander Remote MCP.
+  </Card>
+
+  <Card title="Knowledge & Source of Truth" icon="database" href="/knowledge">
+    See exactly what belongs in GitHub, Work Packets, Athena, the handbook, and temporary conversations.
   </Card>
 </CardGroup>
 
@@ -58,6 +66,14 @@ Cursor is used when code must actually change. This keeps exploratory conversati
 GitHub holds the durable state: code, tests, specs, commits, PRs, CI evidence, release evidence, and repository-scoped AI Work Packets.
 
 Desktop Commander closes another gap: when GitHub alone is not enough, ChatGPT can inspect the authorized development Linux host directly instead of reasoning only from pasted terminal output.
+
+## Five rules that keep it small
+
+1. GitHub is normative; the handbook and Athena are derived.
+2. ChatGPT plans and reviews; Cursor implements bounded repository work.
+3. Load only the context needed for the current task.
+4. Run affected deterministic checks before expensive broad qualification.
+5. Keep active session state in repository-scoped Work Packets, not giant handoff prompts.
 
 ## What this system is not
 
