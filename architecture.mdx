@@ -7,6 +7,25 @@ description: "How ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tests, and
 
 The system deliberately gives each tool one primary job instead of asking one AI tool to do everything.
 
+## System layers
+
+~~~mermaid
+flowchart TB
+    H["Human Layer<br/>engineering.datarelay.run"]
+    K["Knowledge Layer<br/>Athena"]
+    C["Coordination Layer<br/>AI Work Packet"]
+    N["Normative Layer<br/>GitHub Code · Spec · Test · CI"]
+    X["Execution Layer<br/>Cursor · Dev Server · Runtime"]
+
+    H --> N
+    K --> N
+    C --> N
+    X --> N
+    N --> X
+~~~
+
+The handbook and Athena help people understand and retrieve context. GitHub and executed evidence remain authoritative for current product and release state.
+
 ## Responsibility map
 
 | Component | Primary responsibility | Not the source of truth for |
@@ -32,6 +51,16 @@ When information conflicts, use this order:
 7. conversation history
 
 This order prevents a stale chat, roadmap, or wiki page from silently overriding the current product.
+
+~~~mermaid
+flowchart TD
+    A["1. Code / Config / Schema / Runtime / Git"] --> B["2. Canonical Product Spec"]
+    B --> C["3. Repository Engineering Metadata"]
+    C --> D["4. Executed Test / CI Evidence"]
+    D --> E["5. AI Work Packet"]
+    E --> F["6. Athena / Derived Docs"]
+    F --> G["7. Conversation History"]
+~~~
 
 ## Two repositories, two purposes
 
