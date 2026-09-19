@@ -18,6 +18,14 @@ flowchart LR
     E --> A
 ~~~
 
+## 0. Make GitHub reachable
+
+Session continuity depends on both sides being able to read and update repository-scoped GitHub Issues.
+
+- ChatGPT needs GitHub repository access for Work Packet creation/update.
+- Cursor `/resume` needs an available GitHub integration or authenticated `gh`.
+- If neither is available, stop and configure access instead of rebuilding state from pasted historical handoffs.
+
 ## 1. Add the repository entrypoint
 
 A base Engineering System adoption needs:
@@ -85,7 +93,7 @@ If the same workstream continues without a giant pasted prompt, the continuity p
     Add searchable decision/history knowledge when rationale must be recovered across projects.
   </Card>
 
-  <Card title="tmux + Phone SSH" icon="mobile" href="/mobile-remote-workflow">
+  <Card title="tmux + Phone SSH" icon="terminal" href="/mobile-remote-workflow">
     Add a persistent remote execution path when work must continue away from the desk.
   </Card>
 
