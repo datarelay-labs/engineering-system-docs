@@ -1,0 +1,123 @@
+---
+title: "Quick Start"
+description: "The shortest path from a normal repository to the ChatGPT + Cursor + GitHub Engineering System workflow."
+---
+
+# Quick start
+
+You do not need to adopt every optional tool on day one.
+
+Start with the smallest loop that creates durable state:
+
+~~~mermaid
+flowchart LR
+    A["ChatGPT<br/>plan"] --> B["GitHub AI Work Packet"]
+    B --> C["Cursor<br/>implement"]
+    C --> D["Affected Tests"]
+    D --> E["GitHub<br/>commit / PR / CI"]
+    E --> A
+~~~
+
+## 0. Make GitHub reachable
+
+Session continuity depends on both sides being able to read and update repository-scoped GitHub Issues.
+
+- ChatGPT needs GitHub repository access for Work Packet creation/update.
+- Cursor `/resume` needs an available GitHub integration or authenticated `gh`.
+- If neither is available, stop and configure access instead of rebuilding state from pasted historical handoffs.
+
+## 1. Add the repository entrypoint
+
+A base Engineering System adoption needs:
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
+.engineering/tests.yaml
+.engineering/release.yaml
+~~~
+
+Use the canonical templates from:
+
+[github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
+
+Pin the Engineering System version in the repository instead of silently following an unknown future version.
+
+## 2. Add session continuity only if you use it
+
+For ChatGPT ↔ Cursor resume workflow, add:
+
+~~~text
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+~~~
+
+The optional repository Cursor rule can also point agents at the canonical Engineering System.
+
+## 3. Keep ChatGPT instructions short
+
+ChatGPT does not need a copy of the entire standard in Custom Instructions.
+
+The global instruction only needs to route work correctly:
+
+- identify the target repository first
+- use the canonical Engineering System
+- load minimal task-relevant context
+- use the repository Work Packet for handoff/resume
+- verify current Git/GitHub state before acting
+- never claim unexecuted or different-HEAD evidence as PASS
+
+## 4. Run the first workflow
+
+~~~text
+ChatGPT:
+"Cursor에 넘겨줘"
+
+Cursor:
+/resume
+
+ChatGPT:
+"Cursor 끝났어. 계속"
+~~~
+
+If the same workstream continues without a giant pasted prompt, the continuity path is working.
+
+## 5. Add optional layers when they solve a real problem
+
+<CardGroup cols={2}>
+  <Card title="Desktop Commander" icon="terminal" href="/remote-audit">
+    Add direct development-server audit when GitHub alone cannot prove local runtime or worktree state.
+  </Card>
+
+  <Card title="Athena" icon="book" href="/knowledge">
+    Add searchable decision/history knowledge when rationale must be recovered across projects.
+  </Card>
+
+  <Card title="tmux + Phone SSH" icon="terminal" href="/mobile-remote-workflow">
+    Add a persistent remote execution path when work must continue away from the desk.
+  </Card>
+
+  <Card title="Telegram" icon="bell">
+    Add completion notifications when long-running implementation or tests should run unattended.
+  </Card>
+</CardGroup>
+
+## Before implementation
+
+The owner and AI should know:
+
+~~~text
+change type
+affected domain
+public contract
+persisted state
+security boundary
+operational impact
+required tests
+~~~
+
+Then make the smallest correct change and run the cheapest deterministic check that can disprove it.
+
+<Note>
+  The owner retains product scope, final decisions, release approval, and human UX judgment. AI assists the engineering process; it does not silently broaden product scope.
+</Note>

@@ -30,8 +30,10 @@ The handbook and Athena help people understand and retrieve context. GitHub and 
 
 | Component | Primary responsibility | Not the source of truth for |
 |---|---|---|
-| ChatGPT | Requirements, architecture, design, documentation, review, next-action planning | Current Git state |
-| Cursor | Repository implementation and local validation | Long-term product decisions |
+| Owner | Product requirements, scope, final decisions, release approval, human UX judgment | Implementation detail unless explicitly decided |
+| ChatGPT | Requirements analysis, architecture, design, documentation, review, next-action planning | Current Git state |
+| Cursor | Repository implementation, affected tests, local evidence | Long-term product decisions |
+| Automation / CI | Deterministic validation, security/performance gates, artifact verification | Product intent |
 | GitHub | Code, history, PRs, CI, specs, Work Packets, release evidence | Human-friendly narrative |
 | Desktop Commander Remote MCP | Direct audit of authorized development hosts | Durable project history |
 | Athena | Searchable decision/history layer | Runtime truth or release evidence |
@@ -78,16 +80,15 @@ Human-readable. It explains why the system exists, how the pieces fit together, 
 
 ## Project-local adoption
 
-An adopted product repository typically carries only the small entrypoint needed by agents and CI:
+Base Engineering System adoption requires the small repository entrypoint used by agents and CI:
 
 ~~~text
 AGENTS.md
 .engineering/project.yaml
 .engineering/tests.yaml
 .engineering/release.yaml
-.cursor/rules/engineering-system.mdc
-.cursor/commands/resume.md
-.github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
+
+Session-continuity files such as `.cursor/commands/resume.md` and the AI Work Packet Issue template are added when that workflow is used.
 
 The repository should not copy every Engineering System standard into itself. It should pin and reference the canonical system.

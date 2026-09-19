@@ -51,8 +51,8 @@ A Work Packet is not a project diary. It is a current-state record.
 PACKET_VERSION=1
 TARGET_REPO=owner/repository
 WORKSTREAM=stable-slug
-STATUS=ACTIVE
-BRANCH=branch-name
+STATUS=ACTIVE|PAUSED|BLOCKED|COMPLETE
+BRANCH=branch-name|N/A
 LAST_VERIFIED_HEAD=sha
 ~~~
 
@@ -67,6 +67,19 @@ Canonical References
 Latest Evidence
 Blockers
 ~~~
+
+## Packet lifecycle
+
+~~~text
+ACTIVE   -> open Issue
+PAUSED   -> open Issue
+BLOCKED  -> open Issue
+COMPLETE -> close Issue
+~~~
+
+A new independent workstream gets a new Issue. A new chat window does not.
+
+Do not create a central cross-project handoff repository. The product repository is the namespace boundary for its own Work Packets.
 
 ## Fail-closed resume
 
@@ -96,7 +109,7 @@ Updating an Issue preserves the qualified source revision.
 
 ## Conversation handoff
 
-When a chat becomes too long, no special Handoff Issue is created.
+When a chat becomes too long, no special Handoff Issue is created and no giant continuation prompt is required.
 
 The active Work Packet is updated, and the next conversation can begin with a short request such as:
 

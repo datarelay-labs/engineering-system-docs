@@ -63,6 +63,16 @@ ChatGPT -> 새 ChatGPT Handoff
 
 Engineering System 1.3.x에서 repository-scoped AI Work Packet과 /resume을 도입해 이 수작업을 줄였습니다.
 
+## Full Adoption 전에도 Resume이 가능해야 했다
+
+실제 release branch에서 중요한 edge case가 발견됐습니다. Product release workstream에는 정상적인 Work Packet이 있었지만 Engineering System adoption은 별도 PR로 분리되어 있었습니다.
+
+이때 local `AGENTS.md`나 `.engineering/*`가 없다는 이유만으로 resume을 중단하면 release 작업과 governance adoption이 섞이게 됩니다.
+
+그래서 resume flow는 adoption이 아직 끝나지 않은 repository를 `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`으로 기록하고 canonical default 아래에서 계속 진행하도록 보강했습니다. Active workstream이 명시적으로 승인하지 않는 한 adoption 파일은 건드리지 않습니다.
+
+여기서 얻은 교훈은 단순합니다. **Continuity tooling은 자신이 동작하기 위해 product scope를 바꾸지 말고 현재 repository 상태를 관찰해야 합니다.**
+
 ## 설계 원칙
 
 > 반복 수작업을 없애거나 correctness를 명확히 높이는 경우에만 automation을 추가합니다.

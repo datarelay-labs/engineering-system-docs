@@ -7,6 +7,18 @@ description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tmux, Telegram
 
 이 시스템은 하나의 AI 도구에 모든 일을 맡기지 않고 역할을 나눕니다.
 
+~~~mermaid
+flowchart LR
+    O["Owner"] <--> C["ChatGPT<br/>사고 · 설계 · 리뷰"]
+    C --> U["Cursor<br/>구현"]
+    U --> G["GitHub / Tests / CI<br/>Durable Evidence"]
+    G --> C
+    C -. local reality 검증 .-> D["Desktop Commander<br/>개발 서버 감사"]
+    U -. 완료 신호 .-> T["Telegram"]
+~~~
+
+탐색적 사고는 가볍게 유지하고, scope가 정리된 뒤 구현을 시작하며, evidence는 AI 대화 밖에 남기는 것이 핵심입니다.
+
 ## ChatGPT
 
 요구사항, 브레인스토밍, 아키텍처, 설계, 문서, 테스트 전략, 코드 리뷰, 릴리즈 판단과 다음 작업 결정을 담당합니다.

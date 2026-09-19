@@ -21,11 +21,13 @@ description: "왜 Project Charter, WBS, Roadmap만으로 부족했고 GitHub 중
 
 ~~~mermaid
 flowchart TB
-    G["GitHub<br/>Code · Spec · Test · ADR · CI"] --> T["Current Truth"]
-    W["AI Work Packet<br/>현재 작업 상태"] --> T
-    A["Athena<br/>결정·히스토리 검색"] --> G
-    H["Engineering Handbook<br/>사람이 읽는 설명"] --> G
-    C["Conversation<br/>임시 작업 공간"] -. 필요한 내용만 승격 .-> G
+    G["GitHub<br/>Code · Spec · Test · ADR · CI"] --> T["Normative Engineering Truth"]
+    W["AI Work Packet"] --> C["Current Coordination State"]
+    A["Athena"] --> K["Derived Searchable Knowledge"]
+    H["Engineering Handbook"] --> E["Human Explanation"]
+    A -. canonical reference .-> G
+    H -. canonical reference .-> G
+    V["Conversation"] -. 확정된 지식만 승격 .-> G
 ~~~
 
 **GitHub는 normative source**
@@ -43,6 +45,41 @@ Code, Test, Spec, ADR, release evidence와 repository engineering metadata를 �
 **이 홈페이지는 설명서**
 
 사람이 시스템을 빠르게 이해하기 위한 handbook입니다.
+
+## 정보별로 어디에 두는가
+
+| 정보 | Durable Home |
+|---|---|
+| 현재 runtime behavior | Code / config / schema |
+| 의도된 제품 behavior | Product Master / canonical spec |
+| 되돌리기 비싼 architecture/security 결정 | ADR |
+| 실행 가능한 behavior 증거 | Tests / CI |
+| 현재 active workstream 상태 | AI Work Packet |
+| 운영 절차 | Runbook |
+| Incident 학습 | RCA + regression/runbook/spec 업데이트 |
+| 검색 가능한 결정 이유와 cross-project history | Athena |
+| Engineering System 사람용 설명 | 이 Handbook |
+| 아직 확정되지 않은 brainstorming | 확정되기 전까지 Conversation |
+
+같은 규칙을 여러 문서에 복사해서 경쟁하는 source of truth를 만들지 않는 것이 핵심입니다.
+
+## 현장 Finding을 Durable Knowledge로 바꾸기
+
+~~~mermaid
+flowchart LR
+    A["Manual / Production Finding"] --> B{"무엇을 배웠나?"}
+    B --> C["Regression Test"]
+    B --> D["Runbook / RCA"]
+    B --> E["ADR"]
+    B --> F["Product Spec Clarification"]
+    C --> G["GitHub"]
+    D --> G
+    E --> G
+    F --> G
+    G --> H["Athena가 검색·설명"]
+~~~
+
+의미 있는 finding은 chat summary로 끝나지 않고 test invariant, 운영 절차, architecture decision 또는 requirement로 남아야 합니다.
 
 ## 최소 context 원칙
 
