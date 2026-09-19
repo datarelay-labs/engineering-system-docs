@@ -23,6 +23,18 @@ This system was built by removing repeated friction rather than by starting with
 | Full suite too often | Broad validation on many changes | Affected-first, full qualification at release boundary |
 | Stale release evidence | Historical PASS reused informally | Exact-HEAD qualification |
 
+## Evolution at a glance
+
+~~~mermaid
+flowchart LR
+    A["Many Planning Docs"] --> B["GitHub Source of Truth"]
+    B --> C["Athena<br/>decision/history search"]
+    C --> D["AI Work Packet<br/>session continuity"]
+    D --> E["Cursor /resume"]
+    E --> F["Desktop Commander<br/>independent audit"]
+    F --> G["tmux + Telegram<br/>mobile operation"]
+~~~
+
 ## Why GitHub became the center again
 
 Project-management documents were useful for thinking, but they were not consistently consumed by the agents doing the real work.
