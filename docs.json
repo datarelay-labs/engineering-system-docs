@@ -1,17 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Data Relay Engineering System",
+  "name": "Engineering System",
   "description": "A practical Solo AI Engineering System built around ChatGPT, Cursor, GitHub, remote code audit, and repository-scoped session continuity.",
   "colors": {
     "primary": "#2563EB"
   },
   "navbar": {
     "links": [
-      {
-        "label": "한국어",
-        "href": "/ko"
-      },
       {
         "label": "Canonical Standard",
         "href": "https://github.com/datarelay-labs/engineering-system"
