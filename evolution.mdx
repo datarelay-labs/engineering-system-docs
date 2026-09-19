@@ -1,0 +1,64 @@
+---
+title: "Evolution & Lessons"
+description: "The problems that shaped the current workflow and the concrete changes made to solve them."
+---
+
+# Evolution and lessons
+
+This system was built by removing repeated friction rather than by starting with a large process framework.
+
+## Before → after
+
+| Problem | Earlier approach | Current approach |
+|---|---|---|
+| AI ignored project plans | Charter, WBS, roadmap files | Small mandatory repository entrypoints |
+| Scope and roadmap drift | Manually maintained planning docs | Git/spec/tests as current truth |
+| Missing rationale | Decisions left in chat | Specs/ADR + Athena derived knowledge |
+| Large Cursor prompts | Repeated copy/paste | GitHub AI Work Packet |
+| Large ChatGPT handoffs | Continuation prompts | Same Work Packet + short bootstrap |
+| Coding-agent token burn during exploration | One tool did thinking + implementation | ChatGPT plans, Cursor implements |
+| Hard to verify local server state | User pasted terminal output | Desktop Commander remote audit |
+| Full suite too often | Broad validation on many changes | Affected-first, full qualification at release boundary |
+| Stale release evidence | Historical PASS reused informally | Exact-HEAD qualification |
+
+## Why GitHub became the center again
+
+Project-management documents were useful for thinking, but they were not consistently consumed by the agents doing the real work.
+
+GitHub already had the strongest properties for durable engineering state:
+
+- versioned source
+- reviewable changes
+- executable tests
+- immutable commits
+- CI evidence
+- issue coordination
+- release history
+
+So the system stopped trying to create a second source of truth.
+
+## Tela → Athena
+
+A separate knowledge layer is still useful for rationale and cross-project history.
+
+Tela was evaluated, but source-count constraints made it a poor fit for the intended scale. The workflow is therefore moving toward Athena as the searchable derived knowledge layer.
+
+The key lesson is unchanged: the knowledge layer should help humans and AI find context, but it should not compete with GitHub for canonical product truth.
+
+## Session continuity was the next bottleneck
+
+Once source-of-truth and validation were clearer, the next large cost became context transfer itself:
+
+- ChatGPT → Cursor prompt
+- Cursor → ChatGPT result
+- ChatGPT → new ChatGPT handoff
+
+Engineering System 1.3.x introduced repository-scoped AI Work Packets and the Cursor /resume command to remove this repeated manual transfer.
+
+## Design principle
+
+The system keeps evolving under one constraint:
+
+> Add automation only when it removes repeated manual work or materially improves correctness.
+
+That rule prevents a solo-developer workflow from turning into enterprise process overhead.
