@@ -13,19 +13,26 @@ Start with the canonical templates from:
 
 [github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
 
-The normal repository entrypoints are:
+Base adoption requires:
 
 ~~~text
 AGENTS.md
 .engineering/project.yaml
 .engineering/tests.yaml
 .engineering/release.yaml
+~~~
+
+Pin the Engineering System version used by the repository.
+
+If you use Cursor and session continuity, add the tool adapter and continuity files separately:
+
+~~~text
 .cursor/rules/engineering-system.mdc
 .cursor/commands/resume.md
 .github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
 
-Pin the Engineering System version used by the repository.
+This distinction matters: base engineering governance and AI session continuity are related, but not the same feature.
 
 ## Existing repository with many AI rules
 
@@ -45,6 +52,18 @@ UNKNOWN
 Keep product-specific invariants and stricter valid rules.
 
 Move generic duplicated engineering guidance back toward the canonical Engineering System so Cursor context becomes smaller rather than larger.
+
+## Adoption-pending repositories
+
+A valid Work Packet may exist before the repository has completed Engineering System adoption.
+
+When `AGENTS.md` or `.engineering/*` are missing during resume:
+
+- record `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`
+- continue under the canonical Engineering System default when the Work Packet is otherwise valid
+- do not silently create, merge, or modify adoption files unless the active workstream explicitly authorizes adoption work
+
+This lets release or feature work continue without accidentally mixing governance adoption into the product change.
 
 ## Install the Cursor user /resume command
 
