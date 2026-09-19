@@ -1,0 +1,65 @@
+---
+title: "Knowledge & Source of Truth"
+description: "Why project charters and roadmaps were not enough, and how durable engineering knowledge is organized now."
+---
+
+# Knowledge and source of truth
+
+One of the biggest lessons was that **a document is not useful merely because it exists**.
+
+Early versions of the workflow produced project charters, WBS documents, roadmaps, and large planning files. They looked complete, but ChatGPT and Cursor often did not load them during real implementation.
+
+As the product changed, those documents drifted from reality.
+
+## What went wrong
+
+- agents did not automatically read every planning document
+- loading every document would have created too much context
+- roadmap and scope changed faster than the documents were maintained
+- implementation rationale was often left only in conversations
+- later sessions could see what the code did, but not always why it changed
+
+## The current model
+
+Durable information is split by purpose.
+
+**GitHub is normative**
+
+Code, tests, specs, ADRs, release evidence, and repository engineering metadata live with the repository.
+
+**AI Work Packet is current coordination state**
+
+It records only what is needed to resume the active workstream now.
+
+**Athena is derived searchable knowledge**
+
+It can preserve rationale, decisions, cross-project explanations, and historical context without becoming the runtime authority.
+
+**This handbook is explanatory**
+
+It helps humans remember how the system works but does not override the canonical engineering repository.
+
+## Why minimal context matters
+
+The goal is not to make AI read everything.
+
+The goal is to make it read the **right thing first**:
+
+~~~text
+AGENTS.md
+.engineering/project.yaml
++ task-relevant tests/release metadata
++ one relevant spec/ADR/runbook
++ active Work Packet
+~~~
+
+This is more reliable than either extreme:
+
+- reading nothing and guessing
+- loading every document and drowning the task in context
+
+## Decision history
+
+Important architecture or product decisions should end up in a durable artifact such as a specification, ADR, test invariant, runbook, or decision knowledge entry.
+
+A decision that exists only in chat is not durable engineering knowledge.
