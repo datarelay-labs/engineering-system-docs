@@ -89,6 +89,27 @@ Telegram completion messages removed another small but repeated cost: checking t
 
 The remaining manual copy/paste between a completed mobile Cursor session and ChatGPT is treated as a transitional seam, not as durable engineering state.
 
+## Adoption itself became automation
+
+By 1.3.x the lifecycle and session-continuity rules were strong, but applying the system to another repository still depended too much on an agent correctly interpreting templates.
+
+Engineering System 1.4 added a canonical adoption standard and deterministic bootstrap.
+
+The target behavior became:
+
+~~~text
+"Apply the Engineering System to this project"
+  -> inventory
+  -> rule classification
+  -> test / CI discovery
+  -> immutable baseline pin
+  -> shared/native CI decision
+  -> bootstrap
+  -> adoption qualification
+~~~
+
+This deliberately stops on ambiguous or destructive decisions instead of pretending that "automatic" means blind overwrite.
+
 ## Design principle
 
 The system keeps evolving under one constraint:
