@@ -28,7 +28,7 @@ Session continuity depends on both sides being able to read and update repositor
 
 ## 1. Ask the agent to adopt the repository
 
-The intended 1.4 entrypoint is now simply:
+The intended 1.5 entrypoint remains simply:
 
 ~~~text
 Apply https://github.com/datarelay-labs/engineering-system to this project.
@@ -54,7 +54,7 @@ python tools/adopt.py --root /path/to/project --audit
 
 and a bounded bootstrap after the project-specific decisions are known.
 
-Managed 1.4 adoption pins both the Engineering System version and an immutable canonical baseline SHA.
+Managed 1.5 adoption pins both the Engineering System version and an immutable canonical baseline SHA. It also records shared/native CI ownership, merge-gate enforcement state, and explicit operations posture so agents do not infer those facts from workflow presence alone.
 
 ## 2. What managed adoption installs
 

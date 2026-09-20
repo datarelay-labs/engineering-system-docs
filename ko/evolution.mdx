@@ -94,6 +94,18 @@ Engineering System 1.4에서는 canonical adoption standard와 deterministic boo
 
 자동화라고 해서 blind overwrite를 하지 않습니다. Ambiguous하거나 destructive한 결정은 fail-closed로 중단합니다.
 
+## 1.5에서는 책임과 운영 상태를 명시적으로 기록
+
+Engineering System 1.5는 AI가 추측하면 안 되는 경계를 더 명확히 했습니다.
+
+- adopted repository는 immutable canonical baseline과 affected validation의 shared/native CI ownership을 기록
+- native mode에서는 해당 invariant를 담당하는 실제 workflow file을 명시
+- merge gate는 workflow 존재 여부로 추측하지 않고 `verified`, `advisory`, `unknown`으로 기록
+- production-oriented project는 runbook과 incident-response posture를 명시
+- material design-bearing change는 최소 design gate로, production-impacting failure는 incident lifecycle로 routing
+
+목표는 문서를 늘리는 것이 아니라 숨어 있던 운영 가정을 명시하면서 implementation context는 작게 유지하는 것입니다.
+
 ## 설계 원칙
 
 > 반복 수작업을 없애거나 correctness를 명확히 높이는 경우에만 automation을 추가합니다.
