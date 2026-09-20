@@ -7,6 +7,74 @@ description: "A minimal path for adding the Engineering System to a new or exist
 
 Adoption should reduce context, not add another layer of duplicate rules.
 
+## The intended entrypoint
+
+With Engineering System 1.4, the user-facing request can be:
+
+~~~text
+Apply https://github.com/datarelay-labs/engineering-system to this project.
+~~~
+
+The agent then follows `standards/ADOPTION.md` and performs a repository-specific audit before changing files.
+
+~~~mermaid
+flowchart LR
+    A["Inventory"] --> B["Classify Rules"]
+    B --> C["Discover Tests / CI / Release"]
+    C --> D["Choose CI Mode"]
+    D --> E["Deterministic Bootstrap"]
+    E --> F["Adoption Qualification"]
+~~~
+
+## Deterministic bootstrap
+
+Read-only audit:
+
+~~~bash
+python tools/adopt.py --root /path/to/project --audit
+~~~
+
+Apply after rule/CI review:
+
+~~~bash
+python tools/adopt.py \
+  --root /path/to/project \
+  --apply \
+  --ack-rule-review \
+  --ci-mode shared \
+  --test-command "<project-native test command>"
+~~~
+
+The bootstrap installs only missing common surfaces and does not overwrite existing project files.
+
+### Fail-closed boundaries
+
+Adoption stops instead of guessing when:
+
+- the worktree is dirty
+- existing AI/engineering rules have not been reviewed
+- more than one plausible test command exists
+- existing CI is present but shared/native ownership has not been decided
+- an existing adoption would need destructive overwrite
+- the immutable canonical baseline cannot be resolved
+
+## Managed adoption identity
+
+Engineering System 1.4 adopted repositories record:
+
+~~~yaml
+engineering_system:
+  version: "1.4.0"
+  mode: adopted
+  baseline: "<40-character canonical commit SHA>"
+  ci_mode: shared
+~~~
+
+`ci_mode` can be `shared` or `native`.
+
+- **shared** uses the Engineering System reusable affected-test workflow.
+- **native** preserves existing project CI and adds compliance without duplicating the same test gate.
+
 ## New repository
 
 Start with the canonical templates from:
@@ -97,9 +165,23 @@ For direct development-host audit, connect Desktop Commander Remote MCP and rest
 
 This is optional. GitHub remains the durable baseline even when remote audit is available.
 
-## Adoption success test
+## Adoption qualification
 
-A simple smoke test is enough:
+File presence alone is not PASS.
+
+Managed adoption validates required surfaces, version/baseline identity, session-continuity files, baseline-pinned caller workflows, test metadata, CI ownership, and release wiring when configured.
+
+Then run the repository's cheapest real project-native smoke/affected test.
+
+Only after deterministic validation and required smoke evidence succeed should the result be reported as:
+
+~~~text
+ENGINEERING_SYSTEM_ADOPTION=PASS
+~~~
+
+## Session continuity smoke test
+
+A simple continuity smoke test is:
 
 ~~~text
 ChatGPT:

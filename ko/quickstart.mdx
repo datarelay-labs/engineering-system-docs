@@ -26,24 +26,57 @@ Session Continuity는 ChatGPT와 Cursor가 repository-scoped GitHub Issue를 읽
 - Cursor `/resume`은 사용 가능한 GitHub integration 또는 인증된 `gh`가 필요합니다.
 - 둘 다 없다면 과거 Handoff를 다시 복붙해서 복원하지 말고 GitHub 접근부터 구성합니다.
 
-## 1. Repository 기본 Entry Point 추가
+## 1. AI에게 Repository Adoption 요청
 
-기본 Engineering System adoption에 필요한 것은 다음입니다.
+1.4부터 의도한 시작 방법은 단순합니다.
+
+~~~text
+이 프로젝트에
+https://github.com/datarelay-labs/engineering-system
+을 적용해줘.
+~~~
+
+AI는 template을 무작정 복사하는 것이 아니라 canonical adoption 절차를 따라야 합니다.
+
+~~~text
+Repository Inventory
+  -> 기존 AI / Engineering Rule 분류
+  -> Native Test / CI / Release Flow 탐색
+  -> Project-specific / stricter invariant 보존
+  -> Shared CI 또는 Native CI 명시적 선택
+  -> 부족한 Engineering System surface bootstrap
+  -> Adoption Qualification
+~~~
+
+Deterministic helper로 먼저 read-only audit을 할 수 있습니다.
+
+~~~bash
+python tools/adopt.py --root /path/to/project --audit
+~~~
+
+Managed 1.4 adoption은 Engineering System version과 immutable canonical baseline SHA를 함께 pin합니다.
+
+## 2. Managed Adoption이 준비하는 것
+
+Managed adoption은 다음 surface를 준비합니다.
 
 ~~~text
 AGENTS.md
 .engineering/project.yaml
 .engineering/tests.yaml
 .engineering/release.yaml
+.cursor/rules/engineering-system.mdc
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+.github/workflows/engineering-system.yml
 ~~~
 
-Canonical template은 다음 repository에서 가져옵니다.
+Project-native release qualification command가 명확하면 release preflight/gate wiring도 추가할 수 있습니다.
 
-[github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
+기존 project file은 기본적으로 덮어쓰지 않습니다. Dirty worktree, 미검토 AI rule, ambiguous test command, existing CI의 shared/native 결정 미완료, destructive upgrade는 fail-closed 처리합니다.
 
-Repository가 사용하는 Engineering System version을 pin해서 미래 버전을 암묵적으로 따라가지 않도록 합니다.
+## 3. Session Continuity
 
-## 2. Session Continuity를 사용할 때만 추가
 
 ChatGPT ↔ Cursor resume workflow를 사용한다면 다음을 추가합니다.
 
@@ -54,7 +87,7 @@ ChatGPT ↔ Cursor resume workflow를 사용한다면 다음을 추가합니다.
 
 필요하면 repository Cursor rule도 canonical Engineering System을 참조하도록 둡니다.
 
-## 3. ChatGPT Custom Instructions는 짧게
+## 4. ChatGPT Custom Instructions는 짧게
 
 Custom Instructions에 Engineering System 전체를 복사하지 않습니다.
 
@@ -67,7 +100,7 @@ Global instruction은 routing만 담당하면 됩니다.
 - 실행 전에 실제 Git/GitHub 상태 재검증
 - 실행하지 않았거나 다른 HEAD의 evidence를 PASS로 사용하지 않기
 
-## 4. 첫 Workflow 실행
+## 5. 첫 Workflow 실행
 
 ~~~text
 ChatGPT:
@@ -82,7 +115,7 @@ ChatGPT:
 
 긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상입니다.
 
-## 5. 실제 문제가 생길 때 선택 도구 추가
+## 6. 실제 문제가 생길 때 선택 도구 추가
 
 <CardGroup cols={2}>
   <Card title="Desktop Commander" icon="terminal" href="/ko/remote-audit">
