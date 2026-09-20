@@ -68,6 +68,49 @@ agent persist stop <session>
 
 ChatGPT should report the persistent session name and a ready-to-copy attach command after starting it. It must not silently replace the handoff with a non-persistent `--print` process unless the owner explicitly allows that fallback.
 
+## Ask ChatGPT for Cursor progress
+
+You do not have to SSH into the development server just to learn whether Cursor is still running or how far a long test has progressed. When the development server is authorized for remote inspection, ask ChatGPT directly:
+
+~~~text
+"Check the Cursor progress."
+"What is Cursor doing now?"
+"When will the Full Suite finish?"
+"Cursor 끝났어. 계속"
+~~~
+
+ChatGPT should inspect the actual development-server state instead of asking the owner to copy terminal output. Depending on the workstream, that inspection should include:
+
+- the target repository/worktree and active persistent Cursor session (`agent persist list` when applicable)
+- the running Cursor process/session and its current child command or test
+- branch, exact HEAD, dirty/clean state, and synchronization with the remote
+- current test position, remaining tests, and known long-running tests
+- the active `[AI Work]` Work Packet, PR, CI, and linked issue state when applicable
+
+A useful status report is concise and evidence-based:
+
+~~~text
+CURSOR_SESSION=RUNNING
+CURRENT_TEST=test_example.sh
+FULL_SUITE=145/153
+HEAD=<exact-sha>
+WORKTREE=CLEAN
+PUSH=NOT_YET
+~~~
+
+### Completion-time estimates
+
+When the owner asks when a task will finish, ChatGPT may estimate the remaining time from observable evidence such as:
+
+- suite start time and elapsed time
+- current test index versus scheduled test count
+- remaining long-running tests and their timeout ceilings
+- prior timings for the same exact or comparable test path, when available
+
+The result should be a range such as **"about 10–20 minutes remaining"**, not a false exact promise. If the runtime cannot be inspected or there is not enough timing evidence, ChatGPT should say that the ETA cannot be determined reliably.
+
+Direct `agent persist attach <session>` remains the best option when the owner wants to watch the raw interactive Cursor session. Asking ChatGPT is the convenient option when the owner only needs status, blockers, test progress, or an ETA.
+
 ## Telegram
 
 Telegram is a completion notification channel only. It is not engineering state or a source of truth. `COMPLETE` should be sent only after the workstream is terminally complete.
