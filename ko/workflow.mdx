@@ -27,8 +27,8 @@ flowchart LR
     구현이 필요한 시점에 긴 Cursor prompt 대신 repository-scoped [AI Work] Issue의 Current State와 Next Action을 갱신합니다.
   </Step>
 
-  <Step title="Cursor에서 실행한다">
-    Cursor는 repository, branch, HEAD와 Work Packet을 확인한 뒤 현재 Next Action만 수행합니다.
+  <Step title="ChatGPT가 Cursor를 시작한다">
+    「Cursor에 넘겨줘」라고 하면 ChatGPT가 Work Packet·worktree를 준비한 뒤 개발 서버에서 Cursor CLI를 시작하고 `/work-resume`을 넘깁니다. 소유자가 평소에 `/resume`이나 `/work-resume`을 직접 칠 필요는 없습니다.
   </Step>
 
   <Step title="가장 싼 검증부터 한다">
@@ -45,16 +45,22 @@ flowchart LR
 ~~~text
 ChatGPT:
 "Cursor에 넘겨줘"
+  → ChatGPT가 Work Packet을 준비하고 Cursor CLI(/work-resume)를 시작
 
-Cursor:
-/resume
+실행 중 Cursor 보기 (권장):
+ssh <development-server>
+agent persist list
+agent persist attach <session>
 
 ChatGPT:
 "Cursor 끝났어. 계속"
+  → ChatGPT가 GitHub/CI/PR/issue/worktree를 독립 재검증
 
 새 ChatGPT:
 "DRLink 계속"
 ~~~
+
+자세한 모바일·원격 관찰 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
 ## 왜 ChatGPT를 먼저 쓰는가
 
