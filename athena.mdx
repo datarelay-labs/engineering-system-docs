@@ -56,8 +56,9 @@ Our fork adapts Athena to the Data Relay Engineering System.
 - `projects/<project>/...` organization and project-scoped retrieval
 - provenance back to repository, ref, source path, and Git blob
 - safer read-only MCP use for AI clients
-- rationale discipline: do not invent undocumented WHY; use `RATIONALE_UNKNOWN`
 - dependency and CI hardening for our operating model
+
+`RATIONALE_UNKNOWN` is an **Engineering System usage rule validated in the POC prompts**, not a built-in upstream Athena feature or a hard-coded fork capability. AI clients are instructed to use it when the indexed canonical material does not contain the requested rationale.
 
 These additions do not change the authority model: GitHub/OpenSpec remains canonical and Athena remains derived.
 
