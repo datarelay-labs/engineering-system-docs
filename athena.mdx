@@ -1,0 +1,100 @@
+---
+title: "Athena Knowledge Platform"
+description: "How Athena turns GitHub/OpenSpec engineering knowledge into searchable context for humans, Cursor, and ChatGPT."
+---
+
+# Athena Knowledge Platform
+
+Athena is the Engineering System's **derived knowledge and retrieval platform**.
+
+It is not a replacement for GitHub, OpenSpec, code, tests, ADRs, or release evidence. Those remain canonical. Athena makes that durable engineering knowledge easier to search, explain, and reuse across projects and AI tools.
+
+## Athena is not Wiki.js
+
+Wiki.js is only one component inside Athena.
+
+~~~mermaid
+flowchart TB
+    G["GitHub / OpenSpec<br/>Canonical Source"] --> S["Sync / Indexer"]
+    S --> W["Wiki.js<br/>Human-readable pages"]
+    S --> E["Embedding Service"]
+    E --> V["PostgreSQL + pgvector<br/>Semantic index"]
+    W --> V
+    V --> M["Athena MCP Server"]
+    M --> C["Cursor"]
+    M --> H["ChatGPT / other MCP clients"]
+    W --> U["Human browser"]
+~~~
+
+Think of **Athena as the whole knowledge system** and **Wiki.js as the human-facing wiki UI**.
+
+## Main components
+
+| Component | Role |
+|---|---|
+| Wiki.js | Human-readable navigation and pages |
+| PostgreSQL + pgvector | Metadata, page state, and vector search storage |
+| Embedding service | Converts content and questions into semantic vectors |
+| Indexer / sync | Imports selected GitHub/OpenSpec knowledge and refreshes the search index |
+| MCP server | Gives Cursor, ChatGPT, and other MCP clients structured search/read access |
+| Dashboard / backup | Operational visibility and recovery support |
+
+## Source-of-truth rule
+
+Athena is intentionally derived.
+
+~~~text
+GitHub / OpenSpec / Code / Tests / ADR
+              ↓
+            Athena
+              ↓
+      Search / explanation / recall
+~~~
+
+If Athena disagrees with canonical Git content, **Git content wins**.
+
+Generated project pages should not be edited as if they were authoritative product specifications.
+
+## What the POC proved
+
+The Data Relay Link POC validated the workflows that matter most for this Engineering System:
+
+- Cursor can connect to Athena through MCP.
+- Semantic search works for Korean and English questions.
+- Athena can retrieve a design rationale separately from the current contract.
+- Cursor can return Wiki paths and original OpenSpec source paths.
+- When rationale is not present in the indexed canonical material, the expected behavior is to return `RATIONALE_UNKNOWN` rather than invent an explanation.
+- Current specs and archived decision history can be indexed together without making Athena the source of truth.
+
+This is the basis for replacing Tela as the cross-project searchable knowledge layer.
+
+## Production deployment
+
+The current production target is an **OVHcloud Singapore VPS**.
+
+Selected baseline:
+
+| Item | Target |
+|---|---|
+| Provider / region | OVHcloud / Singapore |
+| OS | Ubuntu 24.04 LTS |
+| Compute | 4 vCore |
+| Memory | 8 GB RAM |
+| Storage | 75 GB NVMe |
+| Backup | Provider automated backup + Athena application/database backup |
+| Exposure | HTTPS only through a reverse proxy; internal services are not exposed directly |
+
+The hosting provider is an operational choice, not part of the normative Engineering System contract. A future migration to another provider should not change Athena's role or GitHub's authority.
+
+## Intended operating flow
+
+~~~mermaid
+flowchart LR
+    A["Repository change"] --> B["GitHub/OpenSpec"]
+    B --> C["Automated Athena sync"]
+    C --> D["Index / embeddings"]
+    D --> E["Cursor / ChatGPT search"]
+    E --> F["Answer with provenance"]
+~~~
+
+The target end state is **no manual Wiki maintenance**. Humans maintain canonical repository artifacts; Athena synchronizes and indexes the selected durable knowledge automatically.

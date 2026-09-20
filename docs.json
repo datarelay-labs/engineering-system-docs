@@ -54,6 +54,7 @@
             "pages": [
               "tools",
               "knowledge",
+              "athena",
               "session-continuity",
               "remote-audit",
               "mobile-remote-workflow"
@@ -85,6 +86,7 @@
             "pages": [
               "ko/tools",
               "ko/knowledge",
+              "ko/athena",
               "ko/session-continuity",
               "ko/remote-audit",
               "ko/mobile-remote-workflow"
