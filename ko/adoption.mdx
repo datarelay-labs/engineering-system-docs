@@ -9,7 +9,7 @@ description: "새 프로젝트나 기존 Rules가 많은 프로젝트에 Enginee
 
 ## 사용자가 요청하는 방식
 
-Engineering System 1.4부터 사용자는 다음처럼 요청하면 됩니다.
+Engineering System 1.5에서도 사용자가 기억할 시작 방법은 동일하게 단순합니다.
 
 ~~~text
 이 프로젝트에
@@ -62,20 +62,32 @@ Bootstrap은 없는 공통 surface만 설치하고 기존 project file을 덮어
 
 ## Managed Adoption Identity
 
-1.4 adopted repository는 다음 identity를 기록합니다.
+1.5 adopted repository는 어떤 canonical standard와 어떤 project-native gate가 실제 책임을 가지는지 증명할 수 있도록 다음 identity를 기록합니다.
 
 ~~~yaml
 engineering_system:
-  version: "1.4.0"
+  version: "1.5.0"
   mode: adopted
   baseline: "<40-character canonical commit SHA>"
-  ci_mode: shared
+  ci_mode: native
+  native_ci_workflows:
+    - ".github/workflows/project-ci.yml"
+  merge_gate_status: verified
+
+operations:
+  production_oriented: true
+  runbook_required: true
+  incident_response_required: true
 ~~~
 
 `ci_mode`는 `shared` 또는 `native`입니다.
 
 - **shared**: Engineering System reusable affected-test workflow 사용
-- **native**: 기존 project CI를 유지하고 동일 test gate를 중복 실행하지 않음
+- **native**: 기존 project CI를 유지하고 affected-test invariant를 담당하는 실제 workflow file을 명시하며 generated Engineering System workflow는 compliance만 수행
+- `merge_gate_status`: `verified`, `advisory`, `unknown` 중 하나이며 workflow가 존재한다는 이유만으로 branch protection을 추측하지 않음
+- Production-oriented repository는 runbook과 incident-response posture를 명시적으로 기록
+
+Engineering System 1.5는 material design-bearing change를 가벼운 `standards/DESIGN.md` gate로, production-impacting failure를 `standards/OPERATIONS.md` incident lifecycle로 routing합니다. 매 작업마다 새 설계 문서나 incident 문서를 만들라는 의미가 아니라, 결정에 맞는 가장 작은 durable artifact를 사용합니다.
 
 ## 새 Repository
 

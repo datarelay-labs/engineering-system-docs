@@ -9,7 +9,7 @@ Adoption should reduce context, not add another layer of duplicate rules.
 
 ## The intended entrypoint
 
-With Engineering System 1.4, the user-facing request can be:
+With Engineering System 1.5, the user-facing request can be:
 
 ~~~text
 Apply https://github.com/datarelay-labs/engineering-system to this project.
@@ -60,20 +60,31 @@ Adoption stops instead of guessing when:
 
 ## Managed adoption identity
 
-Engineering System 1.4 adopted repositories record:
-
+Engineering System 1.5 adopted repositories record enough identity to prove exactly which canonical standard and which project-native gates are in force:
 ~~~yaml
 engineering_system:
-  version: "1.4.0"
+  version: "1.5.0"
   mode: adopted
   baseline: "<40-character canonical commit SHA>"
-  ci_mode: shared
+  ci_mode: native
+  native_ci_workflows:
+    - ".github/workflows/project-ci.yml"
+  merge_gate_status: verified
+
+operations:
+  production_oriented: true
+  runbook_required: true
+  incident_response_required: true
 ~~~
 
 `ci_mode` can be `shared` or `native`.
 
 - **shared** uses the Engineering System reusable affected-test workflow.
-- **native** preserves existing project CI and adds compliance without duplicating the same test gate.
+- **native** preserves existing project CI, maps the concrete workflow files that own the affected-test invariant, and keeps the generated Engineering System workflow compliance-only.
+- `merge_gate_status` is `verified`, `advisory`, or `unknown`; never infer branch protection merely because workflows exist.
+- Production-oriented repositories explicitly record runbook and incident-response posture.
+
+Engineering System 1.5 also routes material design-bearing changes through the lightweight `standards/DESIGN.md` gate and production-impacting failures through `standards/OPERATIONS.md`. This does not require a new design document or incident document for every task; the smallest durable artifact that fits the decision remains preferred.
 
 ## New repository
 

@@ -110,6 +110,18 @@ The target behavior became:
 
 This deliberately stops on ambiguous or destructive decisions instead of pretending that "automatic" means blind overwrite.
 
+## 1.5 made ownership and operations explicit
+
+Engineering System 1.5 tightened the places where an AI agent should not guess:
+
+- adopted repositories pin an immutable canonical baseline and record whether shared or native CI owns affected validation
+- native mode names the concrete workflow files that own that invariant
+- merge-gate enforcement is recorded as verified, advisory, or unknown instead of being inferred from workflow existence
+- production-oriented projects explicitly record runbook and incident-response posture
+- material design-bearing changes route through a minimal design gate, while production-impacting failures route through the incident lifecycle
+
+The intent is not more paperwork. It is to make hidden operational assumptions explicit while keeping implementation context small.
+
 ## Design principle
 
 The system keeps evolving under one constraint:
