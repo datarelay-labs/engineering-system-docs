@@ -103,6 +103,17 @@ release candidate
 
 A known deterministic blocker stops expensive downstream validation until it is fixed.
 
+## Review feedback is a merge gate
+
+Engineering System 1.5.1 makes review handling content-based rather than status-based.
+
+Before merge or terminal completion, the active implementation agent checks machine-observable PR review submissions, top-level comments, and inline feedback. Every actionable finding from a human reviewer or configured automated reviewer must be handled in one of two ways:
+
+- fix it and rerun the affected validation, or
+- record a concise evidence-backed disposition explaining why it is non-actionable, out of scope, or incorrect.
+
+A `COMMENTED` or advisory review state is not automatically PASS or FAIL. The review content controls. The workstream does not merge or become terminal while actionable review feedback remains unaddressed.
+
 ## Desk and mobile operation
 
 The same engineering loop is used in two physical modes:
