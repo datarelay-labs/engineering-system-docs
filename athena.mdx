@@ -1,13 +1,18 @@
 ---
 title: "Athena Knowledge Platform"
-description: "How Athena turns GitHub/OpenSpec engineering knowledge into searchable context for humans, Cursor, and ChatGPT."
+description: "How the adopted open-source Athena project turns GitHub/OpenSpec engineering knowledge into searchable context for humans, Cursor, and ChatGPT."
 ---
 
 # Athena Knowledge Platform
 
-Athena is the Engineering System's **derived knowledge and retrieval platform**.
+In this Engineering System, **Athena means the open-source project `jannismilz/athena` that we evaluated and adopted**.
 
-It is not a replacement for GitHub, OpenSpec, code, tests, ADRs, or release evidence. Those remain canonical. Athena makes that durable engineering knowledge easier to search, explain, and reuse across projects and AI tools.
+It is **not** a generic industry name for all knowledge platforms, and Data Relay Labs did not create the base Athena platform. We maintain a fork at `xdr-labs/athena` so we can adapt the upstream project to our Engineering System.
+
+- Upstream: https://github.com/jannismilz/athena
+- Our fork: https://github.com/xdr-labs/athena
+
+Athena is used as the Engineering System's **derived knowledge and retrieval platform**. GitHub, OpenSpec, code, tests, ADRs, and release evidence remain canonical.
 
 ## Athena is not Wiki.js
 
@@ -24,20 +29,53 @@ flowchart TB
     M --> C["Cursor"]
     M --> H["ChatGPT / other MCP clients"]
     W --> U["Human browser"]
+    D["Dashboard / Backup"] --> V
 ~~~
 
-Think of **Athena as the whole knowledge system** and **Wiki.js as the human-facing wiki UI**.
+Think of **Athena as the whole adopted knowledge platform** and **Wiki.js as its human-facing wiki UI**.
 
-## Main components
+## What comes from upstream Athena
+
+The following are already part of the upstream Athena architecture; they were not invented for this Engineering System.
 
 | Component | Role |
 |---|---|
 | Wiki.js | Human-readable navigation and pages |
-| PostgreSQL + pgvector | Metadata, page state, and vector search storage |
+| PostgreSQL + pgvector | Wiki state plus vector-search storage |
 | Embedding service | Converts content and questions into semantic vectors |
-| Indexer / sync | Imports selected GitHub/OpenSpec knowledge and refreshes the search index |
-| MCP server | Gives Cursor, ChatGPT, and other MCP clients structured search/read access |
-| Dashboard / backup | Operational visibility and recovery support |
+| Indexer | Chunks and indexes Wiki content for semantic retrieval |
+| MCP server | Gives AI clients structured search/read access |
+| Dashboard | Shows content, indexing, activity, and backup status |
+| Backup service | Creates database/application backups for recovery |
+
+## What our fork adds
+
+Our fork adapts Athena to the Data Relay Engineering System.
+
+- GitHub/OpenSpec → Athena synchronization and generated knowledge projections
+- `projects/<project>/...` organization and project-scoped retrieval
+- provenance back to repository, ref, source path, and Git blob
+- safer read-only MCP use for AI clients
+- rationale discipline: do not invent undocumented WHY; use `RATIONALE_UNKNOWN`
+- dependency and CI hardening for our operating model
+
+These additions do not change the authority model: GitHub/OpenSpec remains canonical and Athena remains derived.
+
+## What is already running in the POC
+
+These components are not merely planned. They were already started and exercised on the `dev-dp-mirror` POC host.
+
+| Component | POC state |
+|---|---|
+| Wiki.js | Running and used to view generated knowledge pages |
+| PostgreSQL + pgvector | Running and storing semantic-search chunks |
+| Embedding service | Running with multilingual embeddings |
+| Indexer | Running and indexing current specs + archived decisions |
+| MCP server | Connected successfully from Cursor |
+| Dashboard | Running and reporting index/activity/backup state |
+| Backup | Backup and isolated restore were both validated |
+
+The POC is temporary. The production server is still being provisioned and the above stack has **not yet been migrated to the final OVHcloud host**.
 
 ## Source-of-truth rule
 
@@ -68,7 +106,7 @@ The Data Relay Link POC validated the workflows that matter most for this Engine
 
 This is the basis for replacing Tela as the cross-project searchable knowledge layer.
 
-## Production deployment
+## Production deployment target
 
 The current production target is an **OVHcloud Singapore VPS**.
 
@@ -97,4 +135,6 @@ flowchart LR
     E --> F["Answer with provenance"]
 ~~~
 
-The target end state is **no manual Wiki maintenance**. Humans maintain canonical repository artifacts; Athena synchronizes and indexes the selected durable knowledge automatically.
+The target end state is **no manual Wiki maintenance**. Humans and AI maintain canonical repository artifacts; Athena synchronizes and indexes the selected durable knowledge automatically.
+
+Until the production Athena server is ready, Tela may temporarily hold transition notes so this knowledge does not exist only in chat.

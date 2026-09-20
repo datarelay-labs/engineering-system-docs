@@ -1,13 +1,18 @@
 ---
 title: "Athena 지식 플랫폼"
-description: "GitHub/OpenSpec의 engineering knowledge를 사람이 보고 Cursor와 ChatGPT가 검색할 수 있게 만드는 Athena 구조입니다."
+description: "채택한 오픈소스 Athena가 GitHub/OpenSpec의 engineering knowledge를 사람이 보고 Cursor와 ChatGPT가 검색할 수 있게 만드는 구조입니다."
 ---
 
 # Athena 지식 플랫폼
 
-Athena는 Engineering System의 **derived knowledge 및 retrieval platform**입니다.
+Engineering System에서 말하는 **Athena는 우리가 검토하고 채택한 오픈소스 프로젝트 `jannismilz/athena`를 의미합니다.**
 
-GitHub, OpenSpec, code, test, ADR, release evidence를 대체하지 않습니다. 이들은 계속 canonical source이고, Athena는 여러 프로젝트의 durable engineering knowledge를 검색하고 설명하고 다시 찾기 쉽게 만드는 계층입니다.
+Athena가 모든 knowledge platform을 통칭하는 일반 명칭인 것은 아니고, Data Relay Labs가 기반 Athena 플랫폼을 새로 만든 것도 아닙니다. 우리는 이 오픈소스 프로젝트를 `xdr-labs/athena`로 fork해서 Engineering System 용도에 맞게 보강하고 있습니다.
+
+- Upstream: https://github.com/jannismilz/athena
+- 우리 fork: https://github.com/xdr-labs/athena
+
+Athena는 Engineering System의 **derived knowledge 및 retrieval platform**으로 사용합니다. GitHub, OpenSpec, code, test, ADR, release evidence는 계속 canonical source입니다.
 
 ## Athena는 Wiki.js가 아닙니다
 
@@ -24,20 +29,53 @@ flowchart TB
     M --> C["Cursor"]
     M --> H["ChatGPT / 기타 MCP Client"]
     W --> U["사람의 Browser"]
+    D["Dashboard / Backup"] --> V
 ~~~
 
-쉽게 말하면 **Athena가 전체 지식 시스템**이고, **Wiki.js는 그 안에서 사람이 보는 Wiki UI**입니다.
+쉽게 말하면 **Athena가 우리가 채택한 전체 knowledge platform**이고, **Wiki.js는 그 안에서 사람이 보는 Wiki UI**입니다.
 
-## 주요 구성요소
+## 원래 Athena에 이미 있는 구성요소
+
+아래 구성은 Engineering System을 위해 우리가 새로 만든 것이 아니라 upstream Athena에 원래 포함되어 있습니다.
 
 | 구성요소 | 역할 |
 |---|---|
 | Wiki.js | 사람이 읽는 navigation과 knowledge page |
-| PostgreSQL + pgvector | metadata, page state, vector search 저장 |
+| PostgreSQL + pgvector | Wiki 상태와 semantic vector search 저장 |
 | Embedding service | 문서와 질문을 semantic vector로 변환 |
-| Indexer / sync | 선택된 GitHub/OpenSpec 지식을 가져와 search index 갱신 |
-| MCP server | Cursor, ChatGPT 등 MCP client에 search/read 제공 |
-| Dashboard / backup | 운영 상태 확인과 복구 지원 |
+| Indexer | Wiki content를 chunking/indexing해서 의미 기반 검색 준비 |
+| MCP server | AI client에 structured search/read 제공 |
+| Dashboard | content, indexing, activity, backup 상태 표시 |
+| Backup service | 복구를 위한 database/application backup 생성 |
+
+## 우리 fork에서 추가한 부분
+
+우리는 Athena를 Data Relay Engineering System에 맞추기 위해 다음을 추가했습니다.
+
+- GitHub/OpenSpec → Athena synchronization 및 generated knowledge projection
+- `projects/<project>/...` 구조와 project-scoped retrieval
+- repository, ref, source path, Git blob까지 이어지는 provenance
+- AI client용 read-only MCP hardening
+- 문서에 없는 WHY를 추측하지 않고 `RATIONALE_UNKNOWN`으로 처리하는 rationale discipline
+- dependency 및 CI hardening
+
+이 기능을 추가해도 authority는 바뀌지 않습니다. GitHub/OpenSpec이 canonical이고 Athena는 derived layer입니다.
+
+## 현재 POC에서 이미 실제 동작한 것
+
+아래 구성은 계획만 세운 것이 아닙니다. `dev-dp-mirror` POC 서버에서 이미 실제로 실행하고 검증했습니다.
+
+| 구성요소 | POC 상태 |
+|---|---|
+| Wiki.js | 실행 완료, generated knowledge page 직접 확인 |
+| PostgreSQL + pgvector | 실행 완료, semantic-search chunk 저장 |
+| Embedding service | multilingual embedding으로 실제 검색 성공 |
+| Indexer | current spec + archived decision history 색인 완료 |
+| MCP server | Cursor에서 실제 연결 및 검색 성공 |
+| Dashboard | index/activity/backup 상태 조회 확인 |
+| Backup | backup 생성뿐 아니라 별도 DB restore까지 검증 |
+
+다만 이것은 **POC 서버에 적용된 상태**입니다. 정식 OVHcloud 서버는 아직 provisioning 중이며, 위 stack은 아직 production 서버로 이전하지 않았습니다.
 
 ## Source of Truth 규칙
 
@@ -68,7 +106,7 @@ Data Relay Link POC에서는 Engineering System에 필요한 핵심 흐름을 �
 
 이 결과를 바탕으로 cross-project searchable knowledge layer를 Tela에서 Athena로 전환합니다.
 
-## Production 배포
+## Production 배포 target
 
 현재 production target은 **OVHcloud Singapore VPS**입니다.
 
@@ -98,3 +136,5 @@ flowchart LR
 ~~~
 
 최종 목표는 **Wiki를 사람이 수동으로 관리하지 않는 것**입니다. 사람과 AI는 canonical repository artifact를 관리하고, Athena가 선택된 durable knowledge를 자동으로 동기화하고 색인합니다.
+
+정식 Athena 서버가 준비되기 전까지는 이 transition knowledge가 chat에만 남지 않도록 Tela에 임시로 기록할 수 있습니다.
