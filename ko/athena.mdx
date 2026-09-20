@@ -1,0 +1,100 @@
+---
+title: "Athena 지식 플랫폼"
+description: "GitHub/OpenSpec의 engineering knowledge를 사람이 보고 Cursor와 ChatGPT가 검색할 수 있게 만드는 Athena 구조입니다."
+---
+
+# Athena 지식 플랫폼
+
+Athena는 Engineering System의 **derived knowledge 및 retrieval platform**입니다.
+
+GitHub, OpenSpec, code, test, ADR, release evidence를 대체하지 않습니다. 이들은 계속 canonical source이고, Athena는 여러 프로젝트의 durable engineering knowledge를 검색하고 설명하고 다시 찾기 쉽게 만드는 계층입니다.
+
+## Athena는 Wiki.js가 아닙니다
+
+Wiki.js는 Athena 안에 포함되는 구성요소 중 하나입니다.
+
+~~~mermaid
+flowchart TB
+    G["GitHub / OpenSpec<br/>Canonical Source"] --> S["Sync / Indexer"]
+    S --> W["Wiki.js<br/>사람이 보는 페이지"]
+    S --> E["Embedding Service"]
+    E --> V["PostgreSQL + pgvector<br/>Semantic Index"]
+    W --> V
+    V --> M["Athena MCP Server"]
+    M --> C["Cursor"]
+    M --> H["ChatGPT / 기타 MCP Client"]
+    W --> U["사람의 Browser"]
+~~~
+
+쉽게 말하면 **Athena가 전체 지식 시스템**이고, **Wiki.js는 그 안에서 사람이 보는 Wiki UI**입니다.
+
+## 주요 구성요소
+
+| 구성요소 | 역할 |
+|---|---|
+| Wiki.js | 사람이 읽는 navigation과 knowledge page |
+| PostgreSQL + pgvector | metadata, page state, vector search 저장 |
+| Embedding service | 문서와 질문을 semantic vector로 변환 |
+| Indexer / sync | 선택된 GitHub/OpenSpec 지식을 가져와 search index 갱신 |
+| MCP server | Cursor, ChatGPT 등 MCP client에 search/read 제공 |
+| Dashboard / backup | 운영 상태 확인과 복구 지원 |
+
+## Source of Truth 규칙
+
+Athena는 의도적으로 derived layer입니다.
+
+~~~text
+GitHub / OpenSpec / Code / Tests / ADR
+              ↓
+            Athena
+              ↓
+         검색 / 설명 / 회상
+~~~
+
+Athena와 canonical Git 내용이 충돌하면 **항상 Git이 우선**합니다.
+
+자동 생성된 project page를 authoritative product spec처럼 직접 수정해서는 안 됩니다.
+
+## POC에서 확인한 것
+
+Data Relay Link POC에서는 Engineering System에 필요한 핵심 흐름을 실제로 검증했습니다.
+
+- Cursor가 MCP를 통해 Athena에 연결됨
+- 한국어와 영어 질문 모두 semantic search 가능
+- 현재 계약과 과거 design rationale을 구분해 검색 가능
+- Cursor가 Wiki path와 원본 OpenSpec source path를 함께 반환 가능
+- canonical material에 WHY가 없으면 이유를 만들어내지 않고 `RATIONALE_UNKNOWN`으로 응답
+- current spec과 archived decision history를 함께 색인하면서도 Athena가 source of truth가 되지 않음
+
+이 결과를 바탕으로 cross-project searchable knowledge layer를 Tela에서 Athena로 전환합니다.
+
+## Production 배포
+
+현재 production target은 **OVHcloud Singapore VPS**입니다.
+
+선택한 baseline:
+
+| 항목 | Target |
+|---|---|
+| Provider / Region | OVHcloud / Singapore |
+| OS | Ubuntu 24.04 LTS |
+| Compute | 4 vCore |
+| Memory | 8 GB RAM |
+| Storage | 75 GB NVMe |
+| Backup | Provider automatic backup + Athena application/database backup |
+| 외부 노출 | Reverse proxy를 통한 HTTPS만 공개, 내부 service는 직접 노출하지 않음 |
+
+OVHcloud는 현재 선택한 운영 인프라일 뿐 Engineering System의 normative contract는 아닙니다. 나중에 provider를 바꾸더라도 Athena의 역할과 GitHub의 authority는 그대로 유지됩니다.
+
+## 목표 운영 흐름
+
+~~~mermaid
+flowchart LR
+    A["Repository 변경"] --> B["GitHub/OpenSpec"]
+    B --> C["Athena 자동 Sync"]
+    C --> D["Index / Embedding"]
+    D --> E["Cursor / ChatGPT 검색"]
+    E --> F["근거와 함께 답변"]
+~~~
+
+최종 목표는 **Wiki를 사람이 수동으로 관리하지 않는 것**입니다. 사람과 AI는 canonical repository artifact를 관리하고, Athena가 선택된 durable knowledge를 자동으로 동기화하고 색인합니다.
