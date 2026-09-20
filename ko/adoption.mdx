@@ -7,6 +7,76 @@ description: "새 프로젝트나 기존 Rules가 많은 프로젝트에 Enginee
 
 도입의 목표는 rule을 더 쌓는 것이 아니라 **중복 context를 줄이는 것**입니다.
 
+## 사용자가 요청하는 방식
+
+Engineering System 1.4부터 사용자는 다음처럼 요청하면 됩니다.
+
+~~~text
+이 프로젝트에
+https://github.com/datarelay-labs/engineering-system
+을 적용해줘.
+~~~
+
+AI는 `standards/ADOPTION.md`를 따라 먼저 repository를 감사한 뒤 적용합니다.
+
+~~~mermaid
+flowchart LR
+    A["Inventory"] --> B["Rule 분류"]
+    B --> C["Test / CI / Release 탐색"]
+    C --> D["CI Mode 결정"]
+    D --> E["Deterministic Bootstrap"]
+    E --> F["Adoption Qualification"]
+~~~
+
+## Deterministic Bootstrap
+
+Read-only audit:
+
+~~~bash
+python tools/adopt.py --root /path/to/project --audit
+~~~
+
+Rule/CI 검토 후 적용:
+
+~~~bash
+python tools/adopt.py \
+  --root /path/to/project \
+  --apply \
+  --ack-rule-review \
+  --ci-mode shared \
+  --test-command "<project-native test command>"
+~~~
+
+Bootstrap은 없는 공통 surface만 설치하고 기존 project file을 덮어쓰지 않습니다.
+
+### Fail-closed 조건
+
+다음은 AI가 추측하지 않고 중단합니다.
+
+- dirty worktree
+- 기존 AI/engineering rule 미검토
+- test command 후보가 여러 개
+- existing CI가 있는데 shared/native 책임이 결정되지 않음
+- 기존 adoption을 destructive overwrite해야 함
+- immutable canonical baseline SHA를 확인할 수 없음
+
+## Managed Adoption Identity
+
+1.4 adopted repository는 다음 identity를 기록합니다.
+
+~~~yaml
+engineering_system:
+  version: "1.4.0"
+  mode: adopted
+  baseline: "<40-character canonical commit SHA>"
+  ci_mode: shared
+~~~
+
+`ci_mode`는 `shared` 또는 `native`입니다.
+
+- **shared**: Engineering System reusable affected-test workflow 사용
+- **native**: 기존 project CI를 유지하고 동일 test gate를 중복 실행하지 않음
+
 ## 새 Repository
 
 Canonical template은 다음 repository에서 가져옵니다.
@@ -99,7 +169,23 @@ Custom Instructions에는 전체 표준을 복사하지 않습니다.
 
 ChatGPT가 개발 서버를 직접 감사해야 한다면 Desktop Commander Remote MCP를 연결하고 allowed directory를 필요한 범위로 제한합니다.
 
-## Smoke Test
+## Adoption Qualification
+
+파일이 존재한다는 이유만으로 PASS가 아닙니다.
+
+Managed adoption은 required surface, version/baseline identity, session continuity, baseline-pinned workflow, test metadata, CI ownership, 설정된 release wiring을 검증합니다.
+
+그 다음 실제 repository의 가장 싼 project-native smoke/affected test를 실행해야 합니다.
+
+최종적으로 다음을 deterministic하게 증명한 경우에만:
+
+~~~text
+ENGINEERING_SYSTEM_ADOPTION=PASS
+~~~
+
+라고 판단합니다.
+
+## Session Continuity Smoke Test
 
 ~~~mermaid
 flowchart LR
