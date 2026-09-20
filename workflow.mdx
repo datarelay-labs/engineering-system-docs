@@ -27,8 +27,8 @@ flowchart LR
     When the work is ready for implementation, ChatGPT updates the repository-scoped [AI Work] Issue instead of generating another giant Cursor prompt.
   </Step>
 
-  <Step title="Run /resume in Cursor">
-    Cursor resolves the current repo, branch, HEAD, and active Work Packet, then executes only the current Next Action.
+  <Step title="ChatGPT starts Cursor">
+    When the owner says "Cursor에 넘겨줘", ChatGPT prepares the Work Packet and worktree, starts Cursor CLI on the authorized development server, and hands it the `/work-resume` workflow. The owner normally does not type `/resume` or `/work-resume` manually.
   </Step>
 
   <Step title="Implement and validate">
@@ -49,9 +49,14 @@ flowchart LR
 ~~~text
 ChatGPT:
 "Cursor에 넘겨줘"
+  -> verify GitHub state
+  -> update the active Work Packet
+  -> prepare branch/worktree
+  -> start Cursor CLI and `/work-resume`
 
-Cursor:
-/resume
+To watch a persistent Cursor task:
+agent persist list
+agent persist attach <session>
 
 ChatGPT:
 "Cursor 끝났어. 계속"
@@ -103,9 +108,11 @@ A known deterministic blocker stops expensive downstream validation until it is 
 The same engineering loop is used in two physical modes:
 
 - At a desk, implementation normally runs through the Cursor desktop application on the Mac.
-- While moving, the development Linux server becomes the stable execution environment. Cursor CLI can continue inside `tmux`, and the user can reconnect from a phone over SSH.
-- Cursor sends a Telegram completion notification so the user does not need to watch a long-running terminal session.
-- After notification, the result can be brought back to ChatGPT for review and the next decision.
+- While moving, the development Linux server becomes the stable execution environment. ChatGPT can start Cursor CLI there directly.
+- Cursor-native persistent sessions are preferred when the owner needs to watch or reconnect: `agent persist list` then `agent persist attach <session>`.
+- Ordinary tmux remains useful for generic terminal processes or explicitly shared terminal sessions.
+- Cursor sends a Telegram completion notification so the owner does not need to watch a long-running terminal session.
+- After notification, the owner can simply tell ChatGPT "Cursor 끝났어. 계속"; ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
 - When copied output is not enough, ChatGPT can inspect the authorized development server directly through Desktop Commander.
 
 See [Mobile & Remote Workflow](/mobile-remote-workflow) for the full operating pattern.

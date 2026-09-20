@@ -33,26 +33,39 @@ Primary implementation agent.
 
 Cursor receives repository context, edits code, runs affected tests, and updates the active Work Packet.
 
-The key command is:
-
-~~~text
-/resume
-~~~
-
-The goal is to avoid repeatedly pasting long implementation prompts.
+The normal handoff does not require the owner to type a Cursor command. When the owner says "Cursor에 넘겨줘", ChatGPT updates the repository-scoped Work Packet, prepares the correct worktree, starts Cursor CLI on the authorized development server, and hands it the `/work-resume` workflow.
 
 Cursor is used in two forms:
 
 - **Cursor desktop on macOS** for long desk sessions.
-- **Cursor CLI on the development Linux server** for mobile or remote sessions, typically kept alive inside `tmux`.
+- **Cursor CLI on the development Linux server** for mobile or remote sessions, preferably as a Cursor-native persistent session when reconnectability is needed.
+
+### Cursor persistent sessions
+
+Verified launch form for the installed CLI:
+
+~~~bash
+agent persist --force --trust --workspace <worktree> "<prompt>"
+agent persist list
+agent persist attach <session>
+~~~
+
+`persist` comes before the agent options. Launching a persistent session requires an interactive Linux/macOS TTY. Cursor persistence uses its own tmux server (`-L cursor-agent`), so manage these sessions with `agent persist list` / `attach` rather than ordinary `tmux ls`.
+
+`agent persist stop <session>` intentionally terminates the running session.
 
 The implementation role is the same in both cases: work against the repository, validate the change, and leave durable state outside the terminal session.
 
 ## tmux + phone SSH
 
-For mobile work, `tmux` keeps the coding session alive when SSH disconnects or the phone changes networks.
+Ordinary tmux remains an optional/fallback persistence layer for generic shell, test, server, or explicitly shared terminal sessions.
 
-A phone SSH client is then only a view/control surface. The development Linux server remains the persistent execution environment.
+~~~bash
+tmux ls
+tmux attach -t <session-name>
+~~~
+
+Detach without stopping the task with `Ctrl-b`, then `d`. Cursor-native session persistence should normally use `agent persist` instead.
 
 ## Telegram
 
