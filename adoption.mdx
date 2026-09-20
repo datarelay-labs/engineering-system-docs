@@ -133,7 +133,7 @@ When `AGENTS.md` or `.engineering/*` are missing during resume:
 
 This lets release or feature work continue without accidentally mixing governance adoption into the product change.
 
-## Install the Cursor user /resume command
+## Install the Cursor resume command
 
 On the machine running Cursor:
 
@@ -143,7 +143,7 @@ curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/m
   -o ~/.cursor/commands/resume.md
 ~~~
 
-Then /resume can be used in any adopted repository.
+This provides the continuity command to Cursor. In the normal owner workflow, ChatGPT starts Cursor CLI and hands it the repository `/work-resume` flow; the owner does not need to type `/resume` manually.
 
 ## Add ChatGPT routing, not the whole standard
 
@@ -186,12 +186,13 @@ A simple continuity smoke test is:
 ~~~text
 ChatGPT:
 "Cursor에 넘겨줘"
-
-Cursor:
-/resume
+  -> Work Packet + branch/worktree
+  -> ChatGPT starts Cursor CLI
+  -> Cursor follows `/work-resume`
 
 ChatGPT:
 "Cursor 끝났어. 계속"
+  -> independently verify GitHub/CI/PR/issue/worktree state
 ~~~
 
 If the same workstream resumes without copying a large prompt, the continuity path is working.

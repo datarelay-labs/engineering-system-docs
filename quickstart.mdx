@@ -23,7 +23,7 @@ flowchart LR
 Session continuity depends on both sides being able to read and update repository-scoped GitHub Issues.
 
 - ChatGPT needs GitHub repository access for Work Packet creation/update.
-- Cursor `/resume` needs an available GitHub integration or authenticated `gh`.
+- Cursor session continuity needs an available GitHub integration or authenticated `gh`; ChatGPT normally starts the CLI and hands it `/work-resume`.
 - If neither is available, stop and configure access instead of rebuilding state from pasted historical handoffs.
 
 ## 1. Ask the agent to adopt the repository
@@ -105,9 +105,14 @@ The global instruction only needs to route work correctly:
 ~~~text
 ChatGPT:
 "Cursor에 넘겨줘"
+  -> verify repository/GitHub state
+  -> update the active Work Packet
+  -> prepare branch/worktree
+  -> start Cursor CLI and `/work-resume`
 
-Cursor:
-/resume
+Owner (optional visibility):
+agent persist list
+agent persist attach <session>
 
 ChatGPT:
 "Cursor 끝났어. 계속"
@@ -126,8 +131,8 @@ If the same workstream continues without a giant pasted prompt, the continuity p
     Add searchable decision/history knowledge when rationale must be recovered across projects.
   </Card>
 
-  <Card title="tmux + Phone SSH" icon="terminal" href="/mobile-remote-workflow">
-    Add a persistent remote execution path when work must continue away from the desk.
+  <Card title="Cursor persist / tmux + Phone SSH" icon="terminal" href="/mobile-remote-workflow">
+    Let ChatGPT start Cursor on the development server, then reconnect with `agent persist` or ordinary tmux when appropriate.
   </Card>
 
   <Card title="Telegram" icon="bell">

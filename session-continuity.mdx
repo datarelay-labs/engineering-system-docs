@@ -1,6 +1,6 @@
 ---
 title: "Session Continuity"
-description: "How GitHub AI Work Packets and Cursor /resume replace giant handoffs and repeated prompt copy/paste."
+description: "How GitHub AI Work Packets and ChatGPT-orchestrated Cursor /work-resume replace giant handoffs and repeated prompt copy/paste."
 ---
 
 # Session continuity
@@ -22,7 +22,7 @@ flowchart LR
 
     subgraph AFTER["Now"]
       B1["ChatGPT"] --> B2["GitHub AI Work Packet"]
-      B2 --> B3["Cursor /resume"]
+      B2 --> B3["ChatGPT starts Cursor /work-resume"]
       B3 --> B2
       B2 --> B4["ChatGPT continues"]
     end
@@ -30,6 +30,26 @@ flowchart LR
 
 The earlier loop consumed tokens and required repeated manual copy/paste. The current loop keeps resumable state in the repository-scoped Work Packet.
 
+
+
+## Owner-facing handoff
+
+For the normal workflow the owner says only:
+
+~~~text
+Cursor에 넘겨줘
+~~~
+
+ChatGPT resolves the target repository, updates the active Work Packet, prepares the correct branch/worktree, starts Cursor CLI on the authorized development server, and hands it the `/work-resume` workflow. The owner does not normally start Cursor CLI or type `/resume` manually.
+
+If the Cursor task was started as a persistent session, the owner can watch it with:
+
+~~~bash
+agent persist list
+agent persist attach <session>
+~~~
+
+After completion, the owner can say `Cursor 끝났어. 계속`; ChatGPT then verifies actual GitHub/CI/PR/issue/worktree state instead of trusting copied terminal output.
 
 ## One packet per workstream
 

@@ -1,98 +1,108 @@
 ---
 title: "Mobile & Remote Workflow"
-description: "How the same ChatGPT + Cursor workflow continues when working away from the Mac, using tmux, phone SSH, and Telegram completion notifications."
+description: "How ChatGPT hands work to Cursor CLI, how to observe persistent Cursor sessions, and when ordinary tmux is still useful."
 ---
 
 # Mobile and remote workflow
 
-The engineering workflow is designed to survive changes in location and device.
+The development Linux server is the stable execution environment while the owner can move between Mac, phone, and other clients.
 
-At a desk, the primary implementation environment is the Cursor desktop application on macOS.
+## If you forget everything
 
-When moving between locations, implementation can continue on the development Linux server through Cursor CLI inside a persistent tmux session. A phone SSH client can reconnect to the same server and inspect the running session without requiring the MacBook to stay open.
+1. Open this handbook.
+2. For a normal development handoff, tell ChatGPT: **"Cursor에 넘겨줘"**.
+3. ChatGPT verifies GitHub state, updates the active `[AI Work]` Work Packet, prepares the branch/worktree, and starts Cursor CLI on the authorized development server.
+4. To watch a running persistent Cursor task:
 
-## Two operating modes
+~~~bash
+ssh <development-server>
+agent persist list
+agent persist attach <session>
+~~~
 
-| Situation | Primary interface | Development environment |
-|---|---|---|
-| Long desk session | Cursor desktop on Mac | Remote or local project worktree |
-| Mobile / moving | Phone SSH + tmux | Cursor CLI on development Linux server |
+5. If a task was intentionally launched under ordinary tmux:
 
-The development server becomes the stable execution environment while the user interface can change.
+~~~bash
+tmux ls
+tmux attach -t <session-name>
+~~~
 
-## Mobile loop
+6. After terminal completion, tell ChatGPT: **"Cursor 끝났어. 계속"**. ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
+
+## What "Cursor에 넘겨줘" means
+
+The owner normally does not start Cursor CLI manually. ChatGPT handles the durable handoff end-to-end:
 
 ~~~mermaid
 flowchart LR
-    C["ChatGPT<br/>define next task"] --> L["Development Linux Server"]
-    L --> X["tmux + Cursor CLI"]
-    X --> T["Telegram<br/>completion signal"]
-    T --> P["Phone"]
-    P --> S["SSH reconnect to tmux"]
-    S --> R["Review result"]
-    R --> C
-    C -. when needed .-> D["Desktop Commander<br/>independent audit"]
-    D --> L
+    O["Owner<br/>Cursor에 넘겨줘"] --> C["ChatGPT<br/>verify + orchestrate"]
+    C --> W["Work Packet<br/>branch/worktree"]
+    W --> P["Cursor persistent session<br/>/work-resume"]
+    P --> G["PR · CI · merge"]
+    G --> T["Telegram COMPLETE"]
+    T --> O2["Owner<br/>Cursor 끝났어. 계속"]
+    O2 --> C2["ChatGPT<br/>independent verification"]
 ~~~
 
-## Why tmux matters
+Browser login, account, credential, payment, or approval steps that cannot be completed remotely still require owner interaction.
 
-Mobile SSH sessions are temporary. The engineering task should not be.
+## Cursor persistent sessions
 
-tmux keeps the implementation process alive across:
+Verified launch form for the installed CLI:
 
-- network changes
-- phone lock/unlock
-- SSH disconnects
-- movement between Wi-Fi and mobile networks
-- switching between laptop and phone
-
-This separates the lifetime of the coding task from the lifetime of the terminal connection.
-
-## Telegram as the completion signal
-
-Long-running implementation and test work should not require watching a terminal.
-
-Cursor is configured to send a Telegram message when its task finishes.
-
-The completion signal changes the operating pattern:
-
-~~~mermaid
-flowchart LR
-    A["Start Task"] --> B["Leave Terminal"]
-    B --> C["Long-running Work / Tests"]
-    C --> D["Telegram Completion Message"]
-    D --> E["Return only when action is needed"]
+~~~bash
+agent persist --force --trust --workspace <worktree> "<prompt>"
 ~~~
 
-Telegram is a notification channel only. It is not a source of truth and should not carry secrets or canonical engineering state.
+`persist` must come before `--force`, `--trust`, and `--workspace`. Putting the options before `persist` can bypass the persistence wrapper.
 
-## Current manual seam
-
-The remaining mobile workflow still contains a small manual bridge:
+Launching a persistent session requires an interactive Linux/macOS TTY. A non-interactive shell can fail with:
 
 ~~~text
-Cursor CLI finishes
-  -> Telegram notifies user
-  -> user copies the result
-  -> result is pasted into ChatGPT
-  -> ChatGPT reviews and plans the next action
+Persistence requires an interactive Linux or macOS terminal.
 ~~~
 
-The broader Engineering System is intentionally moving state away from these copied summaries and toward repository-scoped durable state such as GitHub Work Packets.
+The owner normally only needs the management commands:
 
-Even while some mobile steps remain manual, the authority order does not change: repository state, tests, CI, and actual runtime evidence remain more important than copied terminal summaries.
+~~~bash
+agent persist list
+agent persist attach <session>
+agent persist stop <session>
+~~~
 
-## Independent verification
+`stop` terminates the running session and should only be used intentionally. If an older task was launched with non-persistent `agent --print`, a new terminal cannot retroactively attach to that exact stream.
 
-When a result needs deeper review, ChatGPT does not need to rely only on the pasted Cursor summary.
+ChatGPT should report the persistent session name and a ready-to-copy attach command after starting it.
 
-With Desktop Commander Remote MCP connected to the authorized development server, ChatGPT can inspect:
+### Why ordinary `tmux ls` does not show Cursor persistent sessions
 
-- repository HEAD and branch
-- dirty worktree state
-- changed files
-- running processes
-- test output and artifacts
+Cursor persistence uses a separate internal tmux server. The observed process form is:
 
-This makes the mobile workflow practical without turning the phone into the primary debugging interface.
+~~~text
+tmux -u -L cursor-agent ...
+~~~
+
+Therefore use `agent persist list` / `agent persist attach` for Cursor-native persistent sessions. Also avoid assuming that launching `agent persist` from inside an already-running ordinary tmux session creates another Cursor-managed persistent session; the installed CLI can detect `TMUX` and bypass the persistence wrapper.
+
+## Ordinary tmux
+
+Ordinary tmux is still useful for generic shell, test, server, or explicitly shared terminal sessions.
+
+~~~bash
+tmux ls
+tmux attach -t <session-name>
+~~~
+
+Detach without stopping the task with:
+
+~~~text
+Ctrl-b, then d
+~~~
+
+`agent persist` and tmux overlap but solve different layers. Prefer `agent persist` for Cursor-native reconnectability; use ordinary tmux for general terminal persistence.
+
+## Telegram
+
+Telegram is a completion notification channel only. It is not engineering state or a source of truth. `COMPLETE` should be sent only after the workstream is terminally complete.
+
+The authoritative state remains the repository, tests, CI, PR/issue state, and actual runtime evidence.
