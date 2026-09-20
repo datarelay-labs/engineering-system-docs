@@ -1,6 +1,6 @@
 ---
 title: "Session Continuity"
-description: "GitHub AI Work Packet과 Cursor /resume으로 긴 Handoff와 반복적인 prompt 복붙을 없애는 방법"
+description: "GitHub AI Work Packet과 Cursor /work-resume으로 긴 Handoff와 반복적인 prompt 복붙을 없애는 방법"
 ---
 
 # Session Continuity
@@ -22,7 +22,7 @@ flowchart LR
 
     subgraph AFTER["현재"]
       B1["ChatGPT"] --> B2["GitHub AI Work Packet"]
-      B2 --> B3["Cursor /resume"]
+      B2 --> B3["Cursor /work-resume"]
       B3 --> B2
       B2 --> B4["ChatGPT 계속"]
     end
@@ -30,7 +30,7 @@ flowchart LR
 
 이전 방식은 토큰을 쓰고 사용자가 계속 복사·붙여넣기를 해야 했습니다.
 
-현재 방식은 같은 Work Packet을 ChatGPT와 Cursor가 함께 사용합니다.
+현재 방식은 같은 Work Packet을 ChatGPT와 Cursor가 함께 사용합니다. 「Cursor에 넘겨줘」라고 하면 ChatGPT가 Work Packet을 준비한 뒤 Cursor CLI를 시작하고 `/work-resume`을 넘깁니다. 소유자가 평소에 명령을 직접 칠 필요는 없습니다.
 
 ## Work Packet 단위
 

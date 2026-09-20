@@ -1,6 +1,6 @@
 ---
 title: "사용 도구"
-description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tmux, Telegram의 역할"
+description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, agent persist, tmux, Telegram의 역할"
 ---
 
 # 사용 도구
@@ -31,19 +31,34 @@ flowchart LR
 
 Cursor는 repository를 수정하고 affected test를 실행하며 active Work Packet을 갱신합니다.
 
-책상에서는 macOS의 Cursor Desktop을 사용하고, 이동 중에는 개발 Linux 서버에서 Cursor CLI를 tmux 안에 실행합니다.
+책상에서는 macOS의 Cursor Desktop을 사용할 수 있습니다. 이동 중·원격 구현의 기본 orchestration은 ChatGPT가 개발 Linux 서버에서 Cursor CLI를 직접 시작하는 것입니다. 소유자가 평소에 CLI를 수동으로 띄울 필요는 없습니다.
 
-## tmux + 휴대폰 SSH
+## agent persist (권장)
 
-tmux는 SSH가 끊겨도 작업 프로세스를 유지합니다.
+Cursor-native persistent session입니다. SSH가 끊겨도 session이 남고, 소유자가 다시 붙어 진행을 볼 수 있습니다.
 
-휴대폰은 단지 접속 화면이고, 실제 실행 환경은 계속 개발 Linux 서버에 남아 있습니다.
+~~~bash
+agent persist list
+agent persist attach <session>
+~~~
+
+`agent persist stop <session>`은 실행 중인 session을 끊는 파괴적 명령이므로 의도적으로만 사용합니다.
+
+ChatGPT가 소유자 가시성/재접속이 필요한 작업을 시작할 때 권장 기본값입니다. 자세한 흐름은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
+
+## tmux + 휴대폰 SSH (선택·fallback)
+
+tmux는 Cursor를 named tmux session 안에서 띄운 경우의 optional/fallback terminal persistence입니다.
+
+SSH가 끊겨도 터미널 프로세스를 유지하고, `tmux attach -t <session-name>`으로 같은 터미널에 다시 붙습니다. detach는 `Ctrl-b`, 그다음 `d`입니다.
+
+휴대폰은 단지 접속 화면이고, 실제 실행 환경은 계속 개발 Linux 서버에 남아 있습니다. Cursor session 자체에는 `agent persist`를 우선합니다.
 
 ## Telegram
 
 Cursor 작업이 끝나면 Telegram으로 완료 메시지를 보내도록 구성했습니다.
 
-Telegram의 역할은 **알림**뿐입니다. Engineering state, evidence, source of truth로 사용하지 않습니다.
+Telegram의 역할은 **알림**뿐입니다. Engineering state, evidence, source of truth로 사용하지 않습니다. COMPLETE는 workstream terminal 완료 시점에만 보냅니다.
 
 ## GitHub
 

@@ -23,7 +23,7 @@ flowchart LR
 Session Continuity는 ChatGPT와 Cursor가 repository-scoped GitHub Issue를 읽고 갱신할 수 있어야 합니다.
 
 - ChatGPT는 Work Packet 생성·갱신을 위한 GitHub repository 접근이 필요합니다.
-- Cursor `/resume`은 사용 가능한 GitHub integration 또는 인증된 `gh`가 필요합니다.
+- Cursor `/work-resume`은 사용 가능한 GitHub integration 또는 인증된 `gh`가 필요합니다. 평소에는 ChatGPT가 Cursor CLI를 시작하고 `/work-resume`을 넘깁니다.
 - 둘 다 없다면 과거 Handoff를 다시 복붙해서 복원하지 말고 GitHub 접근부터 구성합니다.
 
 ## 1. AI에게 Repository Adoption 요청
@@ -105,15 +105,16 @@ Global instruction은 routing만 담당하면 됩니다.
 ~~~text
 ChatGPT:
 "Cursor에 넘겨줘"
-
-Cursor:
-/resume
+  → ChatGPT가 Work Packet을 준비하고 Cursor CLI(/work-resume)를 시작
 
 ChatGPT:
 "Cursor 끝났어. 계속"
+  → ChatGPT가 GitHub/CI/PR/issue/worktree를 독립 재검증
 ~~~
 
-긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상입니다.
+소유자가 평소에 `/resume`이나 `/work-resume`을 직접 칠 필요는 없습니다. 긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상입니다.
+
+실행 중 Cursor를 보는 방법과 tmux fallback은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
 ## 6. 실제 문제가 생길 때 선택 도구 추가
 
@@ -126,8 +127,8 @@ ChatGPT:
     여러 프로젝트에서 결정 이유와 히스토리를 검색해야 할 때 knowledge layer를 추가합니다.
   </Card>
 
-  <Card title="tmux + 휴대폰 SSH" icon="terminal" href="/ko/mobile-remote-workflow">
-    이동 중에도 작업을 계속해야 할 때 persistent remote execution path를 추가합니다.
+  <Card title="agent persist / tmux + 휴대폰 SSH" icon="terminal" href="/ko/mobile-remote-workflow">
+    이동 중에도 ChatGPT가 시작한 Cursor를 보거나 다시 붙어야 할 때 remote observation path를 추가합니다.
   </Card>
 
   <Card title="Telegram" icon="bell">

@@ -135,9 +135,9 @@ Resume 시 `AGENTS.md` 또는 `.engineering/*`가 없다면:
 
 이렇게 하면 release/feature 작업과 governance adoption이 섞이지 않습니다.
 
-## Cursor User /resume 설치
+## Cursor User resume command 설치
 
-Cursor를 실행하는 Mac에서:
+Desktop에서 직접 resume이 필요할 때를 위해 Mac에 command를 둘 수 있습니다.
 
 ~~~bash
 mkdir -p ~/.cursor/commands
@@ -145,13 +145,7 @@ curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/m
   -o ~/.cursor/commands/resume.md
 ~~~
 
-그 다음 repository에서:
-
-~~~text
-/resume
-~~~
-
-을 사용합니다.
+개발 서버에서 ChatGPT가 Cursor CLI를 띄우는 **일반 원격 handoff**의 기본값은 `/work-resume`이며, 소유자가 평소에 `/resume`을 직접 칠 필요는 없습니다. 자세한 관찰·재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
 ## ChatGPT Custom Instructions는 짧게
 
@@ -190,9 +184,9 @@ ENGINEERING_SYSTEM_ADOPTION=PASS
 ~~~mermaid
 flowchart LR
     A["ChatGPT<br/>Cursor에 넘겨줘"] --> B["AI Work Packet"]
-    B --> C["Cursor<br/>/resume"]
+    B --> C["ChatGPT가 Cursor CLI 시작<br/>/work-resume"]
     C --> B
     B --> D["ChatGPT<br/>Cursor 끝났어. 계속"]
 ~~~
 
-긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상 동작하는 것입니다.
+긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상 동작하는 것입니다. 소유자가 평소에 `/resume`이나 `/work-resume`을 직접 칠 필요는 없습니다.
