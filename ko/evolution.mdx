@@ -18,7 +18,7 @@ description: "실제 불편에서 출발해 현재 Engineering System으로 발�
 | ChatGPT Handoff가 너무 김 | Continuation Prompt | 같은 Work Packet + 짧은 bootstrap |
 | 아이디어 단계부터 coding agent 비용 증가 | 한 도구에서 전부 수행 | ChatGPT 설계 → Cursor 구현 |
 | 서버 실제 상태 확인이 어려움 | shell output 복붙 | Desktop Commander 직접 감사 |
-| 이동 중 긴 작업 유지 어려움 | terminal/device 종속 | Cursor CLI + `agent persist` / tmux + 휴대폰 SSH |
+| 이동 중 긴 작업 유지 어려움 | terminal/device 종속 | Cursor CLI + `agent persist` + 휴대폰 SSH |
 | Cursor 완료 여부 반복 확인 | terminal polling | Telegram 완료 알림 |
 | Full Suite 과다 실행 | 변경마다 broad validation | affected-first, release boundary full qualification |
 | 오래된 PASS 재사용 위험 | historical evidence | exact-HEAD qualification |
@@ -32,7 +32,7 @@ flowchart LR
     C --> D["AI Work Packet<br/>세션 연속성"]
     D --> E["Cursor /resume"]
     E --> F["Desktop Commander<br/>독립 감사"]
-    F --> G["tmux + Telegram<br/>모바일 운영"]
+    F --> G["agent persist + Telegram<br/>모바일 운영"]
 ~~~
 
 ## 왜 GitHub 중심으로 돌아왔는가
