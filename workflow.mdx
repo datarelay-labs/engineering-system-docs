@@ -24,7 +24,7 @@ flowchart LR
   </Step>
 
   <Step title="Create or update the AI Work Packet">
-    When the work is ready for implementation, ChatGPT updates the repository-scoped [AI Work] Issue instead of generating another giant Cursor prompt.
+    When the work is ready for implementation, ChatGPT updates the repository-scoped [AI Work] Issue instead of generating another giant Cursor prompt. Before handoff it refreshes `TASK_KIND` and `OWNER_INTENT` from the owner's latest explicit request and verifies that `Next Action` actually advances them; stale release/cleanup/test phases are not carried forward automatically.
   </Step>
 
   <Step title="ChatGPT starts Cursor">

@@ -46,12 +46,14 @@ Work Packet은 일기가 아니라 current-state record입니다.
 
 ## 기본 구조
 
-~~~text
-PACKET_VERSION=1
+```text
+PACKET_VERSION=2
 TARGET_REPO=owner/repository
 WORKSTREAM=stable-slug
 STATUS=ACTIVE|PAUSED|BLOCKED|COMPLETE
 BRANCH=branch-name|N/A
+TASK_KIND=DESIGN|DEVELOPMENT|TEST|REVIEW|RELEASE|OPERATIONS|ADOPTION|DOCUMENTATION|CLEANUP|MIXED
+OWNER_INTENT=사용자가 지금 명시적으로 요청한 작업 한 줄
 LAST_VERIFIED_HEAD=sha
 
 Goal
@@ -61,7 +63,7 @@ Constraints
 Canonical References
 Latest Evidence
 Blockers
-~~~
+```
 
 ## Work Packet Lifecycle
 
@@ -89,6 +91,12 @@ flowchart TD
 ~~~
 
 LAST_VERIFIED_HEAD는 참고값일 뿐 현재 truth로 사용하지 않습니다.
+
+Work Packet v2는 오래된 handoff scope가 그대로 실행되는 것도 막습니다. Cursor handoff 전에 ChatGPT가 사용자의 **가장 최근 명시적 요청**을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 갱신하고, `Next Action`이 stable `Goal`과 현재 intent를 실제로 전진시키는지 확인합니다. 서로 충돌하면 구현 agent는 예전 release/cleanup/validation 단계로 진행하지 않고 `WORK_PACKET_SCOPE_MISMATCH`로 중단합니다.
+
+`STATUS`는 `ACTIVE`, `PAUSED`, `BLOCKED`, `COMPLETE` 네 개만 사용합니다. `CURSOR_READY`, `WAITING`, `DONE` 같은 값을 새 lifecycle 상태로 만들지 않습니다. Cursor 준비 상태는 `STATUS=ACTIVE` + 유효한 `Next Action`으로 표현하고, machine-observable wait는 Current State/Latest Evidence에 기록합니다.
+
+Repository 구현을 시작하려면 local shell/process와 Git context가 실제로 동작해야 합니다. shell을 시작할 수 없으면 Athena나 unrelated repository, 과거 transcript를 뒤지는 대신 `ENVIRONMENT_BLOCKER`로 중단합니다.
 
 ## 왜 HANDOFF.md가 아닌가
 

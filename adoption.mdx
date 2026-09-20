@@ -9,13 +9,15 @@ Adoption should reduce context, not add another layer of duplicate rules.
 
 ## The intended entrypoint
 
-With Engineering System 1.5.1, the user-facing request can be:
+The user-facing entrypoint is deliberately version-independent:
 
 ~~~text
 Apply https://github.com/datarelay-labs/engineering-system to this project.
 ~~~
 
-The agent then follows `standards/ADOPTION.md` and performs a repository-specific audit before changing files.
+The agent resolves the exact target repository, obtains the canonical Engineering System from that URL, pins an immutable canonical baseline SHA, then follows `standards/ADOPTION.md` and performs a repository-specific audit before changing files.
+
+The target repository does **not** need to contain `tools/adopt.py` beforehand. The agent may use an authenticated GitHub integration or a separate temporary checkout of `datarelay-labs/engineering-system`, then run the canonical helper against the target root. The canonical source is tooling; it is not vendored into the product repository.
 
 ~~~mermaid
 flowchart LR
@@ -60,10 +62,11 @@ Adoption stops instead of guessing when:
 
 ## Managed adoption identity
 
-Engineering System 1.5.1 adopted repositories record enough identity to prove exactly which canonical standard and which project-native gates are in force:
-~~~yaml
+Managed adopted repositories record enough identity to prove exactly which canonical standard and which project-native gates are in force:
+
+```yaml
 engineering_system:
-  version: "1.5.1"
+  version: "1.6.0"
   mode: adopted
   baseline: "<40-character canonical commit SHA>"
   ci_mode: native
@@ -75,7 +78,7 @@ operations:
   production_oriented: true
   runbook_required: true
   incident_response_required: true
-~~~
+```
 
 `ci_mode` can be `shared` or `native`.
 
@@ -84,9 +87,15 @@ operations:
 - `merge_gate_status` is `verified`, `advisory`, or `unknown`; never infer branch protection merely because workflows exist.
 - Production-oriented repositories explicitly record runbook and incident-response posture.
 
-Engineering System 1.5 also routes material design-bearing changes through the lightweight `standards/DESIGN.md` gate and production-impacting failures through `standards/OPERATIONS.md`. This does not require a new design document or incident document for every task; the smallest durable artifact that fits the decision remains preferred.
+Current managed adoption also routes material design-bearing changes through the lightweight `standards/DESIGN.md` gate and production-impacting failures through `standards/OPERATIONS.md`. For production-oriented projects it records project-native runbook/health/recovery contracts, reconciles observable GitHub merge enforcement, and uses an executable release contract when real project-native commands exist. This does not require a new design document or incident document for every task; the smallest durable artifact that fits the decision remains preferred.
 
-## New repository
+## New or empty repository
+
+A brand-new project still needs an explicit Git repository boundary because branch, HEAD, history, and reviewable change are part of the safety model. Establish or initialize the intended repository first, then use the same link-only adoption flow.
+
+If there is genuinely no executable product code yet, `--allow-no-tests` may be used as a temporary bootstrap state. It is not a permanent testing exemption: once executable implementation begins, establish real project-native tests and update the affected-test contract before normal development/release qualification is considered complete.
+
+Do not invent a framework, product architecture, release command, or operations contract merely to make adoption look complete.
 
 Start with the canonical templates from:
 
