@@ -56,8 +56,9 @@ flowchart TB
 - `projects/<project>/...` 구조와 project-scoped retrieval
 - repository, ref, source path, Git blob까지 이어지는 provenance
 - AI client용 read-only MCP hardening
-- 문서에 없는 WHY를 추측하지 않고 `RATIONALE_UNKNOWN`으로 처리하는 rationale discipline
 - dependency 및 CI hardening
+
+`RATIONALE_UNKNOWN`은 **upstream Athena의 내장 기능이나 fork에 hard-code된 기능이 아니라, POC에서 검증한 Engineering System 사용 규칙**입니다. AI client에게 canonical material에 WHY가 없으면 추측하지 말고 이 상태를 명시하도록 지시합니다.
 
 이 기능을 추가해도 authority는 바뀌지 않습니다. GitHub/OpenSpec이 canonical이고 Athena는 derived layer입니다.
 
