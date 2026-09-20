@@ -122,6 +122,14 @@ Engineering System 1.5 tightened the places where an AI agent should not guess:
 
 The intent is not more paperwork. It is to make hidden operational assumptions explicit while keeping implementation context small.
 
+## 1.5.1 made review feedback explicit
+
+A real product PR exposed another gap: required CI could be green while a configured automated reviewer had already left an actionable finding in a non-blocking `COMMENTED` review.
+
+Engineering System 1.5.1 therefore separates **review state** from **review content**. Before merge or terminal completion, actionable feedback must be fixed and revalidated or explicitly dispositioned with evidence. Advisory review status alone is never treated as proof that review is complete.
+
+This keeps the gate lightweight: it does not require every comment to become an approval, only that actionable findings are not silently ignored.
+
 ## Design principle
 
 The system keeps evolving under one constraint:

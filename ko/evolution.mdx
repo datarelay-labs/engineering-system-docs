@@ -106,6 +106,14 @@ Engineering System 1.5는 AI가 추측하면 안 되는 경계를 더 명확히 
 
 목표는 문서를 늘리는 것이 아니라 숨어 있던 운영 가정을 명시하면서 implementation context는 작게 유지하는 것입니다.
 
+## 1.5.1에서는 Review Feedback을 명시적 Gate로 만들었다
+
+실제 product PR에서 required CI는 모두 통과했지만, configured automated reviewer가 non-blocking `COMMENTED` review에 actionable finding을 남긴 상태로 merge될 수 있는 문제가 확인됐습니다.
+
+Engineering System 1.5.1은 그래서 **review 상태**와 **review 내용**을 분리합니다. Merge 또는 terminal completion 전에 actionable feedback은 수정 후 재검증하거나, non-actionable이라고 판단한 근거를 명시적으로 남겨야 합니다. Advisory review status만으로 review 완료를 판단하지 않습니다.
+
+모든 comment에 approval을 요구하는 무거운 절차가 아니라, 실제 actionable finding이 조용히 무시되지 않도록 하는 최소 correctness gate입니다.
+
 ## 설계 원칙
 
 > 반복 수작업을 없애거나 correctness를 명확히 높이는 경우에만 automation을 추가합니다.

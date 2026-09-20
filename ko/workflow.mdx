@@ -85,3 +85,14 @@ flowchart TD
 ~~~
 
 Known deterministic blocker가 있으면 expensive downstream qualification을 시작하지 않습니다.
+
+## Review feedback도 Merge Gate다
+
+Engineering System 1.5.1부터 review 처리는 상태값이 아니라 **실제 review 내용**을 기준으로 합니다.
+
+Merge 또는 terminal completion 전에 현재 구현 agent가 machine-observable PR review submission, top-level comment, inline feedback을 확인합니다. 사람 reviewer나 설정된 automated reviewer의 actionable finding은 다음 둘 중 하나로 처리해야 합니다.
+
+- 실제 수정 후 affected validation을 다시 실행
+- non-actionable / out of scope / incorrect라고 판단한다면 짧은 근거를 남겨 disposition
+
+`COMMENTED`나 advisory 상태 자체가 자동 PASS 또는 FAIL을 의미하지 않습니다. **내용이 기준**이며, actionable review feedback이 미처리된 상태에서는 merge하거나 workstream을 완료 처리하지 않습니다.
