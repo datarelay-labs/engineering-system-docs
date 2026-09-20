@@ -26,24 +26,57 @@ Session continuity depends on both sides being able to read and update repositor
 - Cursor `/resume` needs an available GitHub integration or authenticated `gh`.
 - If neither is available, stop and configure access instead of rebuilding state from pasted historical handoffs.
 
-## 1. Add the repository entrypoint
+## 1. Ask the agent to adopt the repository
 
-A base Engineering System adoption needs:
+The intended 1.4 entrypoint is now simply:
+
+~~~text
+Apply https://github.com/datarelay-labs/engineering-system to this project.
+~~~
+
+The agent should not blindly copy files. It should follow the canonical adoption standard:
+
+~~~text
+Inventory repository
+  -> classify existing AI / engineering rules
+  -> discover native tests / CI / release flow
+  -> preserve project-specific and stricter invariants
+  -> choose shared or native CI explicitly
+  -> bootstrap missing Engineering System surfaces
+  -> qualify adoption
+~~~
+
+The deterministic helper supports a read-only audit:
+
+~~~bash
+python tools/adopt.py --root /path/to/project --audit
+~~~
+
+and a bounded bootstrap after the project-specific decisions are known.
+
+Managed 1.4 adoption pins both the Engineering System version and an immutable canonical baseline SHA.
+
+## 2. What managed adoption installs
+
+A managed adoption prepares:
 
 ~~~text
 AGENTS.md
 .engineering/project.yaml
 .engineering/tests.yaml
 .engineering/release.yaml
+.cursor/rules/engineering-system.mdc
+.cursor/commands/resume.md
+.github/ISSUE_TEMPLATE/ai-work-packet.md
+.github/workflows/engineering-system.yml
 ~~~
 
-Use the canonical templates from:
+If an explicit project-native release qualification command is known, release preflight/gate wiring can also be generated.
 
-[github.com/datarelay-labs/engineering-system](https://github.com/datarelay-labs/engineering-system)
+Existing project files are preserved by default. Dirty worktrees, unreviewed AI rules, ambiguous test commands, existing CI without an explicit shared/native decision, and destructive upgrades fail closed.
 
-Pin the Engineering System version in the repository instead of silently following an unknown future version.
+## 3. Session continuity
 
-## 2. Add session continuity only if you use it
 
 For ChatGPT ↔ Cursor resume workflow, add:
 
@@ -54,7 +87,7 @@ For ChatGPT ↔ Cursor resume workflow, add:
 
 The optional repository Cursor rule can also point agents at the canonical Engineering System.
 
-## 3. Keep ChatGPT instructions short
+## 4. Keep ChatGPT instructions short
 
 ChatGPT does not need a copy of the entire standard in Custom Instructions.
 
@@ -67,7 +100,7 @@ The global instruction only needs to route work correctly:
 - verify current Git/GitHub state before acting
 - never claim unexecuted or different-HEAD evidence as PASS
 
-## 4. Run the first workflow
+## 5. Run the first workflow
 
 ~~~text
 ChatGPT:
@@ -82,7 +115,7 @@ ChatGPT:
 
 If the same workstream continues without a giant pasted prompt, the continuity path is working.
 
-## 5. Add optional layers when they solve a real problem
+## 6. Add optional layers when they solve a real problem
 
 <CardGroup cols={2}>
   <Card title="Desktop Commander" icon="terminal" href="/remote-audit">
