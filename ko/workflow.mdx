@@ -47,10 +47,16 @@ ChatGPT:
 "Cursor에 넘겨줘"
   → ChatGPT가 Work Packet을 준비하고 Cursor CLI(/work-resume)를 시작
 
-실행 중 Cursor 보기 (권장):
+실행 중 Cursor를 직접 보기:
 ssh <development-server>
 agent persist list
 agent persist attach <session>
+
+또는 ChatGPT에게 직접 확인 요청:
+"Cursor 진행사항 확인해줘"
+"Full Suite 언제 끝날 것 같아?"
+  → ChatGPT가 승인된 개발 서버의 Cursor/session/test 상태와 GitHub 상태를 직접 확인
+  → 현재 작업, 진행률, blocker, 근거 기반 완료 예상 시간 범위를 요약
 
 ChatGPT:
 "Cursor 끝났어. 계속"
@@ -61,6 +67,8 @@ ChatGPT:
 ~~~
 
 자세한 모바일·원격 관찰 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
+
+사용자는 진행 상황을 보기 위해 반드시 `agent persist attach`를 직접 실행할 필요는 없습니다. 상태 확인만 필요하면 ChatGPT가 실제 Cursor process/session, 현재 test, exact HEAD, working tree, Work Packet, PR/CI를 확인한 뒤 요약할 수 있습니다. 완료 시간 질문에는 현재 test 위치와 남은 long-running test 같은 관측 가능한 근거로 **범위형 ETA**를 제공하며, 근거가 부족하면 임의의 시간을 만들지 않습니다.
 
 ## 왜 ChatGPT를 먼저 쓰는가
 
