@@ -28,13 +28,13 @@ Session continuity depends on both sides being able to read and update repositor
 
 ## 1. Ask the agent to adopt the repository
 
-The intended 1.5.1 entrypoint remains simply:
+The intended entrypoint is deliberately version-independent:
 
 ~~~text
 Apply https://github.com/datarelay-labs/engineering-system to this project.
 ~~~
 
-The agent should not blindly copy files. It should follow the canonical adoption standard:
+The agent should not blindly copy files. It first resolves the target repository and canonical source/baseline from the supplied URL, then follows the canonical adoption standard:
 
 ~~~text
 Inventory repository
@@ -54,7 +54,7 @@ python tools/adopt.py --root /path/to/project --audit
 
 and a bounded bootstrap after the project-specific decisions are known.
 
-Managed 1.5.1 adoption pins both the Engineering System version and an immutable canonical baseline SHA. It also records shared/native CI ownership, merge-gate enforcement state, and explicit operations posture so agents do not infer those facts from workflow presence alone.
+Managed adoption first obtains the canonical Engineering System from the supplied URL, pins both the version and an immutable canonical baseline SHA, and then records shared/native CI ownership, merge-gate enforcement state, and explicit operations posture so agents do not infer those facts from workflow presence alone. A new/empty repository establishes its Git boundary first; `--allow-no-tests` is only a temporary bootstrap state while no executable test target exists.
 
 ## 2. What managed adoption installs
 
@@ -96,7 +96,7 @@ The global instruction only needs to route work correctly:
 - identify the target repository first
 - use the canonical Engineering System
 - load minimal task-relevant context
-- use the repository Work Packet for handoff/resume
+- use the repository Work Packet for handoff/resume and synchronize `TASK_KIND` / `OWNER_INTENT` with the owner's latest explicit request before implementation handoff
 - verify current Git/GitHub state before acting
 - never claim unexecuted or different-HEAD evidence as PASS
 

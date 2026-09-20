@@ -67,14 +67,16 @@ A Work Packet is not a project diary. It is a current-state record.
 
 ## Required identity
 
-~~~text
-PACKET_VERSION=1
+```text
+PACKET_VERSION=2
 TARGET_REPO=owner/repository
 WORKSTREAM=stable-slug
 STATUS=ACTIVE|PAUSED|BLOCKED|COMPLETE
 BRANCH=branch-name|N/A
+TASK_KIND=DESIGN|DEVELOPMENT|TEST|REVIEW|RELEASE|OPERATIONS|ADOPTION|DOCUMENTATION|CLEANUP|MIXED
+OWNER_INTENT=one concise line describing the owner's current explicit request
 LAST_VERIFIED_HEAD=sha
-~~~
+```
 
 Its main sections are:
 
@@ -118,6 +120,12 @@ Cursor and ChatGPT do not guess when the current workstream is ambiguous.
 The resolver first determines the repository, then requires the matching active packet. If there are zero or multiple valid matches, it stops and asks for the minimum clarification needed.
 
 LAST_VERIFIED_HEAD is advisory only. Current Git state must always be rechecked.
+
+Work Packet v2 also prevents stale handoff scope. Before implementation handoff, ChatGPT refreshes `TASK_KIND` and `OWNER_INTENT` from the owner's latest explicit request and verifies that `Next Action` directly advances both the stable `Goal` and current intent. If they materially disagree, the implementation agent stops with `WORK_PACKET_SCOPE_MISMATCH` instead of executing an older release, cleanup, or validation phase.
+
+`STATUS` has only four canonical values: `ACTIVE`, `PAUSED`, `BLOCKED`, and `COMPLETE`. Readiness or waiting states such as `CURSOR_READY`, `WAITING`, or `DONE` are not lifecycle states; readiness is `ACTIVE` plus a valid `Next Action`, and machine-observable waiting evidence belongs in Current State/Latest Evidence.
+
+Cursor also requires a usable local shell/process and Git context for repository implementation. If that environment cannot start, it reports `ENVIRONMENT_BLOCKER` rather than trying Athena, unrelated repositories, or old transcripts as a substitute for local repository identity.
 
 ## Why GitHub Issue instead of HANDOFF.md
 

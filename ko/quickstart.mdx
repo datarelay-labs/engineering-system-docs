@@ -28,7 +28,7 @@ Session Continuity는 ChatGPT와 Cursor가 repository-scoped GitHub Issue를 읽
 
 ## 1. AI에게 Repository Adoption 요청
 
-1.5.1에서도 의도한 시작 방법은 동일하게 단순합니다.
+의도한 시작 방법은 버전과 무관하게 동일하게 단순합니다.
 
 ~~~text
 이 프로젝트에
@@ -54,7 +54,7 @@ Deterministic helper로 먼저 read-only audit을 할 수 있습니다.
 python tools/adopt.py --root /path/to/project --audit
 ~~~
 
-Managed 1.5.1 adoption은 Engineering System version과 immutable canonical baseline SHA를 함께 pin합니다. 또한 shared/native CI ownership, merge-gate enforcement state, operations posture를 명시해 workflow가 존재한다는 이유만으로 AI가 책임 범위를 추측하지 않게 합니다.
+Managed adoption은 제공된 URL에서 canonical Engineering System을 확보한 뒤 version과 immutable canonical baseline SHA를 함께 pin합니다. 또한 shared/native CI ownership, merge-gate enforcement state, operations posture를 명시해 workflow가 존재한다는 이유만으로 AI가 책임 범위를 추측하지 않게 합니다. 새/빈 repository는 먼저 Git 경계를 만들고, `--allow-no-tests`는 실행 가능한 test target이 아직 없을 때만 임시 bootstrap 상태로 사용합니다.
 
 ## 2. Managed Adoption이 준비하는 것
 
@@ -96,7 +96,7 @@ Global instruction은 routing만 담당하면 됩니다.
 - target repository 먼저 식별
 - canonical Engineering System 사용
 - 현재 작업에 필요한 context만 로드
-- handoff/resume은 repository Work Packet 사용
+- handoff/resume은 repository Work Packet을 사용하고 구현 handoff 직전에 사용자의 최신 명시적 요청으로 `TASK_KIND` / `OWNER_INTENT`를 동기화
 - 실행 전에 실제 Git/GitHub 상태 재검증
 - 실행하지 않았거나 다른 HEAD의 evidence를 PASS로 사용하지 않기
 
