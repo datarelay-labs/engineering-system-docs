@@ -38,34 +38,22 @@ The normal handoff does not require the owner to type a Cursor command. When the
 Cursor is used in two forms:
 
 - **Cursor desktop on macOS** for long desk sessions.
-- **Cursor CLI on the development Linux server** for mobile or remote sessions, preferably as a Cursor-native persistent session when reconnectability is needed.
+- **Cursor CLI on the development Linux server** for mobile or remote sessions, using a Cursor-native persistent session for ChatGPT-orchestrated handoffs.
 
 ### Cursor persistent sessions
 
-Verified launch form for the installed CLI:
+Normal ChatGPT-orchestrated launch:
 
 ~~~bash
-agent persist --force --trust --workspace <worktree> "<prompt>"
+cd <target-worktree>
+agent persist /work-resume
 agent persist list
 agent persist attach <session>
 ~~~
 
-`persist` comes before the agent options. Launching a persistent session requires an interactive Linux/macOS TTY. Cursor persistence uses its own tmux server (`-L cursor-agent`), so manage these sessions with `agent persist list` / `attach` rather than ordinary `tmux ls`.
+ChatGPT verifies the target worktree first and must confirm the session appears in `agent persist list` before reporting a successful handoff. `agent persist stop <session>` intentionally terminates the running session.
 
-`agent persist stop <session>` intentionally terminates the running session.
-
-The implementation role is the same in both cases: work against the repository, validate the change, and leave durable state outside the terminal session.
-
-## tmux + phone SSH
-
-Ordinary tmux remains an optional/fallback persistence layer for generic shell, test, server, or explicitly shared terminal sessions.
-
-~~~bash
-tmux ls
-tmux attach -t <session-name>
-~~~
-
-Detach without stopping the task with `Ctrl-b`, then `d`. Cursor-native session persistence should normally use `agent persist` instead.
+A non-persistent `--print` process is not the normal handoff because the owner cannot later attach to that session; ChatGPT must not use that fallback unless the owner explicitly permits it.
 
 ## Telegram
 

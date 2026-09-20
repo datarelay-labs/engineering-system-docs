@@ -1,6 +1,6 @@
 ---
 title: "Mobile & Remote Workflow"
-description: "How ChatGPT hands work to Cursor CLI, how to observe persistent Cursor sessions, and when ordinary tmux is still useful."
+description: "How ChatGPT hands work to Cursor through a GitHub Work Packet and an observable persistent Cursor session."
 ---
 
 # Mobile and remote workflow
@@ -20,14 +20,7 @@ agent persist list
 agent persist attach <session>
 ~~~
 
-5. If a task was intentionally launched under ordinary tmux:
-
-~~~bash
-tmux ls
-tmux attach -t <session-name>
-~~~
-
-6. After terminal completion, tell ChatGPT: **"Cursor 끝났어. 계속"**. ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
+5. After terminal completion, tell ChatGPT: **"Cursor 끝났어. 계속"**. ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
 
 ## What "Cursor에 넘겨줘" means
 
@@ -48,13 +41,14 @@ Browser login, account, credential, payment, or approval steps that cannot be co
 
 ## Cursor persistent sessions
 
-Verified launch form for the installed CLI:
+Normal handoff from the verified target worktree:
 
 ~~~bash
-agent persist --force --trust --workspace <worktree> "<prompt>"
+cd <target-worktree>
+agent persist /work-resume
 ~~~
 
-`persist` must come before `--force`, `--trust`, and `--workspace`. Putting the options before `persist` can bypass the persistence wrapper.
+ChatGPT must verify the target repository/worktree before launch, then confirm the new session appears in `agent persist list`. A handoff is not complete until that persistent session is visible.
 
 Launching a persistent session requires an interactive Linux/macOS TTY. A non-interactive shell can fail with:
 
@@ -70,36 +64,9 @@ agent persist attach <session>
 agent persist stop <session>
 ~~~
 
-`stop` terminates the running session and should only be used intentionally. If an older task was launched with non-persistent `agent --print`, a new terminal cannot retroactively attach to that exact stream.
+`stop` terminates the running session and should only be used intentionally.
 
-ChatGPT should report the persistent session name and a ready-to-copy attach command after starting it.
-
-### Why ordinary `tmux ls` does not show Cursor persistent sessions
-
-Cursor persistence uses a separate internal tmux server. The observed process form is:
-
-~~~text
-tmux -u -L cursor-agent ...
-~~~
-
-Therefore use `agent persist list` / `agent persist attach` for Cursor-native persistent sessions. Also avoid assuming that launching `agent persist` from inside an already-running ordinary tmux session creates another Cursor-managed persistent session; the installed CLI can detect `TMUX` and bypass the persistence wrapper.
-
-## Ordinary tmux
-
-Ordinary tmux is still useful for generic shell, test, server, or explicitly shared terminal sessions.
-
-~~~bash
-tmux ls
-tmux attach -t <session-name>
-~~~
-
-Detach without stopping the task with:
-
-~~~text
-Ctrl-b, then d
-~~~
-
-`agent persist` and tmux overlap but solve different layers. Prefer `agent persist` for Cursor-native reconnectability; use ordinary tmux for general terminal persistence.
+ChatGPT should report the persistent session name and a ready-to-copy attach command after starting it. It must not silently replace the handoff with a non-persistent `--print` process unless the owner explicitly allows that fallback.
 
 ## Telegram
 
