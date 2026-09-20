@@ -18,7 +18,7 @@ This system was built by removing repeated friction rather than by starting with
 | Large ChatGPT handoffs | Continuation prompts | Same Work Packet + short bootstrap |
 | Coding-agent token burn during exploration | One tool did thinking + implementation | ChatGPT plans, Cursor implements |
 | Hard to verify local server state | User pasted terminal output | Desktop Commander remote audit |
-| Long-running work while moving | Terminal tied to one device/session | Cursor CLI on development server + tmux + phone SSH |
+| Long-running work while moving | Terminal tied to one device/session | Cursor CLI on development server + agent persist + phone SSH |
 | Had to keep checking whether Cursor finished | Manual terminal polling | Telegram completion notification |
 | Full suite too often | Broad validation on many changes | Affected-first, full qualification at release boundary |
 | Stale release evidence | Historical PASS reused informally | Exact-HEAD qualification |
@@ -32,7 +32,7 @@ flowchart LR
     C --> D["AI Work Packet<br/>session continuity"]
     D --> E["Cursor /resume"]
     E --> F["Desktop Commander<br/>independent audit"]
-    F --> G["tmux + Telegram<br/>mobile operation"]
+    F --> G["agent persist + Telegram<br/>mobile operation"]
 ~~~
 
 ## Why GitHub became the center again
@@ -83,7 +83,7 @@ The lesson: **continuity tooling must observe repository state without changing 
 
 The workflow also had to work away from a desk.
 
-A persistent development Linux server plus `tmux` made the implementation process independent of the physical client device. Cursor CLI can continue running on the server while the user reconnects from a phone over SSH.
+A persistent development Linux server plus Cursor-native `agent persist` sessions made the implementation process independent of the physical client device. Cursor CLI can continue running on the server while the user reconnects from a phone over SSH and attaches to the persistent session.
 
 Telegram completion messages removed another small but repeated cost: checking the terminal simply to learn whether a long task had finished.
 

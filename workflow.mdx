@@ -128,7 +128,6 @@ The same engineering loop is used in two physical modes:
 - While moving, the development Linux server becomes the stable execution environment. ChatGPT can start Cursor CLI there directly.
 - Cursor-native persistent sessions are preferred when the owner needs to watch or reconnect: `agent persist list` then `agent persist attach <session>`.
 - When the owner only needs progress, blockers, the current test, or an ETA, they can ask ChatGPT directly; ChatGPT should inspect the authorized server and GitHub evidence instead of asking for copied terminal output.
-- Ordinary tmux remains useful for generic terminal processes or explicitly shared terminal sessions.
 - Cursor sends a Telegram completion notification so the owner does not need to watch a long-running terminal session.
 - After notification, the owner can simply tell ChatGPT "Cursor 끝났어. 계속"; ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
 - When copied output is not enough, ChatGPT can inspect the authorized development server directly through Desktop Commander.

@@ -18,7 +18,7 @@ The canonical repository defines the rules consumed by AI agents, repositories, 
 - `knowledge.mdx` — source-of-truth and decision-history model
 - `session-continuity.mdx` — AI Work Packet and `/resume`
 - `remote-audit.mdx` — direct development Linux host audit
-- `mobile-remote-workflow.mdx` — Cursor CLI, tmux, phone SSH, and Telegram completion notifications
+- `mobile-remote-workflow.mdx` — Cursor CLI, agent persist, phone SSH, and Telegram completion notifications
 - `adoption.mdx` — minimal setup for new/existing repositories
 - `evolution.mdx` — problems, trade-offs, and lessons learned
 
