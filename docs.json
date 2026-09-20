@@ -6,6 +6,11 @@
   "colors": {
     "primary": "#2563EB"
   },
+  "logo": {
+    "light": "/assets/engineering-system-logo-light.svg",
+    "dark": "/assets/engineering-system-logo-dark.svg"
+  },
+  "favicon": "/assets/engineering-system-favicon.svg",
   "navbar": {
     "links": [
       {
