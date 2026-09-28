@@ -12,16 +12,16 @@ description: "실제 불편에서 출발해 현재 Engineering System으로 발�
 | 문제 | 이전 방식 | 현재 방식 |
 |---|---|---|
 | AI가 계획 문서를 잘 안 읽음 | Charter, WBS, Roadmap | 작은 mandatory repository entrypoint |
-| Scope / Roadmap drift | 계획 문서 수동 유지 | Git / Spec / Test 중심 |
+| 범위 / 로드맵 불일치 | 계획 문서 수동 유지 | Git / Spec / Test 중심 |
 | 구현 이유가 사라짐 | Chat에만 결정이 남음 | Spec / ADR + Athena |
-| Cursor prompt가 너무 김 | 매번 복붙 | GitHub AI Work Packet |
-| ChatGPT Handoff가 너무 김 | Continuation Prompt | 같은 Work Packet + 짧은 bootstrap |
+| Cursor 프롬프트가 너무 김 | 매번 복붙 | GitHub AI Work Packet |
+| ChatGPT 작업 전달이 너무 김 | 긴 이어가기 프롬프트 | 같은 Work Packet + 짧은 시작 문구 |
 | 아이디어 단계부터 coding agent 비용 증가 | 한 도구에서 전부 수행 | ChatGPT 설계 → Cursor 구현 |
 | 서버 실제 상태 확인이 어려움 | shell output 복붙 | Desktop Commander 직접 감사 |
 | 이동 중 긴 작업 유지 어려움 | terminal/device 종속 | Cursor CLI + `agent persist` + 휴대폰 SSH |
 | Cursor 완료 여부 반복 확인 | terminal polling | Telegram 완료 알림 |
 | Full Suite 과다 실행 | 변경마다 broad validation | affected-first, release boundary full qualification |
-| 오래된 PASS 재사용 위험 | historical evidence | exact-HEAD qualification |
+| 오래된 PASS 재사용 위험 | 과거 검증 결과 | 현재 HEAD 기준 검증 |
 
 ## 변화 흐름
 
@@ -39,7 +39,7 @@ flowchart LR
 
 Project Charter, WBS, Roadmap은 생각을 정리하는 데는 도움이 되었지만 실제 agent가 항상 읽지 않았습니다.
 
-반면 GitHub는 이미 versioned source, PR, test, immutable commit, CI, Issue, release history를 가지고 있었습니다.
+반면 GitHub에는 이미 버전 관리된 소스, PR, 테스트, 변경되지 않는 commit, CI, Issue와 릴리스 이력이 있었습니다.
 
 그래서 별도의 두 번째 source of truth를 만들기보다 GitHub를 중심에 두는 쪽으로 돌아왔습니다.
 
@@ -51,7 +51,7 @@ Tela를 검토했지만 source 개수 제약 때문에 intended scale과 맞지 
 
 Athena는 검색 계층이며 GitHub의 authority를 대체하지 않습니다.
 
-## 다음 병목은 Context Transfer였다
+## 다음 병목은 작업 맥락 전달이었습니다
 
 GitHub 중심 구조가 잡힌 뒤 가장 큰 반복 비용은 다음이었습니다.
 
@@ -65,7 +65,7 @@ Engineering System 1.3.x에서 repository-scoped AI Work Packet과 /resume을 �
 
 ## Full Adoption 전에도 Resume이 가능해야 했다
 
-실제 release branch에서 중요한 edge case가 발견됐습니다. Product release workstream에는 정상적인 Work Packet이 있었지만 Engineering System adoption은 별도 PR로 분리되어 있었습니다.
+실제 릴리스 브랜치에서 중요한 예외 상황이 발견됐습니다. 제품 릴리스 작업에는 정상적인 Work Packet이 있었지만 Engineering System 적용은 별도 PR에서 진행 중이었습니다.
 
 이때 local `AGENTS.md`나 `.engineering/*`가 없다는 이유만으로 resume을 중단하면 release 작업과 governance adoption이 섞이게 됩니다.
 
@@ -98,15 +98,15 @@ Engineering System 1.4에서는 canonical adoption standard와 deterministic boo
 
 Engineering System 1.5는 AI가 추측하면 안 되는 경계를 더 명확히 했습니다.
 
-- adopted repository는 immutable canonical baseline과 affected validation의 shared/native CI ownership을 기록
-- native mode에서는 해당 invariant를 담당하는 실제 workflow file을 명시
-- merge gate는 workflow 존재 여부로 추측하지 않고 `verified`, `advisory`, `unknown`으로 기록
+- 적용된 저장소는 변경되지 않는 기준 SHA와 변경 범위 검증을 shared/native CI 중 어디서 담당하는지 기록
+- native 모드에서는 해당 검증을 담당하는 실제 workflow 파일을 명시
+- merge gate는 workflow 파일 존재만 보고 추측하지 않고 `verified`, `advisory`, `unknown`으로 기록
 - production-oriented project는 runbook과 incident-response posture를 명시
 - material design-bearing change는 최소 design gate로, production-impacting failure는 incident lifecycle로 routing
 
 목표는 문서를 늘리는 것이 아니라 숨어 있던 운영 가정을 명시하면서 implementation context는 작게 유지하는 것입니다.
 
-## 1.5.1에서는 Review Feedback을 명시적 Gate로 만들었다
+## 1.5.1에서는 리뷰 피드백 처리를 명시적인 완료 조건으로 만들었습니다
 
 실제 product PR에서 required CI는 모두 통과했지만, configured automated reviewer가 non-blocking `COMMENTED` review에 actionable finding을 남긴 상태로 merge될 수 있는 문제가 확인됐습니다.
 
