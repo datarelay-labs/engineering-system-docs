@@ -1,6 +1,6 @@
 ---
 title: "Evolution & Lessons"
-description: "The problems that shaped the current workflow and the concrete changes made to solve them."
+description: "The practical problems that shaped the current Engineering System and how the workflow changed to address them."
 ---
 
 # Evolution and lessons
@@ -39,7 +39,7 @@ flowchart LR
 
 Project-management documents were useful for thinking, but they were not consistently consumed by the agents doing the real work.
 
-GitHub already had the strongest properties for durable engineering state:
+GitHub already provided the main capabilities needed for durable engineering records:
 
 - versioned source
 - reviewable changes
@@ -49,19 +49,19 @@ GitHub already had the strongest properties for durable engineering state:
 - issue coordination
 - release history
 
-So the system stopped trying to create a second source of truth.
+So the workflow stopped trying to maintain a second competing system of record.
 
 ## Tela → Athena
 
 A separate knowledge layer is still useful for rationale and cross-project history.
 
-Tela was evaluated, but source-count constraints made it a poor fit for the intended scale. The workflow is therefore moving toward Athena as the searchable derived knowledge layer.
+Tela was evaluated, but source-count constraints made it a poor fit for the intended scale. Athena is now used as the searchable knowledge layer.
 
-The key lesson is unchanged: the knowledge layer should help humans and AI find context, but it should not compete with GitHub for canonical product truth.
+The lesson is simple: the knowledge layer should help people and AI find context without becoming a second place where product state must be maintained.
 
 ## Session continuity was the next bottleneck
 
-Once source-of-truth and validation were clearer, the next large cost became context transfer itself:
+Once engineering records and validation were clearer, the next major cost was moving context between tools:
 
 - ChatGPT → Cursor prompt
 - Cursor → ChatGPT result
@@ -71,11 +71,11 @@ Engineering System 1.3.x introduced repository-scoped AI Work Packets and the Cu
 
 ## Resume had to work before full adoption
 
-A real release branch exposed an important edge case: the active product workstream could have a valid Work Packet while Engineering System adoption was intentionally isolated in a different PR.
+A real release branch exposed an important edge case: active product work could have a valid Work Packet while Engineering System adoption was intentionally isolated in a different PR.
 
 Treating missing local `AGENTS.md` or `.engineering/*` files as a hard resume failure would have mixed governance adoption into release work.
 
-The resume flow was therefore hardened so an adoption-pending repository can record `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`, continue under the canonical default, and leave adoption files untouched unless the active workstream explicitly authorizes them.
+The resume flow was updated so a repository with adoption still pending can record `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`, continue under the current Engineering System rules, and leave adoption files untouched unless the active work explicitly includes them.
 
 The lesson: **continuity tooling must observe repository state without changing product scope merely to make itself work.**
 
@@ -87,7 +87,7 @@ A persistent development Linux server plus Cursor-native `agent persist` session
 
 Telegram completion messages removed another small but repeated cost: checking the terminal simply to learn whether a long task had finished.
 
-The remaining manual copy/paste between a completed mobile Cursor session and ChatGPT is treated as a transitional seam, not as durable engineering state.
+The remaining copy/paste between a completed mobile Cursor session and ChatGPT is only a temporary handoff mechanism; durable state still belongs in the repository.
 
 ## Adoption itself became automation
 
@@ -120,7 +120,7 @@ Engineering System 1.5 tightened the places where an AI agent should not guess:
 - production-oriented projects explicitly record runbook and incident-response posture
 - material design-bearing changes route through a minimal design gate, while production-impacting failures route through the incident lifecycle
 
-The intent is not more paperwork. It is to make hidden operational assumptions explicit while keeping implementation context small.
+The goal is not more paperwork. It is to make hidden assumptions visible while keeping implementation context small.
 
 ## 1.5.1 made review feedback explicit
 
@@ -136,4 +136,4 @@ The system keeps evolving under one constraint:
 
 > Add automation only when it removes repeated manual work or materially improves correctness.
 
-That rule prevents a solo-developer workflow from turning into enterprise process overhead.
+That rule keeps a solo-developer workflow from accumulating unnecessary process overhead.
