@@ -40,9 +40,9 @@ description: "Cursor에 넘겨줘 한 마디로 ChatGPT가 Work Packet과 persis
 4. ChatGPT가 현재 `/work-resume` command/rules를 확인·설치합니다.
 5. ChatGPT가 승인된 개발 서버에서 Cursor CLI를 직접 시작합니다.
 6. Cursor는 `/work-resume`을 받아 bounded implementation을 수행합니다.
-7. Cursor는 validation, PR, CI/review, merge, linked issue 종료, Work Packet terminal completion까지 기계적으로 가능한 범위를 계속합니다.
+7. Cursor는 검증, PR, CI/리뷰, 병합, 연결된 Issue 종료, Work Packet 완료까지 자동화할 수 있는 범위를 계속 진행합니다.
 8. Telegram COMPLETE는 workstream이 terminal 완료될 때만 보냅니다.
-9. 소유자가 **「Cursor 끝났어. 계속」**이라고 말하면 ChatGPT는 텍스트 PASS를 믿지 않고 GitHub/CI/PR/issue/worktree 상태를 독립적으로 재검증합니다.
+9. 사용자가 **「Cursor 끝났어. 계속」**이라고 말하면 ChatGPT는 Cursor가 출력한 PASS만 믿지 않고 GitHub, CI, PR, Issue와 worktree의 실제 상태를 다시 확인합니다.
 
 소유자가 평소에 Cursor CLI를 직접 시작할 필요는 없습니다.
 
@@ -194,7 +194,7 @@ Cursor workstream terminal 완료
   -> 다음 작업 결정
 ~~~
 
-이 수동 구간이 있어도 실제 authority는 copied output이 아니라 repository state, test, CI, runtime evidence입니다.
+이 수동 구간이 있더라도 판단 기준은 복사한 출력이 아니라 저장소 상태, 테스트, CI와 실제 실행 상태입니다.
 
 browser/account/login/credential/approval처럼 원격으로 끝낼 수 없는 단계만 소유자 개입이 필요합니다.
 
