@@ -7,7 +7,7 @@ description: "GitHub AI Work Packet과 Cursor /work-resume으로 긴 Handoff와 
 
 대화 history는 임시 작업 공간으로 취급합니다.
 
-현재 workstream의 durable state는 같은 repository의 GitHub Issue인 **AI Work Packet**에 둡니다.
+현재 작업에서 오래 남아야 할 상태는 같은 저장소의 GitHub Issue인 **AI Work Packet**에 기록합니다.
 
 ## Before → After
 
@@ -76,7 +76,7 @@ COMPLETE -> Close Issue
 
 새로운 독립 workstream일 때만 새 Issue를 만듭니다. 대화창이 새로 열렸다는 이유로 Work Packet을 새로 만들지 않습니다.
 
-여러 프로젝트의 handoff를 한 중앙 repository에 섞어두지 않습니다. 각 product repository가 자신의 Work Packet namespace입니다.
+여러 프로젝트의 작업 전달 상태를 한 중앙 저장소에 섞어두지 않습니다. 각 제품 저장소가 자신의 Work Packet을 관리합니다.
 
 ## Fail-closed Resume
 
@@ -94,19 +94,19 @@ LAST_VERIFIED_HEAD는 참고값일 뿐 현재 truth로 사용하지 않습니다
 
 Work Packet v2는 오래된 handoff scope가 그대로 실행되는 것도 막습니다. Cursor handoff 전에 ChatGPT가 사용자의 **가장 최근 명시적 요청**을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 갱신하고, `Next Action`이 stable `Goal`과 현재 intent를 실제로 전진시키는지 확인합니다. 서로 충돌하면 구현 agent는 예전 release/cleanup/validation 단계로 진행하지 않고 `WORK_PACKET_SCOPE_MISMATCH`로 중단합니다.
 
-`STATUS`는 `ACTIVE`, `PAUSED`, `BLOCKED`, `COMPLETE` 네 개만 사용합니다. `CURSOR_READY`, `WAITING`, `DONE` 같은 값을 새 lifecycle 상태로 만들지 않습니다. Cursor 준비 상태는 `STATUS=ACTIVE` + 유효한 `Next Action`으로 표현하고, machine-observable wait는 Current State/Latest Evidence에 기록합니다.
+`STATUS`는 `ACTIVE`, `PAUSED`, `BLOCKED`, `COMPLETE` 네 개만 사용합니다. `CURSOR_READY`, `WAITING`, `DONE` 같은 값을 별도 상태로 추가하지 않습니다. Cursor가 다음 작업을 받을 준비가 됐다면 `STATUS=ACTIVE`와 유효한 `Next Action`으로 표현하고, 외부 대기 상태는 Current State/Latest Evidence에 기록합니다.
 
 Repository 구현을 시작하려면 local shell/process와 Git context가 실제로 동작해야 합니다. shell을 시작할 수 없으면 Athena나 unrelated repository, 과거 transcript를 뒤지는 대신 `ENVIRONMENT_BLOCKER`로 중단합니다.
 
 ## 왜 HANDOFF.md가 아닌가
 
-release candidate가 exact-HEAD qualification을 요구할 때 committed HANDOFF 파일을 수정하면 product HEAD 자체가 바뀝니다.
+릴리스 후보가 정확한 HEAD 기준 검증을 요구할 때 committed HANDOFF 파일을 수정하면 제품 HEAD 자체가 달라집니다.
 
 GitHub Issue를 갱신하면 source HEAD를 바꾸지 않고도 current coordination state를 유지할 수 있습니다.
 
-## ChatGPT 대화 Handoff
+## ChatGPT 대화 이어가기
 
-대화창이 길어져도 별도 Handoff Issue나 giant continuation prompt를 만들지 않습니다.
+대화가 길어져도 별도 Handoff Issue나 긴 이어가기 프롬프트를 새로 만들지 않습니다.
 
 현재 Work Packet만 최신화하고 새 대화에서 다음처럼 시작하면 됩니다.
 
