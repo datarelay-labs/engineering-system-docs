@@ -24,7 +24,7 @@ flowchart LR
   </Step>
 
   <Step title="AI Work Packet을 만든다">
-    구현이 필요한 시점에 긴 Cursor prompt 대신 repository-scoped [AI Work] Issue를 갱신합니다. Cursor handoff 직전에 사용자의 가장 최근 명시적 요청을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 새로 맞추고, `Next Action`이 실제로 이를 전진시키는지 확인합니다. 예전에 남아 있던 release/cleanup/test 단계가 자동으로 다음 작업이 되면 안 됩니다.
+    구현이 필요한 시점에는 긴 Cursor 프롬프트 대신 해당 저장소의 [AI Work] Issue를 갱신합니다. Cursor에 작업을 넘기기 직전에 사용자의 가장 최근 요청을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 맞추고, `Next Action`이 실제로 그 요청을 전진시키는지 확인합니다. 이전에 남아 있던 릴리스·정리·테스트 단계가 자동으로 다음 작업이 되어서는 안 됩니다.
   </Step>
 
   <Step title="ChatGPT가 Cursor를 시작한다">
