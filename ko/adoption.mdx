@@ -89,7 +89,7 @@ operations:
 - `merge_gate_status`: `verified`, `advisory`, `unknown` 중 하나이며 workflow가 존재한다는 이유만으로 branch protection을 추측하지 않음
 - Production-oriented repository는 runbook과 incident-response posture를 명시적으로 기록
 
-현재 managed adoption은 material design-bearing change를 가벼운 `standards/DESIGN.md` gate로, production-impacting failure를 `standards/OPERATIONS.md` incident lifecycle로 routing합니다. Production-oriented project에서는 project-native runbook/health/recovery contract를 기록하고, observable GitHub merge enforcement를 reconcile하며, 실제 project-native command가 있을 때 executable release contract를 사용합니다. 매 작업마다 새 설계 문서나 incident 문서를 만들라는 의미가 아니라, 결정에 맞는 가장 작은 durable artifact를 사용합니다.
+현재 managed adoption은 설계에 영향을 주는 변경은 `standards/DESIGN.md`로, 운영 장애는 `standards/OPERATIONS.md`로 연결합니다. 운영 중심 프로젝트에서는 프로젝트 자체의 runbook, 상태 확인, 복구 절차를 기록하고 GitHub 병합 규칙을 실제 상태와 맞춥니다. 실행 가능한 프로젝트 명령이 있을 때는 릴리스 절차에도 이를 사용합니다. 모든 작업마다 새 문서를 만들라는 뜻은 아니며, 필요한 경우에만 가장 작은 기록을 남깁니다.
 
 ## 새 저장소 또는 빈 저장소
 
