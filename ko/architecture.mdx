@@ -17,9 +17,9 @@ description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena와 테스트·�
 | Automation / CI | deterministic validation, security/performance gate, artifact verification | 제품 의도 |
 | GitHub | Code, history, PR, CI, Spec, Work Packet, Release Evidence | 사람용 설명 |
 | Desktop Commander | 승인된 개발 서버 직접 감사 | 장기 프로젝트 기록 |
-| Athena | 결정 이유와 cross-project history 검색 | Runtime truth, release evidence |
+| Athena | 결정 이유와 여러 프로젝트의 이력 검색 | 현재 실행 상태, 릴리스 검증 결과 |
 | Engineering System | 공통 engineering/AI 표준 | 제품별 기능 정의 |
-| Engineering System Docs | 사람이 읽는 설명서 | Canonical 규칙 |
+| Engineering System Docs | 사람이 읽는 설명서 | 실제 적용 규칙 |
 
 ## 시스템 계층
 
@@ -71,7 +71,7 @@ Canonical / machine-consumed repository입니다. 표준, adapter, template, val
 
 ## Project-local Adoption
 
-기본 Engineering System adoption에 필요한 repository entrypoint는 다음 네 가지입니다.
+기본 Engineering System 적용에 필요한 저장소 시작 지점은 다음 네 가지입니다.
 
 ~~~text
 AGENTS.md
@@ -80,6 +80,6 @@ AGENTS.md
 .engineering/release.yaml
 ~~~
 
-`.cursor/commands/resume.md`와 AI Work Packet Issue template은 Session Continuity workflow를 사용하는 경우에 추가합니다.
+`.cursor/commands/resume.md`와 AI Work Packet Issue 템플릿은 작업 이어가기 기능을 사용할 때만 추가합니다.
 
-Repository 안에 Engineering System 전체를 복사하지 않고 canonical version을 pin하고 참조합니다.
+저장소 안에 Engineering System 전체를 복사하지 않고 사용할 버전과 기준 SHA만 고정해 참조합니다.
