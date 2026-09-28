@@ -92,7 +92,7 @@ flowchart TD
 
 LAST_VERIFIED_HEAD는 참고값일 뿐 현재 truth로 사용하지 않습니다.
 
-Work Packet v2는 오래된 handoff scope가 그대로 실행되는 것도 막습니다. Cursor handoff 전에 ChatGPT가 사용자의 **가장 최근 명시적 요청**을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 갱신하고, `Next Action`이 stable `Goal`과 현재 intent를 실제로 전진시키는지 확인합니다. 서로 충돌하면 구현 agent는 예전 release/cleanup/validation 단계로 진행하지 않고 `WORK_PACKET_SCOPE_MISMATCH`로 중단합니다.
+Work Packet v2는 오래된 작업 범위가 그대로 실행되는 것도 막습니다. Cursor에 작업을 넘기기 전에 ChatGPT가 사용자의 **가장 최근 명시적 요청**을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 갱신하고, `Next Action`이 기존 `Goal`과 현재 요청을 실제로 전진시키는지 확인합니다. 서로 충돌하면 구현 agent는 이전 릴리스·정리·검증 단계로 진행하지 않고 `WORK_PACKET_SCOPE_MISMATCH`로 중단합니다.
 
 `STATUS`는 `ACTIVE`, `PAUSED`, `BLOCKED`, `COMPLETE` 네 개만 사용합니다. `CURSOR_READY`, `WAITING`, `DONE` 같은 값을 별도 상태로 추가하지 않습니다. Cursor가 다음 작업을 받을 준비가 됐다면 `STATUS=ACTIVE`와 유효한 `Next Action`으로 표현하고, 외부 대기 상태는 Current State/Latest Evidence에 기록합니다.
 
