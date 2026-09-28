@@ -12,7 +12,7 @@ It is **not** a generic industry name for all knowledge platforms, and Data Rela
 - Upstream: https://github.com/jannismilz/athena
 - Our fork: https://github.com/xdr-labs/athena
 
-Athena is used as the Engineering System's **derived knowledge and retrieval platform**. GitHub, OpenSpec, code, tests, ADRs, and release evidence remain canonical.
+Athena provides searchable engineering knowledge for the Engineering System. GitHub, OpenSpec, code, tests, ADRs, and release records remain the primary engineering sources.
 
 ## Athena is not Wiki.js
 
@@ -58,9 +58,9 @@ Our fork adapts Athena to the Data Relay Engineering System.
 - safer read-only MCP use for AI clients
 - dependency and CI hardening for our operating model
 
-`RATIONALE_UNKNOWN` is an **Engineering System usage rule validated in the POC prompts**, not a built-in upstream Athena feature or a hard-coded fork capability. AI clients are instructed to use it when the indexed canonical material does not contain the requested rationale.
+`RATIONALE_UNKNOWN` is an **Engineering System usage rule tested in the POC**, not a built-in Athena feature. AI clients use it when the indexed engineering material does not contain the reason for a decision.
 
-These additions do not change the authority model: GitHub/OpenSpec remains canonical and Athena remains derived.
+These additions do not change the role of each system: GitHub/OpenSpec holds the durable engineering record, while Athena remains a search and retrieval layer.
 
 ## What is already running in the POC
 
@@ -90,7 +90,7 @@ GitHub / OpenSpec / Code / Tests / ADR
       Search / explanation / recall
 ~~~
 
-If Athena disagrees with canonical Git content, **Git content wins**.
+If Athena and the Git repository disagree, **follow the Git repository**.
 
 Generated project pages should not be edited as if they were authoritative product specifications.
 
@@ -102,8 +102,8 @@ The Data Relay Link POC validated the workflows that matter most for this Engine
 - Semantic search works for Korean and English questions.
 - Athena can retrieve a design rationale separately from the current contract.
 - Cursor can return Wiki paths and original OpenSpec source paths.
-- When rationale is not present in the indexed canonical material, the expected behavior is to return `RATIONALE_UNKNOWN` rather than invent an explanation.
-- Current specs and archived decision history can be indexed together without making Athena the source of truth.
+- When the indexed material does not contain the reason for a decision, return `RATIONALE_UNKNOWN` instead of inventing an explanation.
+- Current specifications and archived decisions can be indexed together without turning Athena into a competing system of record.
 
 This is the basis for replacing Tela as the cross-project searchable knowledge layer.
 
@@ -123,7 +123,7 @@ Selected baseline:
 | Backup | Provider automated backup + Athena application/database backup |
 | Exposure | HTTPS only through a reverse proxy; internal services are not exposed directly |
 
-The hosting provider is an operational choice, not part of the normative Engineering System contract. A future migration to another provider should not change Athena's role or GitHub's authority.
+The hosting provider is an implementation choice, not an Engineering System rule. Moving to another provider should not change Athena's role or the use of GitHub for durable engineering records.
 
 ## Intended operating flow
 
@@ -136,6 +136,6 @@ flowchart LR
     E --> F["Answer with provenance"]
 ~~~
 
-The target end state is **no manual Wiki maintenance**. Humans and AI maintain canonical repository artifacts; Athena synchronizes and indexes the selected durable knowledge automatically.
+The goal is **no manual Wiki maintenance**. Humans and AI maintain repository artifacts, while Athena synchronizes and indexes the selected material automatically.
 
 Until the production Athena server is ready, Tela may temporarily hold transition notes so this knowledge does not exist only in chat.
