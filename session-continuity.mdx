@@ -40,7 +40,7 @@ For the normal workflow the owner says only:
 Cursor에 넘겨줘
 ~~~
 
-ChatGPT resolves the target repository, updates the active Work Packet, prepares the correct branch/worktree, starts Cursor CLI on the authorized development server, and hands it the `/work-resume` workflow. The owner does not normally start Cursor CLI or type `/resume` manually.
+ChatGPT identifies the target repository, updates the active Work Packet, prepares the correct branch/worktree, starts Cursor CLI on the authorized development server, and sends `/work-resume`. The owner does not normally start Cursor CLI or type `/resume` manually.
 
 If the Cursor task was started as a persistent session, the owner can watch it with:
 
@@ -49,7 +49,7 @@ agent persist list
 agent persist attach <session>
 ~~~
 
-After completion, the owner can say `Cursor 끝났어. 계속`; ChatGPT then verifies actual GitHub/CI/PR/issue/worktree state instead of trusting copied terminal output.
+After completion, the owner can say `Cursor 끝났어. 계속`; ChatGPT then verifies the actual GitHub, CI, PR, Issue, and worktree state instead of relying on copied terminal output.
 
 ## One packet per workstream
 
@@ -123,7 +123,7 @@ LAST_VERIFIED_HEAD is advisory only. Current Git state must always be rechecked.
 
 Work Packet v2 also prevents stale handoff scope. Before implementation handoff, ChatGPT refreshes `TASK_KIND` and `OWNER_INTENT` from the owner's latest explicit request and verifies that `Next Action` directly advances both the stable `Goal` and current intent. If they materially disagree, the implementation agent stops with `WORK_PACKET_SCOPE_MISMATCH` instead of executing an older release, cleanup, or validation phase.
 
-`STATUS` has only four canonical values: `ACTIVE`, `PAUSED`, `BLOCKED`, and `COMPLETE`. Readiness or waiting states such as `CURSOR_READY`, `WAITING`, or `DONE` are not lifecycle states; readiness is `ACTIVE` plus a valid `Next Action`, and machine-observable waiting evidence belongs in Current State/Latest Evidence.
+`STATUS` has only four values: `ACTIVE`, `PAUSED`, `BLOCKED`, and `COMPLETE`. Values such as `CURSOR_READY`, `WAITING`, or `DONE` are not separate lifecycle states. Readiness is represented by `ACTIVE` plus a valid `Next Action`; observable wait conditions belong in Current State/Latest Evidence.
 
 Cursor also requires a usable local shell/process and Git context for repository implementation. If that environment cannot start, it reports `ENVIRONMENT_BLOCKER` rather than trying Athena, unrelated repositories, or old transcripts as a substitute for local repository identity.
 
@@ -131,7 +131,7 @@ Cursor also requires a usable local shell/process and Git context for repository
 
 Updating a committed handoff file changes the product source HEAD.
 
-For release candidates that require exact-HEAD qualification, that can invalidate evidence.
+For release candidates that require verification of the exact HEAD, changing the committed handoff state can invalidate previous results.
 
 Updating an Issue preserves the qualified source revision.
 
