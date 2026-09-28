@@ -1,6 +1,6 @@
 ---
 title: "Quick Start"
-description: "The shortest path from a normal repository to the ChatGPT + Cursor + GitHub Engineering System workflow."
+description: "The shortest path for applying the ChatGPT + Cursor + GitHub Engineering System to an existing or new repository."
 ---
 
 # Quick start
@@ -20,7 +20,7 @@ flowchart LR
 
 ## 0. Make GitHub reachable
 
-Session continuity depends on both sides being able to read and update repository-scoped GitHub Issues.
+Continuing work across sessions requires both sides to read and update the repository's GitHub Work Packet Issue.
 
 - ChatGPT needs GitHub repository access for Work Packet creation/update.
 - Cursor session continuity needs an available GitHub integration or authenticated `gh`; ChatGPT normally starts the CLI and hands it `/work-resume`.
@@ -34,7 +34,7 @@ The intended entrypoint is deliberately version-independent:
 Apply https://github.com/datarelay-labs/engineering-system to this project.
 ~~~
 
-The agent should not blindly copy files. It first resolves the target repository and canonical source/baseline from the supplied URL, then follows the canonical adoption standard:
+The agent should not blindly copy files. It first identifies the target repository and Engineering System baseline from the supplied URL, then follows the adoption standard:
 
 ~~~text
 Inventory repository
@@ -52,9 +52,9 @@ The deterministic helper supports a read-only audit:
 python tools/adopt.py --root /path/to/project --audit
 ~~~
 
-and a bounded bootstrap after the project-specific decisions are known.
+and a small bootstrap only after the project-specific choices are known.
 
-Managed adoption first obtains the canonical Engineering System from the supplied URL, pins both the version and an immutable canonical baseline SHA, and then records shared/native CI ownership, merge-gate enforcement state, and explicit operations posture so agents do not infer those facts from workflow presence alone. A new/empty repository establishes its Git boundary first; `--allow-no-tests` is only a temporary bootstrap state while no executable test target exists.
+Managed adoption obtains the Engineering System from the supplied URL, pins the version and baseline SHA, and records whether shared or native CI owns validation, the merge-gate state, and the repository's operations requirements. A new repository establishes its Git boundary first; `--allow-no-tests` is only a temporary option while no executable test target exists.
 
 ## 2. What managed adoption installs
 
@@ -85,7 +85,7 @@ For ChatGPT ↔ Cursor resume workflow, add:
 .github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
 
-The optional repository Cursor rule can also point agents at the canonical Engineering System.
+The optional repository Cursor rule can also point agents at the Engineering System.
 
 ## 4. Keep ChatGPT instructions short
 
@@ -154,7 +154,7 @@ operational impact
 required tests
 ~~~
 
-Then make the smallest correct change and run the cheapest deterministic check that can disprove it.
+Then make the smallest correct change and run the cheapest repeatable check that can catch a problem in that change.
 
 <Note>
   The owner retains product scope, final decisions, release approval, and human UX judgment. AI assists the engineering process; it does not silently broaden product scope.
