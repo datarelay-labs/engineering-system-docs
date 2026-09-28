@@ -15,9 +15,9 @@ The user-facing entrypoint is deliberately version-independent:
 Apply https://github.com/datarelay-labs/engineering-system to this project.
 ~~~
 
-The agent resolves the exact target repository, obtains the canonical Engineering System from that URL, pins an immutable canonical baseline SHA, then follows `standards/ADOPTION.md` and performs a repository-specific audit before changing files.
+The agent first identifies the exact target repository, obtains the Engineering System from the supplied URL, pins the baseline SHA, and follows `standards/ADOPTION.md` to inspect the repository before changing files.
 
-The target repository does **not** need to contain `tools/adopt.py` beforehand. The agent may use an authenticated GitHub integration or a separate temporary checkout of `datarelay-labs/engineering-system`, then run the canonical helper against the target root. The canonical source is tooling; it is not vendored into the product repository.
+The target repository does **not** need to contain `tools/adopt.py` beforehand. The agent can use an authenticated GitHub integration or a temporary checkout of `datarelay-labs/engineering-system`, then run the helper against the target root. The Engineering System itself is not copied wholesale into the product repository.
 
 ~~~mermaid
 flowchart LR
@@ -62,7 +62,7 @@ Adoption stops instead of guessing when:
 
 ## Managed adoption identity
 
-Managed adopted repositories record enough identity to prove exactly which canonical standard and which project-native gates are in force:
+Managed repositories record enough information to show which Engineering System baseline and which project-native checks are in use:
 
 ```yaml
 engineering_system:
@@ -120,7 +120,7 @@ If you use Cursor and session continuity, add the tool adapter and continuity fi
 .github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
 
-This distinction matters: base engineering governance and AI session continuity are related, but not the same feature.
+These are related but separate concerns: the base engineering rules can be used without AI session continuity.
 
 ## Existing repository with many AI rules
 
@@ -139,7 +139,7 @@ UNKNOWN
 
 Keep product-specific invariants and stricter valid rules.
 
-Move generic duplicated engineering guidance back toward the canonical Engineering System so Cursor context becomes smaller rather than larger.
+Remove duplicated generic engineering guidance from product repositories and reference the Engineering System instead, so Cursor has less repeated context to read.
 
 ## Adoption-pending repositories
 
@@ -193,7 +193,7 @@ Managed adoption validates required surfaces, version/baseline identity, session
 
 Then run the repository's cheapest real project-native smoke/affected test.
 
-Only after deterministic validation and required smoke evidence succeed should the result be reported as:
+Report the adoption as complete only after the required validation and smoke checks succeed:
 
 ~~~text
 ENGINEERING_SYSTEM_ADOPTION=PASS
