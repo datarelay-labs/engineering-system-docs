@@ -1,11 +1,11 @@
 ---
 title: "Architecture"
-description: "How ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tests, and release evidence fit together."
+description: "How ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tests, and release records fit together."
 ---
 
 # System architecture
 
-The system deliberately gives each tool one primary job instead of asking one AI tool to do everything.
+The system gives each tool one primary job instead of asking a single AI tool to do everything.
 
 ## System layers
 
@@ -24,21 +24,21 @@ flowchart TB
     N --> X
 ~~~
 
-The handbook and Athena help people understand and retrieve context. GitHub and executed evidence remain authoritative for current product and release state.
+The handbook and Athena help people understand and find context. Current product and release state should be checked against GitHub and the results of tests or runtime verification.
 
 ## Responsibility map
 
-| Component | Primary responsibility | Not the source of truth for |
+| Component | Primary responsibility | Do not use it as the final reference for |
 |---|---|---|
 | Owner | Product requirements, scope, final decisions, release approval, human UX judgment | Implementation detail unless explicitly decided |
 | ChatGPT | Requirements analysis, architecture, design, documentation, review, next-action planning | Current Git state |
 | Cursor | Repository implementation, affected tests, local evidence | Long-term product decisions |
-| Automation / CI | Deterministic validation, security/performance gates, artifact verification | Product intent |
+| Automation / CI | Repeatable validation, security/performance gates, artifact verification | Product intent |
 | GitHub | Code, history, PRs, CI, specs, Work Packets, release evidence | Human-friendly narrative |
 | Desktop Commander Remote MCP | Direct audit of authorized development hosts | Durable project history |
-| Athena | Searchable decision/history layer | Runtime truth or release evidence |
-| Engineering System | Common engineering and AI workflow standard | Product-specific behavior |
-| Engineering System Docs | Human-readable handbook | Normative engineering rules |
+| Athena | Searchable decision and history layer | Current runtime state or release verification |
+| Engineering System | Shared engineering rules and AI workflow | Product-specific behavior |
+| Engineering System Docs | Human-readable handbook | The rules enforced by the Engineering System repository |
 
 ## Authority order
 
@@ -68,14 +68,14 @@ flowchart TD
 
 **datarelay-labs/engineering-system**
 
-Canonical and machine-consumed. It contains standards, adapters, templates, validation logic, /resume, and session-continuity rules.
+This repository contains the rules, adapters, templates, validation logic, `/resume`, and session-continuity behavior used by projects and agents.
 
 **datarelay-labs/engineering-system-docs**
 
-Human-readable. It explains why the system exists, how the pieces fit together, how to adopt it, and what problems were solved.
+This site explains why the system exists, how the pieces fit together, how to adopt it, and what problems it solves.
 
 <Warning>
-  If this site disagrees with the canonical Engineering System repository, the canonical repository wins.
+  If this site differs from the Engineering System repository, follow the repository.
 </Warning>
 
 ## Project-local adoption
@@ -91,4 +91,4 @@ AGENTS.md
 
 Session-continuity files such as `.cursor/commands/resume.md` and the AI Work Packet Issue template are added when that workflow is used.
 
-The repository should not copy every Engineering System standard into itself. It should pin and reference the canonical system.
+A product repository should not copy every Engineering System rule into itself. It should pin the Engineering System version and baseline, then reference the relevant standards.

@@ -1,13 +1,13 @@
 ---
 title: "Engineering System"
-description: "A lightweight Solo AI Engineering System for turning conversation into reliable software without carrying giant prompts between tools."
+description: "A lightweight engineering workflow for using ChatGPT, Cursor, GitHub, and direct server verification without carrying long handoff prompts between tools."
 ---
 
 # Data Relay Engineering System
 
-**ChatGPT for thinking. Cursor for implementation. GitHub for truth. Direct server access for verification.**
+**ChatGPT for requirements and design. Cursor for implementation. GitHub for durable records. Direct server access for verification.**
 
-This system grew from a simple problem: AI-assisted development was productive, but the surrounding workflow became expensive and hard to remember.
+This system grew from a practical problem: AI-assisted development was useful, but the surrounding process became expensive, repetitive, and hard to keep consistent.
 
 Large handoff prompts, stale roadmaps, repeated Cursor instructions, missing design history, full-suite tests at the wrong time, and manual copy/paste between tools all created friction.
 
@@ -23,7 +23,7 @@ The current system separates each responsibility and keeps only the minimum cont
   </Card>
 
   <Card title="Daily Workflow" icon="arrows-rotate" href="/workflow">
-    Brainstorm in ChatGPT, hand implementation to Cursor, verify results, and continue without giant prompts.
+    Work through requirements in ChatGPT, hand implementation to Cursor, verify the result, and continue without long handoff prompts.
   </Card>
 
   <Card title="Session Continuity" icon="link" href="/session-continuity">
@@ -39,7 +39,7 @@ The current system separates each responsibility and keeps only the minimum cont
   </Card>
 
   <Card title="Athena Knowledge Platform" icon="brain" href="/athena">
-    See how Wiki.js, pgvector, embeddings, indexing, and MCP work together as the derived knowledge platform.
+    See how Wiki.js, pgvector, embeddings, indexing, and MCP work together to provide searchable engineering knowledge.
   </Card>
 </CardGroup>
 
@@ -59,23 +59,23 @@ flowchart LR
 ~~~
 
 <Note>
-  GitHub remains the source of truth. Athena, this handbook, and AI Work Packets are supporting layers with different roles.
+  GitHub holds the durable engineering record. Athena, this handbook, and AI Work Packets support search, explanation, and active-work coordination.
 </Note>
 
 ## Why this split works
 
 ChatGPT is used heavily before implementation: requirements, brainstorming, architecture, design, documentation, review strategy, and the exact next action.
 
-Cursor is used when code must actually change. This keeps exploratory conversation separate from implementation work and makes the implementation step more bounded and economical.
+Cursor is used when code must actually change. Keeping exploration separate from implementation reduces unnecessary context and gives the coding task a clear scope.
 
-GitHub holds the durable state: code, tests, specs, commits, PRs, CI evidence, release evidence, and repository-scoped AI Work Packets.
+GitHub holds the durable record: code, tests, specifications, commits, PRs, CI results, release records, and repository-scoped AI Work Packets.
 
 Desktop Commander closes another gap: when GitHub alone is not enough, ChatGPT can inspect the authorized development Linux host directly instead of reasoning only from pasted terminal output.
 
 ## Five rules that keep it small
 
-1. GitHub is normative; the handbook and Athena are derived.
-2. ChatGPT plans and reviews; Cursor implements bounded repository work.
+1. Keep durable engineering records in GitHub; use the handbook and Athena to explain and find them.
+2. ChatGPT plans and reviews; Cursor implements work with a clearly defined scope.
 3. Load only the context needed for the current task.
 4. Run affected deterministic checks before expensive broad qualification.
 5. Keep active session state in repository-scoped Work Packets, not giant handoff prompts.
@@ -84,8 +84,8 @@ Desktop Commander closes another gap: when GitHub alone is not enough, ChatGPT c
 
 It is not an enterprise process framework, a central project-management database, or a replacement for Git.
 
-It is a small set of rules that makes a solo AI-assisted workflow repeatable, auditable, and cheap enough to use every day.
+It is a small set of rules that makes a solo AI-assisted workflow repeatable, reviewable, and practical to use every day.
 
 <Tip>
-  If you remember only one rule: **conversation is temporary; durable engineering state belongs outside the conversation.**
+  If you remember only one rule: **conversation is temporary; durable decisions and work state belong in the repository.**
 </Tip>

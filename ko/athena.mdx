@@ -7,12 +7,12 @@ description: "채택한 오픈소스 Athena가 GitHub/OpenSpec의 engineering kn
 
 Engineering System에서 말하는 **Athena는 우리가 검토하고 채택한 오픈소스 프로젝트 `jannismilz/athena`를 의미합니다.**
 
-Athena가 모든 knowledge platform을 통칭하는 일반 명칭인 것은 아니고, Data Relay Labs가 기반 Athena 플랫폼을 새로 만든 것도 아닙니다. 우리는 이 오픈소스 프로젝트를 `xdr-labs/athena`로 fork해서 Engineering System 용도에 맞게 보강하고 있습니다.
+Athena는 지식 플랫폼을 뜻하는 일반 명칭이 아니라 우리가 사용하는 특정 오픈소스 프로젝트입니다. Data Relay Labs가 처음부터 만든 제품은 아니며, `xdr-labs/athena`로 fork한 뒤 Engineering System에 필요한 기능을 보강하고 있습니다.
 
 - Upstream: https://github.com/jannismilz/athena
 - 우리 fork: https://github.com/xdr-labs/athena
 
-Athena는 Engineering System의 **derived knowledge 및 retrieval platform**으로 사용합니다. GitHub, OpenSpec, code, test, ADR, release evidence는 계속 canonical source입니다.
+Athena는 Engineering System에서 **검색과 지식 조회를 위한 보조 계층**으로 사용합니다. GitHub, OpenSpec, 코드, 테스트, ADR, 릴리스 검증 자료가 계속 기준 기록입니다.
 
 ## Athena는 Wiki.js가 아닙니다
 
@@ -36,7 +36,7 @@ flowchart TB
 
 ## 원래 Athena에 이미 있는 구성요소
 
-아래 구성은 Engineering System을 위해 우리가 새로 만든 것이 아니라 upstream Athena에 원래 포함되어 있습니다.
+아래 구성은 우리가 Engineering System을 위해 새로 만든 기능이 아니라 원래 Athena에 포함되어 있습니다.
 
 | 구성요소 | 역할 |
 |---|---|
@@ -55,10 +55,10 @@ flowchart TB
 - GitHub/OpenSpec → Athena synchronization 및 generated knowledge projection
 - `projects/<project>/...` 구조와 project-scoped retrieval
 - repository, ref, source path, Git blob까지 이어지는 provenance
-- AI client용 read-only MCP hardening
-- dependency 및 CI hardening
+- AI 클라이언트용 읽기 전용 MCP 보강
+- 의존성과 CI 안정성 보강
 
-`RATIONALE_UNKNOWN`은 **upstream Athena의 내장 기능이나 fork에 hard-code된 기능이 아니라, POC에서 검증한 Engineering System 사용 규칙**입니다. AI client에게 canonical material에 WHY가 없으면 추측하지 말고 이 상태를 명시하도록 지시합니다.
+`RATIONALE_UNKNOWN`은 Athena 자체 기능이 아니라 POC에서 검증한 Engineering System 사용 규칙입니다. AI 클라이언트는 검색한 기준 자료에 결정 이유가 없으면 추측하지 않고 `RATIONALE_UNKNOWN`을 반환합니다.
 
 이 기능을 추가해도 authority는 바뀌지 않습니다. GitHub/OpenSpec이 canonical이고 Athena는 derived layer입니다.
 
@@ -96,7 +96,7 @@ Athena와 canonical Git 내용이 충돌하면 **항상 Git이 우선**합니다
 
 ## POC에서 확인한 것
 
-Data Relay Link POC에서는 Engineering System에 필요한 핵심 흐름을 실제로 검증했습니다.
+Data Relay Link POC에서 Engineering System에 필요한 핵심 사용 흐름을 실제로 검증했습니다.
 
 - Cursor가 MCP를 통해 Athena에 연결됨
 - 한국어와 영어 질문 모두 semantic search 가능
@@ -123,7 +123,7 @@ Data Relay Link POC에서는 Engineering System에 필요한 핵심 흐름을 �
 | Backup | Provider automatic backup + Athena application/database backup |
 | 외부 노출 | Reverse proxy를 통한 HTTPS만 공개, 내부 service는 직접 노출하지 않음 |
 
-OVHcloud는 현재 선택한 운영 인프라일 뿐 Engineering System의 normative contract는 아닙니다. 나중에 provider를 바꾸더라도 Athena의 역할과 GitHub의 authority는 그대로 유지됩니다.
+OVHcloud는 현재 선택한 운영 인프라일 뿐 Engineering System 규칙의 일부는 아닙니다. 나중에 공급자를 바꾸더라도 Athena는 검색 계층으로, GitHub는 기준 기록으로 유지됩니다.
 
 ## 목표 운영 흐름
 

@@ -1,6 +1,6 @@
 ---
 title: "빠른 시작"
-description: "일반 Repository에 ChatGPT + Cursor + GitHub Engineering System을 최소 구성으로 적용하는 가장 짧은 방법"
+description: "일반 저장소에 ChatGPT + Cursor + GitHub Engineering System을 최소 구성으로 적용하는 가장 짧은 방법"
 ---
 
 # 빠른 시작
@@ -22,11 +22,11 @@ flowchart LR
 
 Session Continuity는 ChatGPT와 Cursor가 repository-scoped GitHub Issue를 읽고 갱신할 수 있어야 합니다.
 
-- ChatGPT는 Work Packet 생성·갱신을 위한 GitHub repository 접근이 필요합니다.
+- ChatGPT는 Work Packet을 만들고 갱신할 수 있도록 대상 GitHub 저장소에 접근할 수 있어야 합니다.
 - Cursor `/work-resume`은 사용 가능한 GitHub integration 또는 인증된 `gh`가 필요합니다. 평소에는 ChatGPT가 Cursor CLI를 시작하고 `/work-resume`을 넘깁니다.
 - 둘 다 없다면 과거 Handoff를 다시 복붙해서 복원하지 말고 GitHub 접근부터 구성합니다.
 
-## 1. AI에게 Repository Adoption 요청
+## 1. AI에게 저장소 적용 요청
 
 의도한 시작 방법은 버전과 무관하게 동일하게 단순합니다.
 
@@ -54,7 +54,7 @@ Deterministic helper로 먼저 read-only audit을 할 수 있습니다.
 python tools/adopt.py --root /path/to/project --audit
 ~~~
 
-Managed adoption은 제공된 URL에서 canonical Engineering System을 확보한 뒤 version과 immutable canonical baseline SHA를 함께 pin합니다. 또한 shared/native CI ownership, merge-gate enforcement state, operations posture를 명시해 workflow가 존재한다는 이유만으로 AI가 책임 범위를 추측하지 않게 합니다. 새/빈 repository는 먼저 Git 경계를 만들고, `--allow-no-tests`는 실행 가능한 test target이 아직 없을 때만 임시 bootstrap 상태로 사용합니다.
+Managed adoption은 제공된 URL에서 Engineering System을 가져온 뒤 버전과 변경되지 않는 기준 SHA를 함께 고정합니다. 또한 shared/native CI 중 무엇이 검증을 담당하는지, merge gate 상태와 운영 요구사항을 명시해 AI가 파일 존재 여부만 보고 책임 범위를 추측하지 않게 합니다. 새 저장소는 먼저 Git 저장소를 만들고, `--allow-no-tests`는 실행 가능한 테스트가 아직 없을 때만 임시로 사용합니다.
 
 ## 2. Managed Adoption이 준비하는 것
 
@@ -73,7 +73,7 @@ AGENTS.md
 
 Project-native release qualification command가 명확하면 release preflight/gate wiring도 추가할 수 있습니다.
 
-기존 project file은 기본적으로 덮어쓰지 않습니다. Dirty worktree, 미검토 AI rule, ambiguous test command, existing CI의 shared/native 결정 미완료, destructive upgrade는 fail-closed 처리합니다.
+기존 프로젝트 파일은 기본적으로 덮어쓰지 않습니다. 변경 중인 worktree, 검토하지 않은 AI 규칙, 모호한 테스트 명령, 기존 CI의 shared/native 담당 범위 미확정, 파괴적인 업그레이드처럼 안전하게 판단하기 어려운 상황에서는 작업을 중단합니다.
 
 ## 3. Session Continuity
 
@@ -85,11 +85,11 @@ ChatGPT ↔ Cursor resume workflow를 사용한다면 다음을 추가합니다.
 .github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
 
-필요하면 repository Cursor rule도 canonical Engineering System을 참조하도록 둡니다.
+필요하면 저장소의 Cursor 규칙도 Engineering System을 참조하도록 설정합니다.
 
 ## 4. ChatGPT Custom Instructions는 짧게
 
-Custom Instructions에 Engineering System 전체를 복사하지 않습니다.
+Custom Instructions에 Engineering System 전체 내용을 복사해 넣지 않습니다.
 
 Global instruction은 routing만 담당하면 됩니다.
 
@@ -100,7 +100,7 @@ Global instruction은 routing만 담당하면 됩니다.
 - 실행 전에 실제 Git/GitHub 상태 재검증
 - 실행하지 않았거나 다른 HEAD의 evidence를 PASS로 사용하지 않기
 
-## 5. 첫 Workflow 실행
+## 5. 첫 작업 실행
 
 ~~~text
 ChatGPT:

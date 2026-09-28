@@ -24,11 +24,11 @@ flowchart LR
   </Step>
 
   <Step title="AI Work Packet을 만든다">
-    구현이 필요한 시점에 긴 Cursor prompt 대신 repository-scoped [AI Work] Issue를 갱신합니다. Cursor handoff 직전에 사용자의 가장 최근 명시적 요청을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 새로 맞추고, `Next Action`이 실제로 이를 전진시키는지 확인합니다. 예전에 남아 있던 release/cleanup/test 단계가 자동으로 다음 작업이 되면 안 됩니다.
+    구현이 필요한 시점에는 긴 Cursor 프롬프트 대신 해당 저장소의 [AI Work] Issue를 갱신합니다. Cursor에 작업을 넘기기 직전에 사용자의 가장 최근 요청을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 맞추고, `Next Action`이 실제로 그 요청을 전진시키는지 확인합니다. 이전에 남아 있던 릴리스·정리·테스트 단계가 자동으로 다음 작업이 되어서는 안 됩니다.
   </Step>
 
   <Step title="ChatGPT가 Cursor를 시작한다">
-    「Cursor에 넘겨줘」라고 하면 ChatGPT가 Work Packet·worktree를 준비한 뒤 개발 서버에서 Cursor CLI를 시작하고 `/work-resume`을 넘깁니다. 소유자가 평소에 `/resume`이나 `/work-resume`을 직접 칠 필요는 없습니다.
+    「Cursor에 넘겨줘」라고 하면 ChatGPT가 Work Packet과 worktree를 준비한 뒤 개발 서버에서 Cursor CLI를 시작해 `/work-resume`을 전달합니다. 사용자가 평소에 `/resume`이나 `/work-resume`을 직접 입력할 필요는 없습니다.
   </Step>
 
   <Step title="가장 싼 검증부터 한다">
@@ -68,7 +68,7 @@ ChatGPT:
 
 자세한 모바일·원격 관찰 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
-사용자는 진행 상황을 보기 위해 반드시 `agent persist attach`를 직접 실행할 필요는 없습니다. 상태 확인만 필요하면 ChatGPT가 실제 Cursor process/session, 현재 test, exact HEAD, working tree, Work Packet, PR/CI를 확인한 뒤 요약할 수 있습니다. 완료 시간 질문에는 현재 test 위치와 남은 long-running test 같은 관측 가능한 근거로 **범위형 ETA**를 제공하며, 근거가 부족하면 임의의 시간을 만들지 않습니다.
+진행 상황을 보기 위해 사용자가 반드시 `agent persist attach`를 직접 실행할 필요는 없습니다. 상태만 확인하면 ChatGPT가 실제 Cursor 프로세스/세션, 현재 테스트, 정확한 HEAD, worktree, Work Packet, PR/CI를 확인해 요약할 수 있습니다. 완료 예상 시간은 현재 테스트 위치나 남은 장시간 테스트처럼 확인 가능한 근거가 있을 때만 범위로 제시합니다.
 
 ## 왜 ChatGPT를 먼저 쓰는가
 
@@ -98,7 +98,7 @@ Known deterministic blocker가 있으면 expensive downstream qualification을 �
 
 Engineering System 1.5.1부터 review 처리는 상태값이 아니라 **실제 review 내용**을 기준으로 합니다.
 
-Merge 또는 terminal completion 전에 현재 구현 agent가 machine-observable PR review submission, top-level comment, inline feedback을 확인합니다. 사람 reviewer나 설정된 automated reviewer의 actionable finding은 다음 둘 중 하나로 처리해야 합니다.
+병합 또는 최종 완료 전에 현재 구현 agent는 PR 리뷰, 일반 댓글, 인라인 피드백을 확인합니다. 사람 리뷰어나 설정된 자동 리뷰어의 수정이 필요한 지적은 다음 둘 중 하나로 처리해야 합니다.
 
 - 실제 수정 후 affected validation을 다시 실행
 - non-actionable / out of scope / incorrect라고 판단한다면 짧은 근거를 남겨 disposition

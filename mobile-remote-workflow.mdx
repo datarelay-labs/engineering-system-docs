@@ -113,6 +113,6 @@ Direct `agent persist attach <session>` remains the best option when the owner w
 
 ## Telegram
 
-Telegram is a completion notification channel only. It is not engineering state or a source of truth. `COMPLETE` should be sent only after the workstream is terminally complete.
+Telegram is only a completion-notification channel. Work state and verification records stay in GitHub and the repository. Send `COMPLETE` only when the workstream is actually complete.
 
-The authoritative state remains the repository, tests, CI, PR/issue state, and actual runtime evidence.
+Use the repository, tests, CI, PR/Issue state, and actual runtime results to determine the current state.

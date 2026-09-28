@@ -1,6 +1,6 @@
 ---
 title: "도입 가이드"
-description: "새 프로젝트나 기존 Rules가 많은 프로젝트에 Engineering System을 최소한으로 적용하는 방법"
+description: "새 프로젝트나 기존 규칙이 많은 프로젝트에 Engineering System을 최소한으로 적용하는 방법"
 ---
 
 # 도입 가이드
@@ -17,9 +17,9 @@ https://github.com/datarelay-labs/engineering-system
 을 적용해줘.
 ~~~
 
-AI는 먼저 정확한 target repository를 식별하고, 제공된 URL에서 canonical Engineering System을 확보해 immutable baseline SHA를 정한 뒤 `standards/ADOPTION.md`에 따라 repository를 감사하고 적용합니다.
+AI는 먼저 정확한 대상 저장소를 식별하고, 제공된 URL에서 Engineering System을 가져와 변경되지 않는 기준 SHA를 정한 뒤 `standards/ADOPTION.md`에 따라 저장소를 점검하고 적용합니다.
 
-Target repository에 `tools/adopt.py`가 미리 있을 필요는 없습니다. 인증된 GitHub integration 또는 별도의 임시 canonical checkout에서 `datarelay-labs/engineering-system`의 helper를 가져와 target root에 대해 실행합니다. Canonical source는 tooling 기준이며 product repository에 통째로 vendor하지 않습니다.
+대상 저장소에 `tools/adopt.py`가 미리 있을 필요는 없습니다. 인증된 GitHub 연동이나 별도의 임시 Engineering System checkout에서 helper를 가져와 대상 저장소 루트에 실행합니다. Engineering System 전체를 제품 저장소에 복사해 넣지는 않습니다.
 
 ~~~mermaid
 flowchart LR
@@ -89,11 +89,11 @@ operations:
 - `merge_gate_status`: `verified`, `advisory`, `unknown` 중 하나이며 workflow가 존재한다는 이유만으로 branch protection을 추측하지 않음
 - Production-oriented repository는 runbook과 incident-response posture를 명시적으로 기록
 
-현재 managed adoption은 material design-bearing change를 가벼운 `standards/DESIGN.md` gate로, production-impacting failure를 `standards/OPERATIONS.md` incident lifecycle로 routing합니다. Production-oriented project에서는 project-native runbook/health/recovery contract를 기록하고, observable GitHub merge enforcement를 reconcile하며, 실제 project-native command가 있을 때 executable release contract를 사용합니다. 매 작업마다 새 설계 문서나 incident 문서를 만들라는 의미가 아니라, 결정에 맞는 가장 작은 durable artifact를 사용합니다.
+현재 managed adoption은 설계에 영향을 주는 변경은 `standards/DESIGN.md`로, 운영 장애는 `standards/OPERATIONS.md`로 연결합니다. 운영 중심 프로젝트에서는 프로젝트 자체의 runbook, 상태 확인, 복구 절차를 기록하고 GitHub 병합 규칙을 실제 상태와 맞춥니다. 실행 가능한 프로젝트 명령이 있을 때는 릴리스 절차에도 이를 사용합니다. 모든 작업마다 새 문서를 만들라는 뜻은 아니며, 필요한 경우에만 가장 작은 기록을 남깁니다.
 
-## 새 Repository 또는 빈 Repository
+## 새 저장소 또는 빈 저장소
 
-완전히 새 프로젝트라도 branch, HEAD, history, reviewable change를 안전 기준으로 사용하려면 먼저 명시적인 Git repository 경계를 만들어야 합니다. repository를 생성/초기화한 뒤 동일한 link-only adoption flow를 적용합니다.
+완전히 새 프로젝트라도 브랜치, HEAD, 변경 이력과 리뷰 가능한 diff를 기준으로 작업하려면 먼저 Git 저장소를 만들어야 합니다. 저장소를 생성하거나 초기화한 뒤 같은 적용 절차를 진행합니다.
 
 아직 실행 가능한 product code가 전혀 없다면 `--allow-no-tests`를 임시 bootstrap 상태로 사용할 수 있습니다. 하지만 영구적인 test 면제는 아닙니다. 실제 구현이 시작되면 project-native test를 만들고 affected-test contract를 갱신해야 정상 개발/릴리즈 qualification을 완료한 것으로 볼 수 있습니다.
 
@@ -112,9 +112,9 @@ AGENTS.md
 .engineering/release.yaml
 ~~~
 
-Repository가 사용하는 Engineering System version을 pin합니다.
+저장소가 사용하는 Engineering System 버전과 기준 SHA를 고정합니다.
 
-Cursor와 Session Continuity를 사용하는 경우에만 tool adapter와 continuity 파일을 추가합니다.
+Cursor와 작업 이어가기를 사용하는 경우에만 관련 어댑터와 상태 파일을 추가합니다.
 
 ~~~text
 .cursor/rules/engineering-system.mdc
@@ -124,7 +124,7 @@ Cursor와 Session Continuity를 사용하는 경우에만 tool adapter와 contin
 
 Base engineering governance와 AI session continuity는 연결되어 있지만 동일한 기능은 아닙니다.
 
-## 기존 Rules가 많은 Repository
+## 기존 규칙이 많은 저장소
 
 새 always-on rule을 그냥 추가하지 않습니다.
 
@@ -141,16 +141,16 @@ UNKNOWN
 
 제품 고유 architecture, routing, registry, security, persistence invariant는 유지합니다.
 
-일반적인 engineering guidance가 중복되어 있다면 canonical Engineering System으로 수렴시켜 Cursor context를 줄입니다.
+일반적인 개발 규칙이 여러 곳에 중복되어 있다면 Engineering System을 참조하도록 정리해 Cursor가 읽어야 할 내용을 줄입니다.
 
-## Adoption이 아직 끝나지 않은 Repository
+## Engineering System 적용이 아직 끝나지 않은 저장소
 
-Work Packet은 존재하지만 Engineering System adoption이 별도 PR에서 진행 중일 수 있습니다.
+Work Packet은 존재하지만 Engineering System 적용 작업이 별도 PR에서 진행 중일 수 있습니다.
 
 Resume 시 `AGENTS.md` 또는 `.engineering/*`가 없다면:
 
 - `ENGINEERING_SYSTEM_ADOPTION=ABSENT_OR_PENDING`으로 기록
-- Work Packet이 유효하면 canonical Engineering System default 아래에서 계속 진행
+- Work Packet이 유효하면 현재 Engineering System 기본 규칙 아래에서 작업 계속
 - 현재 workstream이 adoption 자체를 승인하지 않았다면 adoption 파일을 임의로 생성·merge·수정하지 않음
 
 이렇게 하면 release/feature 작업과 governance adoption이 섞이지 않습니다.
@@ -165,7 +165,7 @@ curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/m
   -o ~/.cursor/commands/resume.md
 ~~~
 
-개발 서버에서 ChatGPT가 Cursor CLI를 띄우는 **일반 원격 handoff**의 기본값은 `/work-resume`이며, 소유자가 평소에 `/resume`을 직접 칠 필요는 없습니다. 자세한 관찰·재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
+개발 서버에서 ChatGPT가 Cursor CLI를 시작해 작업을 넘길 때는 기본적으로 `/work-resume`을 사용합니다. 사용자가 평소에 `/resume`을 직접 입력할 필요는 없습니다. 실행 상태 확인과 재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
 ## ChatGPT Custom Instructions는 짧게
 
@@ -175,9 +175,9 @@ Custom Instructions에는 전체 표준을 복사하지 않습니다.
 
 - canonical Engineering System 사용
 - repository 먼저 식별
-- Cursor handoff와 chat continuity에 Work Packet 사용
+- Cursor 작업 전달과 대화 이어가기에 Work Packet 사용
 - task-relevant context만 읽기
-- 실행하지 않은 test나 다른 HEAD evidence를 PASS로 사용하지 않기
+- 실행하지 않은 테스트나 다른 HEAD의 결과를 PASS 근거로 사용하지 않기
 
 ## 선택 사항: Desktop Commander
 
@@ -187,7 +187,7 @@ ChatGPT가 개발 서버를 직접 감사해야 한다면 Desktop Commander Remo
 
 파일이 존재한다는 이유만으로 PASS가 아닙니다.
 
-Managed adoption은 required surface, version/baseline identity, session continuity, baseline-pinned workflow, test metadata, CI ownership, 설정된 release wiring을 검증합니다.
+Managed adoption은 필요한 파일, 버전과 기준 SHA, 작업 이어가기 설정, 테스트 정보, CI 담당 범위와 릴리스 연결 상태를 검증합니다.
 
 그 다음 실제 repository의 가장 싼 project-native smoke/affected test를 실행해야 합니다.
 

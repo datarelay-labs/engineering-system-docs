@@ -1,11 +1,11 @@
 ---
 title: "Tool Stack"
-description: "What each tool is used for and why the workflow combines them instead of relying on one agent."
+description: "What each tool is responsible for and why the workflow separates planning, implementation, verification, and durable records."
 ---
 
 # Tool stack
 
-The system is built around a small number of tools with deliberately different roles.
+The system uses a small number of tools, each with a clear primary role.
 
 ~~~mermaid
 flowchart LR
@@ -17,7 +17,7 @@ flowchart LR
     U -. completion signal .-> T["Telegram"]
 ~~~
 
-The split is intentional: exploratory thinking stays lightweight, implementation starts after scope is bounded, and evidence is stored outside either AI conversation.
+The tools are separated so exploration can stay lightweight, implementation starts after the scope is clear, and verification results are stored outside either AI conversation.
 
 ## ChatGPT
 
@@ -33,7 +33,7 @@ Primary implementation agent.
 
 Cursor receives repository context, edits code, runs affected tests, and updates the active Work Packet.
 
-The normal handoff does not require the owner to type a Cursor command. When the owner says "Cursor에 넘겨줘", ChatGPT updates the repository-scoped Work Packet, prepares the correct worktree, starts Cursor CLI on the authorized development server, and hands it the `/work-resume` workflow.
+The normal handoff does not require the owner to type a Cursor command. When the owner says "Cursor에 넘겨줘", ChatGPT updates the repository Work Packet, prepares the correct worktree, starts Cursor CLI on the authorized development server, and sends `/work-resume`.
 
 Cursor is used in two forms:
 
@@ -51,7 +51,7 @@ agent persist list
 agent persist attach <session>
 ~~~
 
-ChatGPT verifies the target worktree first and must confirm the session appears in `agent persist list` before reporting a successful handoff. `agent persist stop <session>` intentionally terminates the running session.
+ChatGPT verifies the target worktree first and confirms that the session appears in `agent persist list` before reporting that the handoff succeeded. `agent persist stop <session>` terminates the running session and is used only when explicitly intended.
 
 A non-persistent `--print` process is not the normal handoff because the owner cannot later attach to that session; ChatGPT must not use that fallback unless the owner explicitly permits it.
 
@@ -61,7 +61,7 @@ Cursor is configured to send a Telegram message when a task completes.
 
 Telegram is used only as a **completion signal** so the user can leave long-running implementation or test work unattended and return when action is required.
 
-It is not used as engineering state, evidence, or a source of truth.
+It is only a notification channel; it is not where work state or verification results are stored.
 
 ## GitHub
 
@@ -77,13 +77,13 @@ GitHub stores:
 - exact-HEAD release evidence
 - repository-scoped AI Work Packets
 
-This is where the workflow eventually returned after experiments with more document-centric project management.
+The workflow returned to GitHub after experiments with more document-heavy project management.
 
 ## Desktop Commander Remote MCP
 
 [Desktop Commander Remote MCP](https://mcp.desktopcommander.app) gives ChatGPT access to an authorized remote machine through controlled filesystem and terminal operations.
 
-In this workflow it is used mainly for development-server audit:
+In this workflow Desktop Commander is used mainly to inspect the development server:
 
 ~~~text
 ChatGPT
@@ -101,14 +101,14 @@ Access should be constrained to authorized directories and commands. Read-first 
 
 Athena is the planned searchable knowledge layer for decisions, rationale, and cross-project history.
 
-It is intentionally **derived knowledge**, not the canonical source of truth.
+It is a **search and retrieval layer**, not a replacement for repository records.
 
-GitHub still wins for current code, specifications, tests, and release evidence.
+Use GitHub for current code, specifications, tests, and release records.
 
 ## Why not one tool for everything?
 
 Earlier workflows tried to let one coding agent handle brainstorming, implementation, debugging, and all context at once.
 
-That was convenient, but open-ended conversations could consume a large amount of tokens before the implementation target was stable. When the prompt was not tightly bounded, cost could rise while output quality still varied.
+That was convenient, but open-ended conversations could consume many tokens before the implementation target was clear. When the task was vague, cost increased without consistently improving the result.
 
 The current split keeps high-level thinking lightweight and uses the implementation agent only after the work is well defined.
