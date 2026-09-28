@@ -28,11 +28,11 @@ flowchart LR
   </Step>
 
   <Step title="ChatGPT starts Cursor">
-    When the owner says "Cursor에 넘겨줘", ChatGPT prepares the Work Packet and worktree, starts Cursor CLI on the authorized development server, and hands it the `/work-resume` workflow. The owner normally does not type `/resume` or `/work-resume` manually.
+    When the owner says "Cursor에 넘겨줘", ChatGPT prepares the Work Packet and worktree, starts Cursor CLI on the authorized development server, and sends `/work-resume`. The owner normally does not type `/resume` or `/work-resume` manually.
   </Step>
 
   <Step title="Implement and validate">
-    Cursor changes the repository and runs the cheapest affected deterministic tests first. Expensive qualification is deferred until it is actually required.
+    Cursor changes the repository and runs the cheapest relevant repeatable checks first. Expensive qualification is deferred until it is actually required.
   </Step>
 
   <Step title="Return to ChatGPT">
@@ -40,7 +40,7 @@ flowchart LR
   </Step>
 
   <Step title="Audit directly when needed">
-    If GitHub evidence is not enough, ChatGPT can inspect the authorized development server through Desktop Commander Remote MCP.
+    If GitHub does not show enough runtime detail, ChatGPT can inspect the authorized development server through Desktop Commander Remote MCP.
   </Step>
 </Steps>
 
@@ -75,7 +75,7 @@ The hidden complexity stays in GitHub instead of being copied by the user.
 
 ## Why ChatGPT first
 
-The design intentionally spends more time in cheap, interactive planning before starting an implementation agent.
+The workflow spends more time on inexpensive interactive planning before starting an implementation agent.
 
 In this workflow, ChatGPT is used for:
 
@@ -86,7 +86,7 @@ In this workflow, ChatGPT is used for:
 - review and debugging hypotheses
 - deciding the smallest next implementation action
 
-Cursor is then given a bounded task with current repository context.
+Cursor is then given a clearly scoped task with current repository context.
 
 This separation is partly technical and partly economic: open-ended exploration inside a coding agent can consume a large amount of context before the implementation target is stable.
 
@@ -107,7 +107,7 @@ release candidate
   -> exact-HEAD release evidence
 ~~~
 
-A known deterministic blocker stops expensive downstream validation until it is fixed.
+A known blocking failure stops expensive downstream validation until it is fixed.
 
 ## Review feedback is a merge gate
 
@@ -116,7 +116,7 @@ Engineering System 1.5.1 makes review handling content-based rather than status-
 Before merge or terminal completion, the active implementation agent checks machine-observable PR review submissions, top-level comments, and inline feedback. Every actionable finding from a human reviewer or configured automated reviewer must be handled in one of two ways:
 
 - fix it and rerun the affected validation, or
-- record a concise evidence-backed disposition explaining why it is non-actionable, out of scope, or incorrect.
+- record a concise explanation, backed by the available evidence, for why it is non-actionable, out of scope, or incorrect.
 
 A `COMMENTED` or advisory review state is not automatically PASS or FAIL. The review content controls. The workstream does not merge or become terminal while actionable review feedback remains unaddressed.
 
@@ -127,9 +127,9 @@ The same engineering loop is used in two physical modes:
 - At a desk, implementation normally runs through the Cursor desktop application on the Mac.
 - While moving, the development Linux server becomes the stable execution environment. ChatGPT can start Cursor CLI there directly.
 - Cursor-native persistent sessions are preferred when the owner needs to watch or reconnect: `agent persist list` then `agent persist attach <session>`.
-- When the owner only needs progress, blockers, the current test, or an ETA, they can ask ChatGPT directly; ChatGPT should inspect the authorized server and GitHub evidence instead of asking for copied terminal output.
+- When the owner only needs progress, blockers, the current test, or an ETA, they can ask ChatGPT directly. ChatGPT should inspect the authorized server and GitHub instead of asking the owner to copy terminal output.
 - Cursor sends a Telegram completion notification so the owner does not need to watch a long-running terminal session.
-- After notification, the owner can simply tell ChatGPT "Cursor 끝났어. 계속"; ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
+- After notification, the owner can simply tell ChatGPT "Cursor 끝났어. 계속"; ChatGPT then checks GitHub, CI, the PR, the Issue, and the worktree before continuing.
 - When copied output is not enough, ChatGPT can inspect the authorized development server directly through Desktop Commander.
 
 See [Mobile & Remote Workflow](/mobile-remote-workflow) for the full operating pattern.
