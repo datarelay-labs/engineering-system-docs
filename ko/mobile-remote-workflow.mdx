@@ -1,26 +1,23 @@
 ---
 title: "모바일 & 원격 작업"
-description: "Cursor에 넘겨줘 한 마디로 ChatGPT가 Work Packet과 persistent Cursor session을 시작하고 진행 상황을 확인하는 방법"
+description: "ChatGPT가 Work Packet을 기준으로 원격 개발을 계속하고, 필요할 때만 Cursor persistent session을 명시적으로 활성화하는 방법"
 ---
 
 # 모바일 & 원격 작업
 
 작업 장소가 바뀌어도 engineering workflow가 끊기지 않도록 구성했습니다.
 
-책상에서는 Mac의 Cursor Desktop을 사용할 수 있습니다.
+기본 경로는 책상이나 이동 중 모두 ChatGPT가 승인된 개발 Linux 서버의 repository/worktree를 직접 확인하고 구현·테스트·감사를 이어가는 방식입니다.
 
-이동 중에는 개발 Linux 서버에서 Cursor CLI가 실행되고, 소유자는 휴대폰 SSH로 같은 서버에 접속해 진행 상황을 확인합니다.
+Cursor Desktop/CLI는 현재 Work Packet에서 owner가 명시적으로 opt-in하고 `IMPLEMENTER=CURSOR`가 기록된 경우에만 선택적 호환 경로로 사용합니다.
 
 ## 다 잊었을 때 — 이것만 하면 됩니다
 
 1. [Engineering System 한국어 홈](https://engineering.datarelay.run/ko)을 엽니다.
 2. **모바일 & 원격 작업** 페이지(이 문서)로 옵니다.
-3. 일반 개발 handoff는 ChatGPT에 이것만 말합니다: **「Cursor에 넘겨줘」**
-4. 실행 중인 Cursor를 보려면:
-   1. 개발 서버에 SSH
-   2. `agent persist list`
-   3. `agent persist attach <session>`
-5. Telegram 완료 알림을 받으면 ChatGPT에 **「Cursor 끝났어. 계속」**이라고 말합니다.
+3. 일반 개발은 ChatGPT에 **「계속」**이라고 말하면 됩니다. ChatGPT가 active Work Packet과 실제 GitHub/repository 상태를 다시 확인하고 직접 구현을 이어갑니다.
+4. Cursor가 꼭 필요한 현재 packet에서만 **「Cursor에 넘겨줘」**라고 명시적으로 요청합니다.
+5. 그 선택적 Cursor 작업을 직접 관찰해야 할 때만 `agent persist list` / `agent persist attach <session>`을 사용합니다.
 
 정확한 서버 hostname과 project worktree는 프로젝트마다 다릅니다. 이 handbook에 Data Relay Control 같은 특정 경로를 하드코딩하지 않습니다.
 
@@ -32,7 +29,7 @@ description: "Cursor에 넘겨줘 한 마디로 ChatGPT가 Work Packet과 persis
 - **「Cursor가 작업하게 해줘」**
 - 현재 Work Packet에 Cursor를 명시적으로 활성화하라는 동등한 지시
 
-기본 workflow는 다음과 같습니다.
+이 선택적 Cursor 호환 workflow는 다음과 같습니다.
 
 1. ChatGPT가 실제 GitHub/repository 상태를 확인합니다.
 2. ChatGPT가 repository-scoped `[AI Work]` Work Packet을 만들거나 갱신합니다.

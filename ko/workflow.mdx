@@ -24,7 +24,7 @@ flowchart LR
   </Step>
 
   <Step title="AI Work Packet을 만든다">
-    구현이 필요한 시점에는 긴 Cursor 프롬프트 대신 해당 저장소의 [AI Work] Issue를 갱신합니다. Cursor에 작업을 넘기기 직전에 사용자의 가장 최근 요청을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 맞추고, `Next Action`이 실제로 그 요청을 전진시키는지 확인합니다. 이전에 남아 있던 릴리스·정리·테스트 단계가 자동으로 다음 작업이 되어서는 안 됩니다.
+    구현이 필요한 시점에는 긴 handoff 프롬프트 대신 해당 저장소의 [AI Work] Issue를 갱신합니다. 구현 시작 직전에 사용자의 가장 최근 요청을 기준으로 `TASK_KIND`, `OWNER_INTENT`, `INTENT_REVISION`, `CHANGE_RISK`, `IMPLEMENTER`를 맞추고, `Next Action`이 실제로 그 요청을 전진시키는지 확인합니다. 이전에 남아 있던 릴리스·정리·테스트 단계가 자동으로 다음 작업이 되어서는 안 됩니다.
   </Step>
 
   <Step title="ChatGPT가 기본 구현을 수행한다">
@@ -44,31 +44,25 @@ flowchart LR
 
 ~~~text
 ChatGPT:
-"Cursor에 넘겨줘"
-  → ChatGPT가 Work Packet을 준비하고 Cursor CLI(/work-resume)를 시작
+"계속"
+  → active Work Packet과 실제 branch/HEAD/PR/CI를 확인
+  → ChatGPT가 직접 구현·테스트·감사 계속
 
-실행 중 Cursor를 직접 보기:
-ssh <development-server>
-agent persist list
-agent persist attach <session>
-
-또는 ChatGPT에게 직접 확인 요청:
-"Cursor 진행사항 확인해줘"
+상태 확인:
+"진행사항 확인해줘"
 "Full Suite 언제 끝날 것 같아?"
-  → ChatGPT가 승인된 개발 서버의 Cursor/session/test 상태와 GitHub 상태를 직접 확인
+  → ChatGPT가 승인된 개발 서버와 GitHub 상태를 직접 확인
   → 현재 작업, 진행률, blocker, 근거 기반 완료 예상 시간 범위를 요약
-
-ChatGPT:
-"Cursor 끝났어. 계속"
-  → ChatGPT가 GitHub/CI/PR/issue/worktree를 독립 재검증
 
 새 ChatGPT:
 "DRLink 계속"
 ~~~
 
+Cursor 호환 경로는 현재 Work Packet에서 owner가 명시적으로 opt-in한 경우에만 `Cursor에 넘겨줘`와 `/work-resume`을 사용합니다.
+
 자세한 모바일·원격 관찰 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
-진행 상황을 보기 위해 사용자가 반드시 `agent persist attach`를 직접 실행할 필요는 없습니다. 상태만 확인하면 ChatGPT가 실제 Cursor 프로세스/세션, 현재 테스트, 정확한 HEAD, worktree, Work Packet, PR/CI를 확인해 요약할 수 있습니다. 완료 예상 시간은 현재 테스트 위치나 남은 장시간 테스트처럼 확인 가능한 근거가 있을 때만 범위로 제시합니다.
+진행 상황을 보기 위해 사용자가 개발 서버에 직접 접속할 필요는 없습니다. 상태만 확인하면 ChatGPT가 현재 프로세스/테스트, 정확한 HEAD, worktree, Work Packet, PR/CI를 확인해 요약할 수 있습니다. 완료 예상 시간은 현재 테스트 위치나 남은 장시간 테스트처럼 확인 가능한 근거가 있을 때만 범위로 제시합니다.
 
 ## 왜 ChatGPT를 먼저 쓰는가
 
