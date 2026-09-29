@@ -13,12 +13,12 @@ The canonical repository defines the rules consumed by AI agents, repositories, 
 - `index.mdx` — overview and system map
 - `quickstart.mdx` / `ko/quickstart.mdx` — minimal adoption path
 - `architecture.mdx` — responsibilities and authority model
-- `workflow.mdx` — ChatGPT → Work Packet → Cursor → verification loop
+- `workflow.mdx` — ChatGPT-primary Work Packet → implementation → verification loop
 - `tools.mdx` — ChatGPT, Cursor, GitHub, Desktop Commander, Athena
 - `knowledge.mdx` — source-of-truth and decision-history model
 - `session-continuity.mdx` — AI Work Packet and `/resume`
 - `remote-audit.mdx` — direct development Linux host audit
-- `mobile-remote-workflow.mdx` — Cursor CLI, agent persist, phone SSH, and Telegram completion notifications
+- `mobile-remote-workflow.mdx` — ChatGPT-primary remote work plus optional Cursor CLI / agent persist compatibility
 - `adoption.mdx` — minimal setup for new/existing repositories
 - `evolution.mdx` — problems, trade-offs, and lessons learned
 

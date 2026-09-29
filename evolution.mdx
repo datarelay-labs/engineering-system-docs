@@ -16,10 +16,10 @@ This system was built by removing repeated friction rather than by starting with
 | Missing rationale | Decisions left in chat | Specs/ADR + Athena derived knowledge |
 | Large Cursor prompts | Repeated copy/paste | GitHub AI Work Packet |
 | Large ChatGPT handoffs | Continuation prompts | Same Work Packet + short bootstrap |
-| Coding-agent token burn during exploration | One tool did thinking + implementation | ChatGPT plans, Cursor implements |
+| Coding-agent token burn during exploration | Mandatory cross-agent implementation handoff | ChatGPT Chat plans and implements by default; extra agents are opt-in |
 | Hard to verify local server state | User pasted terminal output | Desktop Commander remote audit |
-| Long-running work while moving | Terminal tied to one device/session | Cursor CLI on development server + agent persist + phone SSH |
-| Had to keep checking whether Cursor finished | Manual terminal polling | Telegram completion notification |
+| Long-running work while moving | Terminal tied to one device/session | Development-server execution + direct ChatGPT inspection; optional Cursor persist |
+| Had to keep checking long-running work | Manual terminal polling | Direct host inspection + optional completion notification |
 | Full suite too often | Broad validation on many changes | Affected-first, full qualification at release boundary |
 | Stale release evidence | Historical PASS reused informally | Exact-HEAD qualification |
 
@@ -30,7 +30,8 @@ flowchart LR
     A["Many Planning Docs"] --> B["GitHub Source of Truth"]
     B --> C["Athena<br/>decision/history search"]
     C --> D["AI Work Packet<br/>session continuity"]
-    D --> E["Cursor /resume"]
+    D --> E["ChatGPT-primary execution"]
+    D -. optional .-> X["Cursor /work-resume"]
     E --> F["Desktop Commander<br/>independent audit"]
     F --> G["agent persist + Telegram<br/>mobile operation"]
 ~~~
@@ -87,7 +88,7 @@ A persistent development Linux server plus Cursor-native `agent persist` session
 
 Telegram completion messages removed another small but repeated cost: checking the terminal simply to learn whether a long task had finished.
 
-The remaining copy/paste between a completed mobile Cursor session and ChatGPT is only a temporary handoff mechanism; durable state still belongs in the repository.
+Cursor persistence remains available as an optional compatibility path, but current default implementation stays in ChatGPT. Durable state belongs in the repository regardless of which worker is explicitly authorized.
 
 ## Adoption itself became automation
 

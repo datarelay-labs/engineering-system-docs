@@ -165,7 +165,7 @@ curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/m
   -o ~/.cursor/commands/resume.md
 ~~~
 
-개발 서버에서 ChatGPT가 Cursor CLI를 시작해 작업을 넘길 때는 기본적으로 `/work-resume`을 사용합니다. 사용자가 평소에 `/resume`을 직접 입력할 필요는 없습니다. 실행 상태 확인과 재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
+Cursor 호환 경로를 명시적으로 활성화한 경우에만 ChatGPT가 개발 서버에서 Cursor CLI와 `/work-resume`을 사용합니다. 기본 구현 경로는 `IMPLEMENTER=CHATGPT_CHAT`인 ChatGPT 직접 구현입니다. 실행 상태 확인과 재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
 ## ChatGPT Custom Instructions는 짧게
 

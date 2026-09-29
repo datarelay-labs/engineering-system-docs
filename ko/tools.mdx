@@ -10,7 +10,7 @@ description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, agent persist,
 ~~~mermaid
 flowchart LR
     O["Owner"] <--> C["ChatGPT<br/>사고 · 설계 · 리뷰"]
-    C --> U["Cursor<br/>구현"]
+    C --> U["ChatGPT<br/>구현·감사"]
     U --> G["GitHub / Tests / CI<br/>Durable Evidence"]
     G --> C
     C -. local reality 검증 .-> D["Desktop Commander<br/>개발 서버 감사"]
@@ -31,7 +31,7 @@ flowchart LR
 
 Cursor는 repository를 수정하고 affected test를 실행하며 active Work Packet을 갱신합니다.
 
-책상에서는 macOS의 Cursor Desktop을 사용할 수 있습니다. 이동 중·원격 구현의 기본 orchestration은 ChatGPT가 개발 Linux 서버에서 Cursor CLI를 직접 시작하는 것입니다. 소유자가 평소에 CLI를 수동으로 띄울 필요는 없습니다.
+기본 구현자는 ChatGPT Chat입니다. ChatGPT가 승인된 개발 Linux 서버에서 직접 저장소를 수정하고 테스트·감사를 수행합니다. Cursor Desktop/CLI는 현재 Work Packet에 대한 owner의 명시적 요청과 `IMPLEMENTER=CURSOR`가 있을 때만 선택적으로 사용합니다.
 
 ## agent persist
 

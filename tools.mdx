@@ -1,114 +1,30 @@
 ---
 title: "Tool Stack"
-description: "What each tool is responsible for and why the workflow separates planning, implementation, verification, and durable records."
+description: "What each tool is responsible for in the ChatGPT-primary Engineering System."
 ---
 
 # Tool stack
 
-The system uses a small number of tools, each with a clear primary role.
-
-~~~mermaid
-flowchart LR
-    O["Owner"] <--> C["ChatGPT<br/>Think · Design · Review"]
-    C --> U["Cursor<br/>Implement"]
-    U --> G["GitHub / Tests / CI<br/>Durable Evidence"]
-    G --> C
-    C -. verify local reality .-> D["Desktop Commander<br/>Dev Server Audit"]
-    U -. completion signal .-> T["Telegram"]
-~~~
-
-The tools are separated so exploration can stay lightweight, implementation starts after the scope is clear, and verification results are stored outside either AI conversation.
-
 ## ChatGPT
 
-Primary planning and review environment.
-
-Use it for requirements, architecture, design, documentation, test planning, code review, release reasoning, and deciding what Cursor should do next.
-
-The normal mode is conversational Chat. Long-running Work mode is reserved for cases where it is explicitly useful rather than being the default for every engineering discussion.
-
-## Cursor
-
-Primary implementation agent.
-
-Cursor receives repository context, edits code, runs affected tests, and updates the active Work Packet.
-
-The normal handoff does not require the owner to type a Cursor command. When the owner says "Cursor에 넘겨줘", ChatGPT updates the repository Work Packet, prepares the correct worktree, starts Cursor CLI on the authorized development server, and sends `/work-resume`.
-
-Cursor is used in two forms:
-
-- **Cursor desktop on macOS** for long desk sessions.
-- **Cursor CLI on the development Linux server** for mobile or remote sessions, using a Cursor-native persistent session for ChatGPT-orchestrated handoffs.
-
-### Cursor persistent sessions
-
-Normal ChatGPT-orchestrated launch:
-
-~~~bash
-cd <target-worktree>
-agent persist /work-resume
-agent persist list
-agent persist attach <session>
-~~~
-
-ChatGPT verifies the target worktree first and confirms that the session appears in `agent persist list` before reporting that the handoff succeeded. `agent persist stop <session>` terminates the running session and is used only when explicitly intended.
-
-A non-persistent `--print` process is not the normal handoff because the owner cannot later attach to that session; ChatGPT must not use that fallback unless the owner explicitly permits it.
-
-## Telegram
-
-Cursor is configured to send a Telegram message when a task completes.
-
-Telegram is used only as a **completion signal** so the user can leave long-running implementation or test work unattended and return when action is required.
-
-It is only a notification channel; it is not where work state or verification results are stored.
+The default engineering worker: requirements, design, code and docs changes, tests, GitHub coordination, exact-head reconciliation, and terminal audit.
 
 ## GitHub
 
-The durable engineering backbone.
+Durable authority for AI Work Packets, branches and exact SHAs, PRs, review findings, checks, and merge history.
 
-GitHub stores:
+## Remote development tools
 
-- code and Git history
-- product specifications and ADRs
-- tests and regression coverage
-- pull requests and review
-- CI evidence
-- exact-HEAD release evidence
-- repository-scoped AI Work Packets
+Desktop Commander or another approved connector gives ChatGPT controlled access to authorized development worktrees and test environments.
 
-The workflow returned to GitHub after experiments with more document-heavy project management.
+## Cursor
 
-## Desktop Commander Remote MCP
+Dormant compatibility only. Do not create, resume, attach to, or wait on Cursor unless the owner explicitly reactivates it for the current packet and that packet records IMPLEMENTER=CURSOR.
 
-[Desktop Commander Remote MCP](https://mcp.desktopcommander.app) gives ChatGPT access to an authorized remote machine through controlled filesystem and terminal operations.
+## Codex or other independent reviewers
 
-In this workflow Desktop Commander is used mainly to inspect the development server:
+Optional defense-in-depth for high-risk work. They do not replace deterministic tests, exact-head CI, or required human approvals.
 
-~~~text
-ChatGPT
-  -> Desktop Commander
-  -> development Linux host
-  -> inspect repo / files / processes / tests
-  -> compare runtime state with GitHub and Cursor claims
-~~~
+## Telegram and Athena
 
-This is valuable when a GitHub-only review cannot prove what is actually present or running on the development host.
-
-Access should be constrained to authorized directories and commands. Read-first inspection is preferred for audit work.
-
-## Athena
-
-Athena is the planned searchable knowledge layer for decisions, rationale, and cross-project history.
-
-It is a **search and retrieval layer**, not a replacement for repository records.
-
-Use GitHub for current code, specifications, tests, and release records.
-
-## Why not one tool for everything?
-
-Earlier workflows tried to let one coding agent handle brainstorming, implementation, debugging, and all context at once.
-
-That was convenient, but open-ended conversations could consume many tokens before the implementation target was clear. When the task was vague, cost increased without consistently improving the result.
-
-The current split keeps high-level thinking lightweight and uses the implementation agent only after the work is well defined.
+Telegram is informational notification only. Athena is optional knowledge/retrieval support. Neither is implementation authority.

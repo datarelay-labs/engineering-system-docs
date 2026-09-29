@@ -1,161 +1,30 @@
 ---
 title: "Quick Start"
-description: "The shortest path for applying the ChatGPT + Cursor + GitHub Engineering System to an existing or new repository."
+description: "The shortest path for applying the ChatGPT-primary Engineering System."
 ---
 
 # Quick start
 
-You do not need to adopt every optional tool on day one.
-
-Start with the smallest loop that creates durable state:
-
-~~~mermaid
-flowchart LR
-    A["ChatGPT<br/>plan"] --> B["GitHub AI Work Packet"]
-    B --> C["Cursor<br/>implement"]
-    C --> D["Affected Tests"]
-    D --> E["GitHub<br/>commit / PR / CI"]
-    E --> A
-~~~
-
 ## 0. Make GitHub reachable
 
-Continuing work across sessions requires both sides to read and update the repository's GitHub Work Packet Issue.
+ChatGPT needs authenticated access to Issues, branches, pull requests, checks, and reviews. The development host needs normal Git access to the repository.
 
-- ChatGPT needs GitHub repository access for Work Packet creation/update.
-- Cursor session continuity needs an available GitHub integration or authenticated `gh`; ChatGPT normally starts the CLI and hands it `/work-resume`.
-- If neither is available, stop and configure access instead of rebuilding state from pasted historical handoffs.
+## 1. Adopt the repository
 
-## 1. Ask the agent to adopt the repository
+Use the canonical Engineering System adoption tooling. It synchronizes managed metadata, helpers, workflows, the Work Packet template, dependency pins, and the immutable baseline. Unknown custom managed-looking bytes fail closed for review.
 
-The intended entrypoint is deliberately version-independent:
+## 2. Preserve project rules
 
-~~~text
-Apply https://github.com/datarelay-labs/engineering-system to this project.
-~~~
+Keep stronger repository-specific build, test, security, release, formatting, and domain constraints. The adopted AGENTS contract declares ChatGPT as default implementer and Cursor as disabled by default.
 
-The agent should not blindly copy files. It first identifies the target repository and Engineering System baseline from the supplied URL, then follows the adoption standard:
+## 3. Create a packet-v2 Work Packet
 
-~~~text
-Inventory repository
-  -> classify existing AI / engineering rules
-  -> discover native tests / CI / release flow
-  -> preserve project-specific and stricter invariants
-  -> choose shared or native CI explicitly
-  -> bootstrap missing Engineering System surfaces
-  -> qualify adoption
-~~~
+Include current owner intent, INTENT_REVISION, CHANGE_RISK, IMPLEMENTER=CHATGPT_CHAT, branch, and exact HEAD.
 
-The deterministic helper supports a read-only audit:
+## 4. Implement and verify
 
-~~~bash
-python tools/adopt.py --root /path/to/project --audit
-~~~
+ChatGPT implements in a clean worktree, runs affected tests, commits and pushes, then verifies exact-head CI and review evidence.
 
-and a small bootstrap only after the project-specific choices are known.
+## 5. Resume anywhere
 
-Managed adoption obtains the Engineering System from the supplied URL, pins the version and baseline SHA, and records whether shared or native CI owns validation, the merge-gate state, and the repository's operations requirements. A new repository establishes its Git boundary first; `--allow-no-tests` is only a temporary option while no executable test target exists.
-
-## 2. What managed adoption installs
-
-A managed adoption prepares:
-
-~~~text
-AGENTS.md
-.engineering/project.yaml
-.engineering/tests.yaml
-.engineering/release.yaml
-.cursor/rules/engineering-system.mdc
-.cursor/commands/resume.md
-.github/ISSUE_TEMPLATE/ai-work-packet.md
-.github/workflows/engineering-system.yml
-~~~
-
-If an explicit project-native release qualification command is known, release preflight/gate wiring can also be generated.
-
-Existing project files are preserved by default. Dirty worktrees, unreviewed AI rules, ambiguous test commands, existing CI without an explicit shared/native decision, and destructive upgrades fail closed.
-
-## 3. Session continuity
-
-
-For ChatGPT ↔ Cursor resume workflow, add:
-
-~~~text
-.cursor/commands/resume.md
-.github/ISSUE_TEMPLATE/ai-work-packet.md
-~~~
-
-The optional repository Cursor rule can also point agents at the Engineering System.
-
-## 4. Keep ChatGPT instructions short
-
-ChatGPT does not need a copy of the entire standard in Custom Instructions.
-
-The global instruction only needs to route work correctly:
-
-- identify the target repository first
-- use the canonical Engineering System
-- load minimal task-relevant context
-- use the repository Work Packet for handoff/resume and synchronize `TASK_KIND` / `OWNER_INTENT` with the owner's latest explicit request before implementation handoff
-- verify current Git/GitHub state before acting
-- never claim unexecuted or different-HEAD evidence as PASS
-
-## 5. Run the first workflow
-
-~~~text
-ChatGPT:
-"Cursor에 넘겨줘"
-  -> verify repository/GitHub state
-  -> update the active Work Packet
-  -> prepare branch/worktree
-  -> start Cursor CLI and `/work-resume`
-
-Owner (optional visibility):
-agent persist list
-agent persist attach <session>
-
-ChatGPT:
-"Cursor 끝났어. 계속"
-~~~
-
-If the same workstream continues without a giant pasted prompt, the continuity path is working.
-
-## 6. Add optional layers when they solve a real problem
-
-<CardGroup cols={2}>
-  <Card title="Desktop Commander" icon="terminal" href="/remote-audit">
-    Add direct development-server audit when GitHub alone cannot prove local runtime or worktree state.
-  </Card>
-
-  <Card title="Athena" icon="book" href="/knowledge">
-    Add searchable decision/history knowledge when rationale must be recovered across projects.
-  </Card>
-
-  <Card title="agent persist + Phone SSH" icon="terminal" href="/mobile-remote-workflow">
-    Let ChatGPT start Cursor on the development server, then reconnect to the persistent Cursor session with `agent persist` when needed.
-  </Card>
-
-  <Card title="Telegram" icon="bell">
-    Add completion notifications when long-running implementation or tests should run unattended.
-  </Card>
-</CardGroup>
-
-## Before implementation
-
-The owner and AI should know:
-
-~~~text
-change type
-affected domain
-public contract
-persisted state
-security boundary
-operational impact
-required tests
-~~~
-
-Then make the smallest correct change and run the cheapest repeatable check that can catch a problem in that change.
-
-<Note>
-  The owner retains product scope, final decisions, release approval, and human UX judgment. AI assists the engineering process; it does not silently broaden product scope.
-</Note>
+A fresh conversation can simply say “Engineering System 계속”. ChatGPT re-reads durable GitHub/repository state instead of relying on a copied handoff.

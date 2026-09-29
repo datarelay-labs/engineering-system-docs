@@ -16,7 +16,7 @@ description: "실제 불편에서 출발해 현재 Engineering System으로 발�
 | 구현 이유가 사라짐 | Chat에만 결정이 남음 | Spec / ADR + Athena |
 | Cursor 프롬프트가 너무 김 | 매번 복붙 | GitHub AI Work Packet |
 | ChatGPT 작업 전달이 너무 김 | 긴 이어가기 프롬프트 | 같은 Work Packet + 짧은 시작 문구 |
-| 아이디어 단계부터 coding agent 비용 증가 | 한 도구에서 전부 수행 | ChatGPT 설계 → Cursor 구현 |
+| 아이디어 단계부터 coding agent 비용 증가 | 필수적인 도구 간 구현 handoff | ChatGPT Chat이 설계·구현을 기본 수행, 추가 agent는 opt-in |
 | 서버 실제 상태 확인이 어려움 | shell output 복붙 | Desktop Commander 직접 감사 |
 | 이동 중 긴 작업 유지 어려움 | terminal/device 종속 | Cursor CLI + `agent persist` + 휴대폰 SSH |
 | Cursor 완료 여부 반복 확인 | terminal polling | Telegram 완료 알림 |

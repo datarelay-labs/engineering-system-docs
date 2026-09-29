@@ -1,6 +1,6 @@
 ---
 title: "Mobile & Remote Workflow"
-description: "How ChatGPT hands work to Cursor through a GitHub Work Packet and an observable persistent Cursor session."
+description: "How ChatGPT continues implementation from a GitHub Work Packet on an authorized development server, with optional explicitly enabled Cursor sessions."
 ---
 
 # Mobile and remote workflow
@@ -10,45 +10,35 @@ The development Linux server is the stable execution environment while the owner
 ## If you forget everything
 
 1. Open this handbook.
-2. For a normal development handoff, tell ChatGPT: **"Cursor에 넘겨줘"**.
-3. ChatGPT verifies GitHub state, updates the active `[AI Work]` Work Packet, prepares the branch/worktree, and starts Cursor CLI on the authorized development server.
-4. To watch a running persistent Cursor task:
+2. For normal development, tell ChatGPT **"계속"**.
+3. ChatGPT reloads the active Work Packet, Git/GitHub state, and authorized development-server context, then implements/tests directly.
+4. Only when you explicitly want Cursor for the current packet, say **"Cursor에 넘겨줘"**. ChatGPT must record `IMPLEMENTER=CURSOR` and revalidate the dispatch boundary before `/work-resume`.
+5. After an explicitly opted-in Cursor task, **"Cursor 끝났어. 계속"** returns control to ChatGPT for independent exact-HEAD verification.
 
-~~~bash
-ssh <development-server>
-agent persist list
-agent persist attach <session>
-~~~
-
-5. After terminal completion, tell ChatGPT: **"Cursor 끝났어. 계속"**. ChatGPT independently verifies GitHub/CI/PR/issue/worktree state.
-
-## What "Cursor에 넘겨줘" means
-
-The owner normally does not start Cursor CLI manually. ChatGPT handles the durable handoff end-to-end:
+## Default remote flow
 
 ~~~mermaid
 flowchart LR
-    O["Owner<br/>Cursor에 넘겨줘"] --> C["ChatGPT<br/>verify + orchestrate"]
-    C --> W["Work Packet<br/>branch/worktree"]
-    W --> P["Cursor persistent session<br/>/work-resume"]
-    P --> G["PR · CI · merge"]
-    G --> T["Telegram COMPLETE"]
-    T --> O2["Owner<br/>Cursor 끝났어. 계속"]
-    O2 --> C2["ChatGPT<br/>independent verification"]
+    O["Owner<br/>계속"] --> C["ChatGPT<br/>verify · implement · test"]
+    C --> W["Work Packet<br/>authority + state"]
+    W --> G["Repository · PR · CI"]
+    G --> C
+    W -. explicit IMPLEMENTER=CURSOR .-> P["Optional Cursor<br/>/work-resume"]
+    P --> G
 ~~~
 
 Browser login, account, credential, payment, or approval steps that cannot be completed remotely still require owner interaction.
 
-## Cursor persistent sessions
+## Optional Cursor persistent sessions
 
-Normal handoff from the verified target worktree:
+Only after explicit owner opt-in and `IMPLEMENTER=CURSOR`, the verified target worktree may use:
 
 ~~~bash
 cd <target-worktree>
 agent persist /work-resume
 ~~~
 
-ChatGPT must verify the target repository/worktree before launch, then confirm the new session appears in `agent persist list`. A handoff is not complete until that persistent session is visible.
+ChatGPT must verify the target repository/worktree and current Work Packet before launch, then confirm the session appears in `agent persist list`. Without explicit packet opt-in, no Cursor session is launched.
 
 Launching a persistent session requires an interactive Linux/macOS TTY. A non-interactive shell can fail with:
 
@@ -68,9 +58,9 @@ agent persist stop <session>
 
 ChatGPT should report the persistent session name and a ready-to-copy attach command after starting it. It must not silently replace the handoff with a non-persistent `--print` process unless the owner explicitly allows that fallback.
 
-## Ask ChatGPT for Cursor progress
+## Ask ChatGPT for implementation progress
 
-You do not have to SSH into the development server just to learn whether Cursor is still running or how far a long test has progressed. When the development server is authorized for remote inspection, ask ChatGPT directly:
+You do not have to SSH into the development server just to learn how implementation or a long test is progressing. When the development server is authorized for remote inspection, ask ChatGPT directly:
 
 ~~~text
 "Check the Cursor progress."
@@ -81,7 +71,7 @@ You do not have to SSH into the development server just to learn whether Cursor 
 
 ChatGPT should inspect the actual development-server state instead of asking the owner to copy terminal output. Depending on the workstream, that inspection should include:
 
-- the target repository/worktree and active persistent Cursor session (`agent persist list` when applicable)
+- the target repository/worktree and any explicitly opted-in persistent Cursor session (`agent persist list` when applicable)
 - the running Cursor process/session and its current child command or test
 - branch, exact HEAD, dirty/clean state, and synchronization with the remote
 - current test position, remaining tests, and known long-running tests
@@ -109,7 +99,7 @@ When the owner asks when a task will finish, ChatGPT may estimate the remaining 
 
 The result should be a range such as **"about 10–20 minutes remaining"**, not a false exact promise. If the runtime cannot be inspected or there is not enough timing evidence, ChatGPT should say that the ETA cannot be determined reliably.
 
-Direct `agent persist attach <session>` remains the best option when the owner wants to watch the raw interactive Cursor session. Asking ChatGPT is the convenient option when the owner only needs status, blockers, test progress, or an ETA.
+For an explicitly opted-in Cursor packet, `agent persist attach <session>` remains available for raw interactive observation. In the default ChatGPT-primary path, simply ask ChatGPT for status, blockers, test progress, or an ETA.
 
 ## Telegram
 

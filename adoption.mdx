@@ -112,7 +112,7 @@ AGENTS.md
 
 Pin the Engineering System version used by the repository.
 
-If you use Cursor and session continuity, add the tool adapter and continuity files separately:
+If you explicitly enable optional Cursor compatibility, add the Cursor adapter files separately:
 
 ~~~text
 .cursor/rules/engineering-system.mdc
@@ -139,7 +139,7 @@ UNKNOWN
 
 Keep product-specific invariants and stricter valid rules.
 
-Remove duplicated generic engineering guidance from product repositories and reference the Engineering System instead, so Cursor has less repeated context to read.
+Remove duplicated generic engineering guidance from product repositories and reference the Engineering System instead, so any implementation agent reads less repeated context.
 
 ## Adoption-pending repositories
 
@@ -163,7 +163,7 @@ curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/m
   -o ~/.cursor/commands/resume.md
 ~~~
 
-This provides the continuity command to Cursor. In the normal owner workflow, ChatGPT starts Cursor CLI and hands it the repository `/work-resume` flow; the owner does not need to type `/resume` manually.
+This installs the optional Cursor compatibility command. It is disabled by default. ChatGPT may invoke `/work-resume` only after explicit owner reactivation for the current packet and `IMPLEMENTER=CURSOR`.
 
 ## Add ChatGPT routing, not the whole standard
 
@@ -173,7 +173,7 @@ They only need to say:
 
 - use the canonical Engineering System
 - resolve the repository first
-- use Work Packets for Cursor handoff and chat continuity
+- use Work Packets for implementation authority and chat continuity
 - read only minimal relevant context
 - never claim unexecuted or different-HEAD evidence as PASS
 
@@ -201,18 +201,19 @@ ENGINEERING_SYSTEM_ADOPTION=PASS
 
 ## Session continuity smoke test
 
-A simple continuity smoke test is:
+A simple default continuity smoke test is:
 
 ~~~text
 ChatGPT:
-"Cursor에 넘겨줘"
-  -> Work Packet + branch/worktree
-  -> ChatGPT starts Cursor CLI
-  -> Cursor follows `/work-resume`
+"계속"
+  -> reload Work Packet + branch/worktree
+  -> require IMPLEMENTER=CHATGPT_CHAT
+  -> continue implementation and verification
 
-ChatGPT:
-"Cursor 끝났어. 계속"
-  -> independently verify GitHub/CI/PR/issue/worktree state
+Optional compatibility:
+"Cursor에 넘겨줘"
+  -> explicit owner opt-in + IMPLEMENTER=CURSOR
+  -> /work-resume
 ~~~
 
 If the same workstream resumes without copying a large prompt, the continuity path is working.

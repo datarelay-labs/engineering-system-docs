@@ -30,7 +30,7 @@ description: "Cursor에 넘겨줘 한 마디로 ChatGPT가 Work Packet과 persis
 
 - **「Cursor에 넘겨줘」**
 - **「Cursor가 작업하게 해줘」**
-- Cursor에 구현을 넘기라는 동등한 지시
+- 현재 Work Packet에 Cursor를 명시적으로 활성화하라는 동등한 지시
 
 기본 workflow는 다음과 같습니다.
 
@@ -63,7 +63,7 @@ flowchart LR
 
 ## ChatGPT가 시작한 Cursor 작업을 보는 방법
 
-기본값은 **Cursor persistent session**입니다.
+기본값은 **ChatGPT-primary 직접 구현**입니다. Cursor persistent session은 현재 Work Packet에서 owner가 명시적으로 opt-in하고 `IMPLEMENTER=CURSOR`가 설정된 경우에만 사용합니다.
 
 현재 설치된 Cursor CLI에서 확인한 관리 명령:
 
