@@ -1,10 +1,12 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Engineering System",
+  "name": "DataRelay Engineering",
   "description": "A practical ChatGPT-primary engineering workflow built around GitHub, direct development-server verification, repository-scoped Work Packets, and optional Cursor compatibility.",
   "colors": {
-    "primary": "#2563EB"
+    "primary": "#C2410C",
+    "light": "#FB923C",
+    "dark": "#C75A00"
   },
   "logo": {
     "light": "/assets/engineering-system-logo-light.svg",
@@ -14,10 +16,35 @@
   "navbar": {
     "links": [
       {
-        "label": "Canonical Standard",
+        "label": "DataRelay",
+        "href": "https://datarelay.run/"
+      },
+      {
+        "label": "Link",
+        "href": "https://link.datarelay.run/"
+      },
+      {
+        "label": "Control",
+        "href": "https://control.datarelay.run/"
+      },
+      {
+        "label": "Grant",
+        "href": "https://grant.datarelay.run/"
+      },
+      {
+        "label": "Engineering",
+        "href": "https://engineering.datarelay.run/"
+      },
+      {
+        "type": "github",
         "href": "https://github.com/datarelay-labs/engineering-system"
       }
-    ]
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Quick Start",
+      "href": "/quickstart"
+    }
   },
   "search": {
     "prompt": "Search the Engineering System..."
