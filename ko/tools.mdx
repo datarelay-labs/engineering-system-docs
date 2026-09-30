@@ -1,6 +1,6 @@
 ---
 title: "사용 도구"
-description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, agent persist, Telegram이 각각 맡는 역할"
+description: "ChatGPT-primary 구현, GitHub, Desktop Commander, Athena와 선택적 Cursor 호환 경로의 역할"
 ---
 
 # 사용 도구
@@ -10,7 +10,7 @@ description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena, agent persist,
 ~~~mermaid
 flowchart LR
     O["Owner"] <--> C["ChatGPT<br/>사고 · 설계 · 리뷰"]
-    C --> U["Cursor<br/>구현"]
+    C --> U["ChatGPT<br/>구현·감사"]
     U --> G["GitHub / Tests / CI<br/>Durable Evidence"]
     G --> C
     C -. local reality 검증 .-> D["Desktop Commander<br/>개발 서버 감사"]
@@ -21,21 +21,19 @@ flowchart LR
 
 ## ChatGPT
 
-요구사항, 브레인스토밍, 아키텍처, 설계, 문서, 테스트 전략, 코드 리뷰, 릴리즈 판단과 다음 작업 결정을 담당합니다.
+요구사항, 브레인스토밍, 아키텍처, 설계, 문서, 테스트 전략과 다음 작업 결정뿐 아니라 기본 repository 구현, affected test, exact-HEAD 감사까지 담당합니다.
 
 평소에는 가벼운 Chat 모드를 기본으로 사용하고, 장시간 autonomous work가 실제로 필요한 경우에만 Work 모드를 사용합니다.
 
 ## Cursor
 
-실제 구현 agent입니다.
+선택적 호환 구현 도구입니다. 기본 구현 권한은 없습니다.
 
-Cursor는 repository를 수정하고 affected test를 실행하며 active Work Packet을 갱신합니다.
-
-책상에서는 macOS의 Cursor Desktop을 사용할 수 있습니다. 이동 중·원격 구현의 기본 orchestration은 ChatGPT가 개발 Linux 서버에서 Cursor CLI를 직접 시작하는 것입니다. 소유자가 평소에 CLI를 수동으로 띄울 필요는 없습니다.
+ChatGPT Chat이 승인된 개발 Linux 서버에서 직접 저장소를 수정하고 테스트·감사를 수행합니다. Cursor Desktop/CLI는 현재 Work Packet에 대해 owner가 명시적으로 요청하고 `IMPLEMENTER=CURSOR`가 기록된 경우에만 시작하거나 재개합니다. 그 외에는 Cursor session을 생성·resume·attach·wait하지 않습니다.
 
 ## agent persist
 
-Cursor-native persistent session입니다. SSH가 끊겨도 session이 남고, 소유자가 다시 붙어 진행을 볼 수 있습니다.
+명시적으로 Cursor를 활성화한 Work Packet에서만 사용하는 Cursor-native persistent session입니다. SSH가 끊겨도 session이 남고, 소유자가 다시 붙어 진행을 볼 수 있습니다.
 
 ~~~bash
 cd <target-worktree>
@@ -44,7 +42,7 @@ agent persist list
 agent persist attach <session>
 ~~~
 
-ChatGPT는 target worktree를 먼저 확인하고, `agent persist list`에 session이 실제로 보이는 경우에만 Cursor 전달 완료로 간주합니다.
+Cursor 호환 경로를 명시적으로 활성화한 경우에만 ChatGPT가 target worktree를 확인한 뒤 session을 시작합니다. `agent persist list`에 session이 실제로 보이는 경우에만 Cursor 전달 완료로 간주합니다.
 
 `agent persist stop <session>`은 실행 중인 session을 중단하므로 의도적으로만 사용합니다. 사용자가 명시적으로 허용하지 않는 한 관찰할 수 없는 non-persistent `--print` 방식으로 대체하지 않습니다.
 
@@ -52,7 +50,7 @@ ChatGPT는 target worktree를 먼저 확인하고, `agent persist list`에 sessi
 
 ## Telegram
 
-Cursor 작업이 끝나면 Telegram으로 완료 메시지를 보내도록 구성했습니다.
+명시적으로 활성화한 장시간 Cursor 호환 작업에서는 Telegram으로 완료 메시지를 보낼 수 있습니다.
 
 Telegram의 역할은 **알림**뿐입니다. 작업 상태나 검증 근거를 저장하는 곳으로 사용하지 않습니다. `COMPLETE`는 해당 작업이 최종 완료됐을 때만 보냅니다.
 

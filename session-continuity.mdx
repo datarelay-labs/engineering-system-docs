@@ -1,6 +1,6 @@
 ---
 title: "Session Continuity"
-description: "How GitHub AI Work Packets and ChatGPT-orchestrated Cursor /work-resume replace giant handoffs and repeated prompt copy/paste."
+description: "How GitHub AI Work Packets let ChatGPT continue implementation across conversations without giant handoffs; Cursor /work-resume is optional compatibility."
 ---
 
 # Session continuity
@@ -22,9 +22,9 @@ flowchart LR
 
     subgraph AFTER["Now"]
       B1["ChatGPT"] --> B2["GitHub AI Work Packet"]
-      B2 --> B3["ChatGPT starts Cursor /work-resume"]
+      B2 --> B3["ChatGPT continues implementation"]
       B3 --> B2
-      B2 --> B4["ChatGPT continues"]
+      B2 -. explicit opt-in .-> B4["Optional Cursor /work-resume"]
     end
 ~~~
 
@@ -32,24 +32,17 @@ The earlier loop consumed tokens and required repeated manual copy/paste. The cu
 
 
 
-## Owner-facing handoff
+## Owner-facing continuity
 
 For the normal workflow the owner says only:
 
 ~~~text
-Cursor에 넘겨줘
+계속
 ~~~
 
-ChatGPT identifies the target repository, updates the active Work Packet, prepares the correct branch/worktree, starts Cursor CLI on the authorized development server, and sends `/work-resume`. The owner does not normally start Cursor CLI or type `/resume` manually.
+ChatGPT resolves the target repository, reloads the active Work Packet, rechecks exact Git/GitHub state, and continues implementation directly when the packet authorizes `IMPLEMENTER=CHATGPT_CHAT`.
 
-If the Cursor task was started as a persistent session, the owner can watch it with:
-
-~~~bash
-agent persist list
-agent persist attach <session>
-~~~
-
-After completion, the owner can say `Cursor 끝났어. 계속`; ChatGPT then verifies the actual GitHub, CI, PR, Issue, and worktree state instead of relying on copied terminal output.
+`Cursor에 넘겨줘` is an explicit compatibility opt-in, not the default handoff. ChatGPT may switch the current packet to `IMPLEMENTER=CURSOR` and use `/work-resume` only after that explicit request. `Cursor 끝났어. 계속` is used only after such an opted-in task.
 
 ## One packet per workstream
 
@@ -76,6 +69,9 @@ BRANCH=branch-name|N/A
 TASK_KIND=DESIGN|DEVELOPMENT|TEST|REVIEW|RELEASE|OPERATIONS|ADOPTION|DOCUMENTATION|CLEANUP|MIXED
 OWNER_INTENT=one concise line describing the owner's current explicit request
 LAST_VERIFIED_HEAD=sha
+INTENT_REVISION=positive-integer
+CHANGE_RISK=LOW|MEDIUM|HIGH|CRITICAL
+IMPLEMENTER=CHATGPT_CHAT|CURSOR
 ```
 
 Its main sections are:
@@ -121,11 +117,11 @@ The resolver first determines the repository, then requires the matching active 
 
 LAST_VERIFIED_HEAD is advisory only. Current Git state must always be rechecked.
 
-Work Packet v2 also prevents stale handoff scope. Before implementation handoff, ChatGPT refreshes `TASK_KIND` and `OWNER_INTENT` from the owner's latest explicit request and verifies that `Next Action` directly advances both the stable `Goal` and current intent. If they materially disagree, the implementation agent stops with `WORK_PACKET_SCOPE_MISMATCH` instead of executing an older release, cleanup, or validation phase.
+Work Packet v2 also prevents stale scope and stale implementer authority. Before mutation, ChatGPT refreshes `TASK_KIND`, `OWNER_INTENT`, `INTENT_REVISION`, `CHANGE_RISK`, and `IMPLEMENTER`, then verifies that `Next Action` advances the current intent. Direct ChatGPT mutation requires `IMPLEMENTER=CHATGPT_CHAT`; Cursor dispatch requires an explicit owner opt-in and `IMPLEMENTER=CURSOR`.
 
 `STATUS` has only four values: `ACTIVE`, `PAUSED`, `BLOCKED`, and `COMPLETE`. Values such as `CURSOR_READY`, `WAITING`, or `DONE` are not separate lifecycle states. Readiness is represented by `ACTIVE` plus a valid `Next Action`; observable wait conditions belong in Current State/Latest Evidence.
 
-Cursor also requires a usable local shell/process and Git context for repository implementation. If that environment cannot start, it reports `ENVIRONMENT_BLOCKER` rather than trying Athena, unrelated repositories, or old transcripts as a substitute for local repository identity.
+Any implementation path requires a usable local shell/process and Git context. Optional Cursor dispatch additionally requires the explicit packet opt-in and its own resource/session gates; failure does not cause a silent fallback to a different repository or stale transcript.
 
 ## Why GitHub Issue instead of HANDOFF.md
 

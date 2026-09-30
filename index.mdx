@@ -1,91 +1,26 @@
 ---
 title: "Engineering System"
-description: "A lightweight engineering workflow for using ChatGPT, Cursor, GitHub, and direct server verification without carrying long handoff prompts between tools."
+description: "A GitHub-centered AI engineering workflow where ChatGPT owns implementation and verification."
 ---
 
 # Data Relay Engineering System
 
-**ChatGPT for requirements and design. Cursor for implementation. GitHub for durable records. Direct server access for verification.**
+**ChatGPT owns requirements, design, implementation, testing, coordination, and audit. GitHub is durable authority.**
 
-This system grew from a practical problem: AI-assisted development was useful, but the surrounding process became expensive, repetitive, and hard to keep consistent.
+Owner intent flows into a GitHub AI Work Packet, then ChatGPT implements on an authorized clean worktree, runs deterministic tests, verifies the exact remote HEAD and CI/review state, and merges only verified evidence.
 
-Large handoff prompts, stale roadmaps, repeated Cursor instructions, missing design history, full-suite tests at the wrong time, and manual copy/paste between tools all created friction.
+## Default contract
 
-The current system separates each responsibility and keeps only the minimum context needed for the next action.
+ChatGPT Chat is the default implementer. Conversation history is working context, not authority. The active Work Packet, repository, branch, exact HEAD, CI, and review state determine what may happen next.
 
-<CardGroup cols={2}>
-  <Card title="Quick Start" icon="bolt" href="/quickstart">
-    Adopt the smallest useful loop first, then add optional layers only when they solve a real problem.
-  </Card>
+Cursor is disabled by default. Compatibility files may remain, but Cursor may run only after an explicit owner reactivation for the current packet and an IMPLEMENTER=CURSOR declaration.
 
-  <Card title="Canonical Engineering Standard" icon="book" href="https://github.com/datarelay-labs/engineering-system">
-    Machine-consumed standards, templates, adapters, validation rules, and release governance.
-  </Card>
+## Core rules
 
-  <Card title="Daily Workflow" icon="arrows-rotate" href="/workflow">
-    Work through requirements in ChatGPT, hand implementation to Cursor, verify the result, and continue without long handoff prompts.
-  </Card>
+1. GitHub is durable state; chat context is disposable.
+2. One bounded workstream uses one active Work Packet.
+3. Mutation and terminal PASS require exact identity and clean state.
+4. Tests and CI are evidence; agent prose is not.
+5. Optional tools stay optional until they solve a real problem.
 
-  <Card title="Session Continuity" icon="link" href="/session-continuity">
-    Repository-scoped GitHub Work Packets replace manual ChatGPT and Cursor handoffs.
-  </Card>
-
-  <Card title="Remote Code Audit" icon="terminal" href="/remote-audit">
-    ChatGPT can inspect an authorized development server directly through Desktop Commander Remote MCP.
-  </Card>
-
-  <Card title="Knowledge & Source of Truth" icon="database" href="/knowledge">
-    See exactly what belongs in GitHub, Work Packets, Athena, the handbook, and temporary conversations.
-  </Card>
-
-  <Card title="Athena Knowledge Platform" icon="brain" href="/athena">
-    See how Wiki.js, pgvector, embeddings, indexing, and MCP work together to provide searchable engineering knowledge.
-  </Card>
-</CardGroup>
-
-## The core idea
-
-~~~mermaid
-flowchart LR
-    U[Owner] <--> C[ChatGPT]
-    C --> W[GitHub AI Work Packet]
-    W --> R[ChatGPT starts Cursor /work-resume]
-    R --> G[Code / Tests / Git]
-    G --> CI[CI & Release Evidence]
-    CI --> C
-    C <--> D[Desktop Commander - Development Server]
-    G --> A[Athena - Derived Knowledge]
-    R --> T[Telegram - Completion Signal]
-~~~
-
-<Note>
-  GitHub holds the durable engineering record. Athena, this handbook, and AI Work Packets support search, explanation, and active-work coordination.
-</Note>
-
-## Why this split works
-
-ChatGPT is used heavily before implementation: requirements, brainstorming, architecture, design, documentation, review strategy, and the exact next action.
-
-Cursor is used when code must actually change. Keeping exploration separate from implementation reduces unnecessary context and gives the coding task a clear scope.
-
-GitHub holds the durable record: code, tests, specifications, commits, PRs, CI results, release records, and repository-scoped AI Work Packets.
-
-Desktop Commander closes another gap: when GitHub alone is not enough, ChatGPT can inspect the authorized development Linux host directly instead of reasoning only from pasted terminal output.
-
-## Five rules that keep it small
-
-1. Keep durable engineering records in GitHub; use the handbook and Athena to explain and find them.
-2. ChatGPT plans and reviews; Cursor implements work with a clearly defined scope.
-3. Load only the context needed for the current task.
-4. Run affected deterministic checks before expensive broad qualification.
-5. Keep active session state in repository-scoped Work Packets, not giant handoff prompts.
-
-## What this system is not
-
-It is not an enterprise process framework, a central project-management database, or a replacement for Git.
-
-It is a small set of rules that makes a solo AI-assisted workflow repeatable, reviewable, and practical to use every day.
-
-<Tip>
-  If you remember only one rule: **conversation is temporary; durable decisions and work state belong in the repository.**
-</Tip>
+Start with [Quick Start](/quickstart) and [Daily Workflow](/workflow).

@@ -45,7 +45,7 @@ Without direct host access, ChatGPT may be forced to reason from:
 
 Those are useful, but they can miss local reality.
 
-Direct inspection is especially useful before a release, after a long Cursor run, or when local and remote HEADs differ.
+Direct inspection is especially useful before a release, after a long implementation/test run, or when local and remote HEADs differ.
 
 ## Security boundary
 
@@ -64,12 +64,13 @@ Desktop Commander helps inspect the running development environment; durable eng
 
 ## Recommended role
 
-Use ChatGPT + Desktop Commander as an **independent verifier** after Cursor implementation.
+Use ChatGPT + Desktop Commander to verify the **actual development-host state** during and after ChatGPT-primary implementation.
 
-That preserves a useful separation:
+The useful separation is between implementation context and evidence, not between mandatory AI vendors:
 
 ~~~text
-Cursor -> implementation
-ChatGPT + Desktop Commander -> independent audit
-GitHub/tests/CI -> durable evidence
+ChatGPT -> default implementation + audit coordination
+Desktop Commander -> direct host observation
+GitHub/tests/CI -> durable exact-HEAD evidence
+Cursor -> optional explicitly opted-in implementation worker
 ~~~

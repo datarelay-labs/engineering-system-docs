@@ -114,15 +114,15 @@ AGENTS.md
 
 저장소가 사용하는 Engineering System 버전과 기준 SHA를 고정합니다.
 
-Cursor와 작업 이어가기를 사용하는 경우에만 관련 어댑터와 상태 파일을 추가합니다.
+AI Work Packet Issue template은 기본 continuity와 구현 권한 기록에 사용합니다. Managed adoption이 함께 유지하는 Cursor 파일은 선택적 호환 adapter이며 기본적으로 비활성화됩니다.
 
 ~~~text
+.github/ISSUE_TEMPLATE/ai-work-packet.md
 .cursor/rules/engineering-system.mdc
 .cursor/commands/resume.md
-.github/ISSUE_TEMPLATE/ai-work-packet.md
 ~~~
 
-Base engineering governance와 AI session continuity는 연결되어 있지만 동일한 기능은 아닙니다.
+Base engineering governance와 AI session continuity는 연결되어 있지만 동일한 기능은 아닙니다. Cursor adapter 파일의 존재 자체는 실행 권한을 부여하지 않습니다.
 
 ## 기존 규칙이 많은 저장소
 
@@ -141,7 +141,7 @@ UNKNOWN
 
 제품 고유 architecture, routing, registry, security, persistence invariant는 유지합니다.
 
-일반적인 개발 규칙이 여러 곳에 중복되어 있다면 Engineering System을 참조하도록 정리해 Cursor가 읽어야 할 내용을 줄입니다.
+일반적인 개발 규칙이 여러 곳에 중복되어 있다면 Engineering System을 참조하도록 정리해 어떤 구현 경로를 사용하더라도 반복 context를 줄입니다.
 
 ## Engineering System 적용이 아직 끝나지 않은 저장소
 
@@ -165,7 +165,7 @@ curl -fsSL https://raw.githubusercontent.com/datarelay-labs/engineering-system/m
   -o ~/.cursor/commands/resume.md
 ~~~
 
-개발 서버에서 ChatGPT가 Cursor CLI를 시작해 작업을 넘길 때는 기본적으로 `/work-resume`을 사용합니다. 사용자가 평소에 `/resume`을 직접 입력할 필요는 없습니다. 실행 상태 확인과 재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
+Cursor 호환 경로를 명시적으로 활성화한 경우에만 ChatGPT가 개발 서버에서 Cursor CLI와 `/work-resume`을 사용합니다. 기본 구현 경로는 `IMPLEMENTER=CHATGPT_CHAT`인 ChatGPT 직접 구현입니다. 실행 상태 확인과 재접속 방법은 [모바일 & 원격 작업](/ko/mobile-remote-workflow)을 참고합니다.
 
 ## ChatGPT Custom Instructions는 짧게
 
@@ -175,7 +175,8 @@ Custom Instructions에는 전체 표준을 복사하지 않습니다.
 
 - canonical Engineering System 사용
 - repository 먼저 식별
-- Cursor 작업 전달과 대화 이어가기에 Work Packet 사용
+- 구현 권한과 대화 이어가기에 repository Work Packet 사용
+- 기본 구현자는 ChatGPT이며 Cursor는 명시적 opt-in compatibility로만 사용
 - task-relevant context만 읽기
 - 실행하지 않은 테스트나 다른 HEAD의 결과를 PASS 근거로 사용하지 않기
 
@@ -203,10 +204,10 @@ ENGINEERING_SYSTEM_ADOPTION=PASS
 
 ~~~mermaid
 flowchart LR
-    A["ChatGPT<br/>Cursor에 넘겨줘"] --> B["AI Work Packet"]
-    B --> C["ChatGPT가 Cursor CLI 시작<br/>/work-resume"]
+    A["ChatGPT<br/>계속"] --> B["AI Work Packet"]
+    B --> C["ChatGPT 직접 구현·검증"]
     C --> B
-    B --> D["ChatGPT<br/>Cursor 끝났어. 계속"]
+    B -. 명시적 opt-in .-> D["선택적 Cursor<br/>/work-resume"]
 ~~~
 
-긴 prompt를 복사하지 않고 같은 workstream이 이어지면 continuity path가 정상 동작하는 것입니다. 소유자가 평소에 `/resume`이나 `/work-resume`을 직접 칠 필요는 없습니다.
+긴 prompt를 복사하지 않고 같은 workstream을 ChatGPT가 이어가면 continuity path가 정상 동작하는 것입니다. `/work-resume`은 선택적 Cursor 호환 경로를 명시적으로 켠 경우에만 사용합니다.

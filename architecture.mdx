@@ -1,6 +1,6 @@
 ---
 title: "Architecture"
-description: "How ChatGPT, Cursor, GitHub, Desktop Commander, Athena, tests, and release records fit together."
+description: "How ChatGPT-primary implementation, GitHub, Desktop Commander, optional Cursor compatibility, Athena, tests, and release records fit together."
 ---
 
 # System architecture
@@ -15,7 +15,7 @@ flowchart TB
     K["Knowledge Layer<br/>Athena"]
     C["Coordination Layer<br/>AI Work Packet"]
     N["Normative Layer<br/>GitHub Code · Spec · Test · CI"]
-    X["Execution Layer<br/>Cursor · Dev Server · Runtime"]
+    X["Execution Layer<br/>ChatGPT · Dev Server · Runtime"]
 
     H --> N
     K --> N
@@ -31,8 +31,8 @@ The handbook and Athena help people understand and find context. Current product
 | Component | Primary responsibility | Do not use it as the final reference for |
 |---|---|---|
 | Owner | Product requirements, scope, final decisions, release approval, human UX judgment | Implementation detail unless explicitly decided |
-| ChatGPT | Requirements analysis, architecture, design, documentation, review, next-action planning | Current Git state |
-| Cursor | Repository implementation, affected tests, local evidence | Long-term product decisions |
+| ChatGPT | Requirements, architecture, repository implementation, affected tests, review, coordination, audit | Current Git state unless freshly observed |
+| Cursor | Optional per-packet compatibility implementation after explicit `IMPLEMENTER=CURSOR` opt-in | Default implementation authority |
 | Automation / CI | Repeatable validation, security/performance gates, artifact verification | Product intent |
 | GitHub | Code, history, PRs, CI, specs, Work Packets, release evidence | Human-friendly narrative |
 | Desktop Commander Remote MCP | Direct audit of authorized development hosts | Durable project history |
@@ -89,6 +89,6 @@ AGENTS.md
 .engineering/release.yaml
 ~~~
 
-Session-continuity files such as `.cursor/commands/resume.md` and the AI Work Packet Issue template are added when that workflow is used.
+The AI Work Packet Issue template is the continuity/authority surface. Cursor-specific session files such as `.cursor/commands/resume.md` are compatibility adapters and remain disabled by default unless a packet explicitly opts into Cursor.
 
 A product repository should not copy every Engineering System rule into itself. It should pin the Engineering System version and baseline, then reference the relevant standards.

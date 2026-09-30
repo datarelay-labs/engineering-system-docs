@@ -1,6 +1,6 @@
 ---
 title: "시스템 아키텍처"
-description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena와 테스트·릴리즈 근거의 역할을 구분합니다."
+description: "ChatGPT-primary 구현, GitHub, Desktop Commander, Athena와 선택적 Cursor 호환 경로의 역할을 구분합니다."
 ---
 
 # 시스템 아키텍처
@@ -12,8 +12,8 @@ description: "ChatGPT, Cursor, GitHub, Desktop Commander, Athena와 테스트·�
 | 구성요소 | 주 역할 | 진실로 사용하지 않는 것 |
 |---|---|---|
 | Owner | 제품 요구사항, scope, 최종 결정, release 승인, human UX 판단 | 명시적으로 결정하지 않은 구현 세부사항 |
-| ChatGPT | 요구사항 분석, 아키텍처, 설계, 문서, 리뷰, 다음 작업 결정 | 현재 Git 상태 |
-| Cursor | 코드 구현, affected test, local evidence | 장기 제품 의사결정 |
+| ChatGPT | 요구사항, 아키텍처, 설계, 문서, 기본 코드 구현, affected test, 리뷰, 감사와 조정 | 최신 Git 상태는 직접 재확인 |
+| Cursor | `IMPLEMENTER=CURSOR`가 명시된 packet의 선택적 호환 구현 | 기본 구현 권한 |
 | Automation / CI | deterministic validation, security/performance gate, artifact verification | 제품 의도 |
 | GitHub | Code, history, PR, CI, Spec, Work Packet, Release Evidence | 사람용 설명 |
 | Desktop Commander | 승인된 개발 서버 직접 감사 | 장기 프로젝트 기록 |
@@ -29,7 +29,7 @@ flowchart TB
     K["Knowledge Layer<br/>Athena"]
     C["Coordination Layer<br/>AI Work Packet"]
     N["Normative Layer<br/>GitHub Code · Spec · Test · CI"]
-    X["Execution Layer<br/>Cursor · Dev Server · Runtime"]
+    X["Execution Layer<br/>ChatGPT · Dev Server · Runtime"]
 
     H --> N
     K --> N
@@ -80,6 +80,6 @@ AGENTS.md
 .engineering/release.yaml
 ~~~
 
-`.cursor/commands/resume.md`와 AI Work Packet Issue 템플릿은 작업 이어가기 기능을 사용할 때만 추가합니다.
+AI Work Packet Issue 템플릿은 구현 권한과 continuity의 기본 surface입니다. `.cursor/commands/resume.md` 같은 Cursor 파일은 managed compatibility adapter로 남을 수 있지만 기본적으로 비활성화되며, 현재 packet의 명시적 opt-in 없이는 실행 권한을 만들지 않습니다.
 
 저장소 안에 Engineering System 전체를 복사하지 않고 사용할 버전과 기준 SHA만 고정해 참조합니다.

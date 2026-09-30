@@ -42,7 +42,7 @@ GitHub remote만 보면 local unpushed commit이나 dirty state는 보이지 않
 
 Cursor가 요약한 결과도 유용하지만 실제 server state와 다를 가능성을 완전히 제거하지는 못합니다.
 
-특히 release 직전, 긴 Cursor 작업 직후, local/remote HEAD가 다른 경우에 직접 감사가 유용합니다.
+특히 release 직전, 명시적으로 활성화한 Cursor 작업 직후, local/remote HEAD가 다른 경우에 직접 감사가 유용합니다.
 
 ## 보안 경계
 
@@ -59,10 +59,10 @@ Desktop Commander는 편의를 위해 모든 권한을 열어두는 방식으로
 
 ~~~mermaid
 flowchart LR
-    A["Cursor"] --> B["구현"]
+    A["ChatGPT"] --> B["기본 구현·감사"]
     B --> C["GitHub / Tests / CI"]
     D["ChatGPT + Desktop Commander"] --> E["독립 감사"]
     E --> C
 ~~~
 
-Cursor는 구현자, ChatGPT + Desktop Commander는 독립 reviewer, GitHub/tests/CI는 durable evidence 역할을 합니다.
+ChatGPT가 기본 구현과 감사 조정을 담당하고, Desktop Commander는 개발 서버의 실제 상태를 직접 관찰하며, GitHub/tests/CI는 durable exact-HEAD evidence를 제공합니다. Cursor는 명시적으로 opt-in된 packet의 선택 구현자입니다.

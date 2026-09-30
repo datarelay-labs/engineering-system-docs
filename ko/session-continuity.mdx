@@ -1,6 +1,6 @@
 ---
 title: "Session Continuity"
-description: "GitHub AI Work Packet과 Cursor /work-resume으로 긴 Handoff와 반복적인 prompt 복붙을 없애는 방법"
+description: "GitHub AI Work Packet으로 ChatGPT 구현을 대화 사이에서 이어가고 긴 Handoff와 반복적인 prompt 복붙을 없애는 방법"
 ---
 
 # Session Continuity
@@ -22,15 +22,15 @@ flowchart LR
 
     subgraph AFTER["현재"]
       B1["ChatGPT"] --> B2["GitHub AI Work Packet"]
-      B2 --> B3["Cursor /work-resume"]
+      B2 --> B3["ChatGPT 직접 구현·검증"]
       B3 --> B2
-      B2 --> B4["ChatGPT 계속"]
+      B2 -. 명시적 opt-in .-> B4["선택적 Cursor /work-resume"]
     end
 ~~~
 
 이전 방식은 토큰을 쓰고 사용자가 계속 복사·붙여넣기를 해야 했습니다.
 
-현재 방식은 같은 Work Packet을 ChatGPT와 Cursor가 함께 사용합니다. 「Cursor에 넘겨줘」라고 하면 ChatGPT가 Work Packet을 준비한 뒤 Cursor CLI를 시작하고 `/work-resume`을 넘깁니다. 소유자가 평소에 명령을 직접 칠 필요는 없습니다.
+현재 방식은 같은 Work Packet을 ChatGPT가 대화 사이에서 계속 사용합니다. 「계속」이라고 하면 ChatGPT가 Work Packet과 실제 repository/GitHub 상태를 다시 읽고 직접 구현·테스트·감사를 이어갑니다. Cursor는 owner가 현재 packet에서 명시적으로 opt-in한 경우에만 별도 호환 경로로 사용합니다.
 
 ## Work Packet 단위
 
@@ -55,6 +55,10 @@ BRANCH=branch-name|N/A
 TASK_KIND=DESIGN|DEVELOPMENT|TEST|REVIEW|RELEASE|OPERATIONS|ADOPTION|DOCUMENTATION|CLEANUP|MIXED
 OWNER_INTENT=사용자가 지금 명시적으로 요청한 작업 한 줄
 LAST_VERIFIED_HEAD=sha
+PRIORITY=NORMAL
+INTENT_REVISION=1
+CHANGE_RISK=MEDIUM
+IMPLEMENTER=CHATGPT_CHAT|CURSOR
 
 Goal
 Current State
@@ -92,9 +96,9 @@ flowchart TD
 
 LAST_VERIFIED_HEAD는 참고값일 뿐 현재 truth로 사용하지 않습니다.
 
-Work Packet v2는 오래된 작업 범위가 그대로 실행되는 것도 막습니다. Cursor에 작업을 넘기기 전에 ChatGPT가 사용자의 **가장 최근 명시적 요청**을 기준으로 `TASK_KIND`와 `OWNER_INTENT`를 갱신하고, `Next Action`이 기존 `Goal`과 현재 요청을 실제로 전진시키는지 확인합니다. 서로 충돌하면 구현 agent는 이전 릴리스·정리·검증 단계로 진행하지 않고 `WORK_PACKET_SCOPE_MISMATCH`로 중단합니다.
+Work Packet v2는 오래된 작업 범위가 그대로 실행되는 것도 막습니다. 구현 전에 ChatGPT가 사용자의 **가장 최근 명시적 요청**을 기준으로 `TASK_KIND`, `OWNER_INTENT`, `INTENT_REVISION`, `CHANGE_RISK`, `IMPLEMENTER`를 갱신하고, `Next Action`이 기존 `Goal`과 현재 요청을 실제로 전진시키는지 확인합니다. 서로 충돌하면 이전 릴리스·정리·검증 단계로 진행하지 않고 `WORK_PACKET_SCOPE_MISMATCH`로 중단합니다.
 
-`STATUS`는 `ACTIVE`, `PAUSED`, `BLOCKED`, `COMPLETE` 네 개만 사용합니다. `CURSOR_READY`, `WAITING`, `DONE` 같은 값을 별도 상태로 추가하지 않습니다. Cursor가 다음 작업을 받을 준비가 됐다면 `STATUS=ACTIVE`와 유효한 `Next Action`으로 표현하고, 외부 대기 상태는 Current State/Latest Evidence에 기록합니다.
+`STATUS`는 `ACTIVE`, `PAUSED`, `BLOCKED`, `COMPLETE` 네 개만 사용합니다. `CURSOR_READY`, `WAITING`, `DONE` 같은 값을 별도 상태로 추가하지 않습니다. 기본 구현은 `IMPLEMENTER=CHATGPT_CHAT`이며, 외부 대기 상태는 Current State/Latest Evidence에 기록합니다. Cursor는 명시적 opt-in이 있는 packet에서만 `IMPLEMENTER=CURSOR`로 전환합니다.
 
 Repository 구현을 시작하려면 local shell/process와 Git context가 실제로 동작해야 합니다. shell을 시작할 수 없으면 Athena나 unrelated repository, 과거 transcript를 뒤지는 대신 `ENVIRONMENT_BLOCKER`로 중단합니다.
 
