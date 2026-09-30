@@ -39,12 +39,7 @@
         "type": "github",
         "href": "https://github.com/datarelay-labs/engineering-system"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Quick Start",
-      "href": "/quickstart"
-    }
+    ]
   },
   "search": {
     "prompt": "Search the Engineering System..."
