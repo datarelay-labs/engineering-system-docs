@@ -18,8 +18,8 @@ description: "실제 불편에서 출발해 현재 Engineering System으로 발�
 | ChatGPT 작업 전달이 너무 김 | 긴 이어가기 프롬프트 | 같은 Work Packet + 짧은 시작 문구 |
 | 아이디어 단계부터 coding agent 비용 증가 | 필수적인 도구 간 구현 handoff | ChatGPT Chat이 설계·구현을 기본 수행, 추가 agent는 opt-in |
 | 서버 실제 상태 확인이 어려움 | shell output 복붙 | Desktop Commander 직접 감사 |
-| 이동 중 긴 작업 유지 어려움 | terminal/device 종속 | Cursor CLI + `agent persist` + 휴대폰 SSH |
-| Cursor 완료 여부 반복 확인 | terminal polling | Telegram 완료 알림 |
+| 이동 중 긴 작업 유지 어려움 | terminal/device 종속 | ChatGPT가 개발 서버 상태를 직접 이어서 확인; Cursor persist는 선택적 호환 |
+| 장시간 작업 완료 여부 반복 확인 | terminal polling | GitHub/Work Packet 직접 재확인 + 선택적 완료 알림 |
 | Full Suite 과다 실행 | 변경마다 broad validation | affected-first, release boundary full qualification |
 | 오래된 PASS 재사용 위험 | 과거 검증 결과 | 현재 HEAD 기준 검증 |
 
@@ -30,9 +30,9 @@ flowchart LR
     A["많은 계획 문서"] --> B["GitHub Source of Truth"]
     B --> C["Athena<br/>결정·히스토리 검색"]
     C --> D["AI Work Packet<br/>세션 연속성"]
-    D --> E["Cursor /resume"]
-    E --> F["Desktop Commander<br/>독립 감사"]
-    F --> G["agent persist + Telegram<br/>모바일 운영"]
+    D --> E["ChatGPT<br/>직접 구현·검증"]
+    E --> F["Desktop Commander<br/>개발 서버 직접 감사"]
+    D -. "explicit opt-in" .-> X["선택적 Cursor<br/>/work-resume"]
 ~~~
 
 ## 왜 GitHub 중심으로 돌아왔는가
